@@ -19,4 +19,20 @@ class RandomSearch(Optimizer):
         super().__init__(config_space)
 
     def propose(self, archive: List) -> Dict:
+        """
+        Propose a new configuration to evaluate.
+
+        Takes an list of previous evaluations and proposes a new configuration to evaluate.
+
+        Parameters
+        ----------
+        archive: List
+            List of previous evaluations
+
+        Returns
+        -------
+        CS.Configuration:
+            Proposed Configuration
+
+        """
         return self.confic_space.sample_configuration()

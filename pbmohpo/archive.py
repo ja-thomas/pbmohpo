@@ -65,10 +65,26 @@ class Archive:
         return [pos for pos, el in enumerate(self.data) if el.utility == max_util]
 
     def to_numpy(self) -> Tuple:
+        """
+        Convert evaluted configurations and utility values to numpy arrays
+
+        Returns
+        -------
+        tuple(x, y)
+            feature values x and utility values y
+        """
         x = np.array(list([x.config.get_array() for x in self.data]))
         y = np.array([x.utility for x in self.data])
         return x, y
 
     def to_torch(self) -> Tuple:
+        """
+        Convert evaluted configurations and utility values to torch arrays
+
+        Returns
+        -------
+        tuple(x, y)
+            feature values x and utility values y
+        """
         x, y = self.to_numpy()
         return torch.from_numpy(x), torch.from_numpy(y)[:, None]
