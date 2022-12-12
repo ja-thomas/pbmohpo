@@ -9,5 +9,5 @@ setup(
     author_email="janek.thomas@stat.uni-muenchen.de",
     license="LGPL",
     packages=find_packages(),
-    install_requires=["configspace"],
+    install_requires=["configspace", "botorch"],
 )

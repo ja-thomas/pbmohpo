@@ -34,7 +34,7 @@ class Optimizer(ABC):
         Returns
         -------
         CS.Configuration:
-            Proposed configuration
+            Proposed Configuration
 
         """
         raise NotImplementedError()

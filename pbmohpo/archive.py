@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import ConfigSpace as CS
-from typing import List
+from typing import List, Tuple
+import numpy as np
+import torch
 
 
 @dataclass
@@ -61,3 +63,12 @@ class Archive:
         """
         max_util = self.max_utility
         return [pos for pos, el in enumerate(self.data) if el.utility == max_util]
+
+    def to_numpy(self) -> Tuple:
+        x = np.array(list([x.config.get_array() for x in self.data]))
+        y = np.array([x.utility for x in self.data])
+        return x, y
+
+    def to_torch(self) -> Tuple:
+        x, y = self.to_numpy()
+        return torch.from_numpy(x), torch.from_numpy(y)[:, None]
