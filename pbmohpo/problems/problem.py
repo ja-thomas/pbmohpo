@@ -46,7 +46,8 @@ class Problem(ABC):
         """
         raise NotImplementedError()
 
-    def get_n_objectives(self) -> int:
+    @property
+    def n_objectives(self) -> int:
         """
         Get number of objectives.
 

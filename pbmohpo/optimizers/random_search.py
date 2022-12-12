@@ -3,7 +3,7 @@ import ConfigSpace as CS
 from typing import List, Dict
 
 
-class Random_search(Optimizer):
+class RandomSearch(Optimizer):
     """
     Random Search Optimizer
 

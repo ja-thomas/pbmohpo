@@ -2,7 +2,7 @@ from typing import Dict, Union, List
 import numpy as np
 
 
-class Decision_maker:
+class DecisionMaker:
     """
     Simple Dicision Maker.
 
