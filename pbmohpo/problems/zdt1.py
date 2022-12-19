@@ -1,7 +1,9 @@
-from pbmohpo.problems.problem import Problem
+from typing import Dict, List, Union
+
 import ConfigSpace as CS
-from typing import Union, List, Dict
 import numpy as np
+
+from pbmohpo.problems.problem import Problem
 
 
 class ZDT1(Problem):

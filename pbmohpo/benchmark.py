@@ -1,7 +1,7 @@
-from pbmohpo.problems.problem import Problem
-from pbmohpo.optimizers.optimizer import Optimizer
-from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.archive import Archive, ArchiveItem
+from pbmohpo.decision_makers.decision_maker import DecisionMaker
+from pbmohpo.optimizers.optimizer import Optimizer
+from pbmohpo.problems.problem import Problem
 
 
 class Benchmark:

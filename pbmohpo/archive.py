@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-import ConfigSpace as CS
 from typing import List, Tuple
+
+import ConfigSpace as CS
 import numpy as np
 import torch
 

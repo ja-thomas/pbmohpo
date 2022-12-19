@@ -1,6 +1,6 @@
-import torch
-import numpy as np
 import ConfigSpace as CS
+import numpy as np
+import torch
 
 
 def get_botorch_bounds(space: CS.ConfigurationSpace):

@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+from typing import Dict, List, Union
+
 import ConfigSpace as CS
 import numpy as np
-from typing import Union, Dict, List
 
 
 class Problem(ABC):

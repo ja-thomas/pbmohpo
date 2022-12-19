@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="pbmohpo",
@@ -9,5 +9,5 @@ setup(
     author_email="janek.thomas@stat.uni-muenchen.de",
     license="LGPL",
     packages=find_packages(),
-    install_requires=["configspace", "botorch"],
+    install_requires=["configspace", "botorch", "yahpo-gym"],
 )

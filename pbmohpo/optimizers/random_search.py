@@ -1,6 +1,8 @@
-from pbmohpo.optimizers.optimizer import Optimizer
+from typing import Dict, List
+
 import ConfigSpace as CS
-from typing import List, Dict
+
+from pbmohpo.optimizers.optimizer import Optimizer
 
 
 class RandomSearch(Optimizer):

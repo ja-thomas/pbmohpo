@@ -1,12 +1,14 @@
-from pbmohpo.optimizers.optimizer import Optimizer
-import ConfigSpace as CS
 from typing import List, Union
-from botorch.models import SingleTaskGP
-from botorch.fit import fit_gpytorch_mll
-from gpytorch.mlls import ExactMarginalLogLikelihood
-from pbmohpo.archive import Archive
+
+import ConfigSpace as CS
 from botorch.acquisition import UpperConfidenceBound
+from botorch.fit import fit_gpytorch_mll
+from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
+from gpytorch.mlls import ExactMarginalLogLikelihood
+
+from pbmohpo.archive import Archive
+from pbmohpo.optimizers.optimizer import Optimizer
 from pbmohpo.utils import get_botorch_bounds
 
 

@@ -1,8 +1,8 @@
-from pbmohpo.problems.zdt1 import ZDT1
-from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
-from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.benchmark import Benchmark
+from pbmohpo.decision_makers.decision_maker import DecisionMaker
+from pbmohpo.optimizers.random_search import RandomSearch
+from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
+from pbmohpo.problems.zdt1 import ZDT1
 
 dim = 10
 budget = 100

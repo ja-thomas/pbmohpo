@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-import ConfigSpace as CS
 from typing import List
+
+import ConfigSpace as CS
 
 
 class Optimizer(ABC):
