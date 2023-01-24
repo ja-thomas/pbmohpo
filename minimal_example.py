@@ -9,7 +9,9 @@ from pbmohpo.problems.zdt1 import ZDT1
 
 parser = argparse.ArgumentParser(description="Run some examples!")
 
-parser.add_argument("--problem", choices=["zdt1", "yahpo"], default="zdt1")
+parser.add_argument(
+    "--problem", choices=["zdt1", "yahpo_lcbench", "yahpo_rbv2"], default="zdt1"
+)
 parser.add_argument("--budget", type=int, default=50)
 parser.add_argument("--optimizer", choices=["RS", "BO"], default="BO")
 parser.add_argument("--dimension", type=int, default=10)
@@ -23,11 +25,15 @@ problem = args.problem
 if args.problem == "zdt1":
     print("Testing ZDT1")
     prob = ZDT1(dimension=args.dimension)
-else:
-    print("Testing YAHPO")
+elif args.problem == "yahpo_lcbench":
+    print("Testing YAHPO - lcbench instance 3945")
     prob = YAHPO(
         id="lcbench", instance="3945", objective_names=["time", "val_accuracy"]
     )
+else:
+    print("Testing YAHPO - Random Bot v2 instance")
+    prob = YAHPO(id="iaml_rpart", instance="41146", objective_names=["auc", "ias"])
+
 
 if args.optimizer == "RS":
     print("Running Random Search")
