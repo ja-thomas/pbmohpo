@@ -7,7 +7,6 @@ from yahpo_gym import benchmark_set
 from pbmohpo.problems.problem import Problem
 
 
-# Still broken!!!
 class YAHPO(Problem):
     def __init__(
         self,
@@ -37,12 +36,13 @@ class YAHPO(Problem):
             for obj in self.get_objective_names()
         ]
 
-        factor = self.benchmark.config.config.get("y_minimize")[positions]
+        factor = [
+            self.benchmark.config.config.get("y_minimize")[pos] for pos in positions
+        ]
         factor = [-1 if fac else 1 for fac in factor]
-
         val_dict = {
             key: factor[el] * val_dict[key]
-            for key, el in enumerate(self.get_objective_names())
+            for el, key in enumerate(self.get_objective_names())
         }
         return val_dict
 
