@@ -84,6 +84,12 @@ class UtilityBayesianOptimization(Optimizer):
         hp_names = self.confic_space.get_hyperparameter_names()
         hp_values = candidate[0].tolist()
 
-        config_dict = dict(zip(hp_names, hp_values))
+        config_dict = {}
+
+        # candidate contains only floats, round integer HPs
+        for hp, val in zip(hp_names, hp_values):
+            if not self.confic_space.get_hyperparameter(hp).is_legal(val):
+                val = round(val)
+            config_dict[hp] = val
 
         return CS.Configuration(self.confic_space, config_dict)

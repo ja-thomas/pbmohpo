@@ -1,3 +1,4 @@
+import copy
 from typing import Dict, List, Union
 
 import ConfigSpace as CS
@@ -21,7 +22,19 @@ class YAHPO(Problem):
         self.objective_names = objective_names
 
     def get_config_space(self) -> CS.ConfigurationSpace:
-        return self.benchmark.get_opt_space()
+        # We remove the instance information from the configuration space
+        csn = copy.deepcopy(self.benchmark.get_opt_space())
+        instance_params = self.benchmark.config.instance_names
+        hps = csn.get_hyperparameters()
+        idx = csn.get_hyperparameter_names().index(instance_params)
+        del hps[idx]
+        cnds = csn.get_conditions()
+        fbds = csn.get_forbiddens()
+        cs = CS.ConfigurationSpace()
+        cs.add_hyperparameters(hps)
+        cs.add_conditions(cnds)
+        cs.add_forbidden_clauses(fbds)
+        return cs
 
     def get_objective_names(self) -> List:
         return self.objective_names
@@ -29,8 +42,14 @@ class YAHPO(Problem):
     def __call__(
         self, x: CS.Configuration, seed: Union[np.random.RandomState, int, None] = None
     ) -> Dict:
+
+        # YAHPO requires instance as a hyperparparameter, so we add it
+        x = x.get_dictionary()
+        x.update({self.benchmark.config.instance_names: self.benchmark.instance})
+
         val_dict = self.benchmark.objective_function(x)[0]
 
+        # We need to check which objectives are minimized and invert the objective value
         positions = [
             self.benchmark.config.config.get("y_names").index(obj)
             for obj in self.get_objective_names()
