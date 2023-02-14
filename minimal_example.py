@@ -10,7 +10,9 @@ from pbmohpo.problems.zdt1 import ZDT1
 parser = argparse.ArgumentParser(description="Run some examples!")
 
 parser.add_argument(
-    "--problem", choices=["zdt1", "yahpo_lcbench", "yahpo_rbv2"], default="zdt1"
+    "--problem",
+    choices=["zdt1", "lcbench", "tree", "forest", "xgboost"],
+    default="zdt1",
 )
 parser.add_argument("--budget", type=int, default=50)
 parser.add_argument("--optimizer", choices=["RS", "BO"], default="BO")
@@ -30,9 +32,36 @@ elif args.problem == "yahpo_lcbench":
     prob = YAHPO(
         id="lcbench", instance="3945", objective_names=["time", "val_accuracy"]
     )
-else:
-    print("Testing YAHPO - Random Bot v2 instance")
+elif args.problem == "yahpo_iaml_tree":
+    print("Testing YAHPO - Instance 41146 with rpart")
     prob = YAHPO(id="iaml_rpart", instance="41146", objective_names=["auc", "ias"])
+elif args.problem == "yahpo_iaml_forest":
+    print("Testing YAHPO - IAML instance 41146 with with ranger")
+    fix_hps = {
+        "replace": "TRUE",
+        "respect.unordered.factors": "ignore",
+        "splitrule": "gini",
+        "num_random_splits": 1,
+    }
+    prob = YAHPO(
+        id="iaml_ranger",
+        fix_hps=fix_hps,
+        instance="41146",
+        objective_names=["auc", "ias"],
+    )
+else:
+    print("Testing YAHPO - Random_Bot_v2 instance 41161 with xgboost")
+    fix_hps = {
+        "booster": "gbtree",
+        "num.impute.selected.cpo": "impute.mean",
+        "repl": 1,
+    }
+    prob = YAHPO(
+        id="rbv2_xgboost",
+        fix_hps=fix_hps,
+        instance="41161",
+        objective_names=["auc", "memory"],
+    )
 
 
 if args.optimizer == "RS":

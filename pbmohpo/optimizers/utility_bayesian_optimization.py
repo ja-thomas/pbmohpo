@@ -59,7 +59,7 @@ class UtilityBayesianOptimization(Optimizer):
 
         """
         if len(archive.data) <= self.initial_design_size:
-            return self.confic_space.sample_configuration()
+            return self.config_space.sample_configuration()
         else:
             return self._surrogate_proposal(archive)
 
@@ -72,7 +72,7 @@ class UtilityBayesianOptimization(Optimizer):
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
         fit_gpytorch_mll(mll)
         ucb = UpperConfidenceBound(gp, beta=0.1)
-        bounds = get_botorch_bounds(self.confic_space)
+        bounds = get_botorch_bounds(self.config_space)
         candidate, _ = optimize_acqf(
             ucb,
             bounds=bounds,
@@ -81,15 +81,15 @@ class UtilityBayesianOptimization(Optimizer):
             raw_samples=20,
         )
 
-        hp_names = self.confic_space.get_hyperparameter_names()
+        hp_names = self.config_space.get_hyperparameter_names()
         hp_values = candidate[0].tolist()
 
         config_dict = {}
 
         # candidate contains only floats, round integer HPs
         for hp, val in zip(hp_names, hp_values):
-            if not self.confic_space.get_hyperparameter(hp).is_legal(val):
+            if not self.config_space.get_hyperparameter(hp).is_legal(val):
                 val = round(val)
             config_dict[hp] = val
 
-        return CS.Configuration(self.confic_space, config_dict)
+        return CS.Configuration(self.config_space, config_dict)

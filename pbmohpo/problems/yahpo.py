@@ -6,6 +6,7 @@ import numpy as np
 from yahpo_gym import benchmark_set
 
 from pbmohpo.problems.problem import Problem
+from pbmohpo.utils import remove_hp_from_cs
 
 
 class YAHPO(Problem):
@@ -14,26 +15,27 @@ class YAHPO(Problem):
         id: str,
         instance: str,
         objective_names: List,
+        fix_hps: dict = None,
         seed: Union[int, np.random.RandomState, None] = 42,
     ) -> None:
         super().__init__(seed)
+        if fix_hps is None:
+            fix_hps = {}
+        self.fix_hps = fix_hps
         self.benchmark = benchmark_set.BenchmarkSet(id)
         self.benchmark.set_instance(instance)
         self.objective_names = objective_names
 
     def get_config_space(self) -> CS.ConfigurationSpace:
-        # We remove the instance information from the configuration space
+        # Remove instance information from config space
         csn = copy.deepcopy(self.benchmark.get_opt_space())
-        instance_params = self.benchmark.config.instance_names
-        hps = csn.get_hyperparameters()
-        idx = csn.get_hyperparameter_names().index(instance_params)
-        del hps[idx]
-        cnds = csn.get_conditions()
-        fbds = csn.get_forbiddens()
-        cs = CS.ConfigurationSpace()
-        cs.add_hyperparameters(hps)
-        cs.add_conditions(cnds)
-        cs.add_forbidden_clauses(fbds)
+        hps_to_remove = self.fix_hps
+        hps_to_remove.update(
+            {self.benchmark.config.instance_names: self.benchmark.instance}
+        )
+
+        cs = remove_hp_from_cs(csn, remove_hp_dict=hps_to_remove)
+        print(cs)
         return cs
 
     def get_objective_names(self) -> List:
@@ -43,13 +45,15 @@ class YAHPO(Problem):
         self, x: CS.Configuration, seed: Union[np.random.RandomState, int, None] = None
     ) -> Dict:
 
-        # YAHPO requires instance as a hyperparparameter, so we add it
+        # Add instance information to configuration
         x = x.get_dictionary()
         x.update({self.benchmark.config.instance_names: self.benchmark.instance})
+        # Add fixed HPs back to configuration
+        x.update(self.fix_hps)
 
         val_dict = self.benchmark.objective_function(x)[0]
 
-        # We need to check which objectives are minimized and invert the objective value
+        # check which objectives are minimized and invert the objective value
         positions = [
             self.benchmark.config.config.get("y_names").index(obj)
             for obj in self.get_objective_names()

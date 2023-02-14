@@ -18,7 +18,7 @@ class Optimizer(ABC):
 
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
         super().__init__()
-        self.confic_space = config_space
+        self.config_space = config_space
 
     @abstractmethod
     def propose(self, archive: List) -> CS.Configuration:
