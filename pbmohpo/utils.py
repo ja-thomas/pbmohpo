@@ -32,9 +32,8 @@ def remove_hp_from_cs(
     Parameters
     ----------
     old_cs: CS.ConfigurationSpace
-    remove_hps: List[str]
-         List of hyperparameter names to remove from the cs
-
+    remove_hp_dict: Dict
+        Dict of with hyperparameters as keys and defaults as values
     Returns
     -------
         CS.ConfigurationSpace

@@ -10,6 +10,25 @@ from pbmohpo.utils import remove_hp_from_cs
 
 
 class YAHPO(Problem):
+    """
+    YAHPO Gym Problem.
+
+    This class wrappes YAHPO gym (https://github.com/slds-lmu/yahpo_gym/).
+
+    Parameters
+    ----------
+    id: str
+        Benchmark class from YAHPO
+    instance: str
+        Instance of benchmark
+    objective_names: List[str]
+        Objectives to optimize
+    fix_hps: Dict
+        Dictionary of fixed HPs that should not be optimized
+    seed: int, np.random.RandomState
+        Seed passed to the problem
+    """
+
     def __init__(
         self,
         id: str,

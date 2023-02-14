@@ -60,7 +60,7 @@ else:
         id="rbv2_xgboost",
         fix_hps=fix_hps,
         instance="41161",
-        objective_names=["auc", "memory"],
+        objective_names=["auc", "memory", "timetrain"],
     )
 
 
