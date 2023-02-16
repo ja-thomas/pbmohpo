@@ -2,10 +2,10 @@ from typing import Dict, List
 
 import ConfigSpace as CS
 
-from pbmohpo.optimizers.optimizer import Optimizer
+from pbmohpo.optimizers.optimizer import UtilityOptimizer, DuelOptimizer
 
 
-class RandomSearch(Optimizer):
+class UtilityRandomSearch(UtilityOptimizer):
     """
     Random Search Optimizer
 
@@ -19,6 +19,10 @@ class RandomSearch(Optimizer):
 
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
         super().__init__(config_space)
+
+    @property
+    def is_preferential(self) -> bool:
+        return False
 
     def propose(self, archive: List) -> Dict:
         """
@@ -37,4 +41,12 @@ class RandomSearch(Optimizer):
             Proposed Configuration
 
         """
-        return self.confic_space.sample_configuration()
+        return self.config_space.sample_configuration()
+
+
+class PreferentialRandomSearch(DuelOptimizer):
+    def __init__(self, config_space: CS.ConfigurationSpace) -> None:
+        super().__init__(config_space)
+
+    def propose(self, archive: List) -> CS.Configuration:
+        return tuple(self.config_space.sample_configuration(2))

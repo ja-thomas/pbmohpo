@@ -30,7 +30,7 @@ class UtilityArchiveItem:
 
 
 @dataclass
-class DuellArchiveItem:
+class DuelArchiveItem:
     first: UtilityArchiveItem
     second: UtilityArchiveItem
     first_won: bool
@@ -112,7 +112,7 @@ class UtilityArchive(Archive):
         return torch.from_numpy(x), torch.from_numpy(y)[:, None]
 
 
-class DuellArchive(Archive):
+class DuelArchive(Archive):
     def __init__(self) -> None:
         super().__init__()
 
