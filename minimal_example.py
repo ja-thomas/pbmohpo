@@ -1,11 +1,15 @@
 import argparse
 
+import matplotlib.pyplot as plt
+
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.random_search import RandomSearch
-from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
+from pbmohpo.optimizers.utility_bayesian_optimization import \
+    UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
+from pbmohpo.utils import visualize_archives
 
 parser = argparse.ArgumentParser(description="Run some examples!")
 
@@ -49,6 +53,9 @@ print(dm.preferences)
 
 bench = Benchmark(prob, opt, dm, budget)
 bench.run()
+
+# fig = visualize_archives([bench.archive], ["incumbent", "utilities"])
+# plt.show()
 
 print(f"Best Configuration found in iteration [{bench.archive.incumbents[0]}]:")
 print(bench.archive.data[bench.archive.incumbents[0]])
