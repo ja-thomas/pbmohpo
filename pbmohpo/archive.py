@@ -112,19 +112,21 @@ class UtilityArchive(Archive):
         return torch.from_numpy(x), torch.from_numpy(y)[:, None]
 
 
-# class DuellArchive(Archive):
-#    def __init__(self) -> None:
-#        super().__init__()
-#
-#    @property
-#    def max_utility(self) -> float:
-#        max(sum([[el.first.utility, el.second.utility] for el in self.data], []))
-#
-#    @property
-#    def incumbents(self) -> List[ArchiveItem]:
-#        max_util = self.max_utility
-#        [pos for pos, el in enumerate(self.data) if el.first.utility == max_util]
-#
-#    def to_utility_archive(self) -> UtilityArchive:
-#        pass
-#
+class DuellArchive(Archive):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def to_utility_archive(self) -> UtilityArchive:
+        uti_archive = UtilityArchive()
+        uti_archive.data = sum(
+            [[el.first.utility, el.second.utility] for el in self.data], []
+        )
+        return uti_archive
+
+    def to_numpy(self) -> Tuple:
+        uti_archive = self.to_utility_archive()
+        return uti_archive.to_numpy()
+
+    def to_torch(self) -> Tuple:
+        uti_archive = self.to_utility_archive()
+        return uti_archive.to_torch()
