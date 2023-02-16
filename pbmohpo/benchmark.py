@@ -1,4 +1,4 @@
-from pbmohpo.archive import Archive, ArchiveItem
+from pbmohpo.archive import UtilityArchive, UtilityArchiveItem
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.optimizer import Optimizer
 from pbmohpo.problems.problem import Problem
@@ -29,7 +29,7 @@ class Benchmark:
         self.optimizer = optimizer
         self.dm = dm
         self.budget = budget
-        self.archive = Archive()
+        self.archive = UtilityArchive()
 
     def step(self) -> None:
         """
@@ -56,7 +56,9 @@ class Benchmark:
             objectives = self.problem(config)
             utility = self.dm._compute_utility(objectives)
 
-            result = ArchiveItem(config=config, objectives=objectives, utility=utility)
+            result = UtilityArchiveItem(
+                config=config, objectives=objectives, utility=utility
+            )
 
             self.archive.data.append(result)
 

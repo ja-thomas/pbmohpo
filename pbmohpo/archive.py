@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Tuple
+from abc import ABC, abstractmethod
 
 import ConfigSpace as CS
 import numpy as np
@@ -7,7 +8,7 @@ import torch
 
 
 @dataclass
-class ArchiveItem:
+class UtilityArchiveItem:
     """
     Result of one Tuning step.
 
@@ -28,7 +29,27 @@ class ArchiveItem:
     utility: float
 
 
-class Archive:
+@dataclass
+class DuellArchiveItem:
+    first: UtilityArchiveItem
+    second: UtilityArchiveItem
+    first_won: bool
+
+
+class Archive(ABC):
+    def __init__(self) -> None:
+        self.data = []
+
+    @abstractmethod
+    def to_numpy(self) -> Tuple:
+        raise (NotImplementedError)
+
+    @abstractmethod
+    def to_torch(self) -> Tuple:
+        raise (NotImplementedError)
+
+
+class UtilityArchive(Archive):
     """
     Tuning archive.
 
@@ -51,7 +72,7 @@ class Archive:
         return max([el.utility for el in self.data])
 
     @property
-    def incumbents(self) -> List[ArchiveItem]:
+    def incumbents(self) -> List[UtilityArchiveItem]:
         """
         Get incumbents.
 
@@ -59,8 +80,8 @@ class Archive:
 
         Returns
         -------
-        list[ArchiveItems]
-            ArchiveItems with highest utility
+        list[UtilityArchiveItem]
+            UtilityArchiveItems with highest utility
         """
         max_util = self.max_utility
         return [pos for pos, el in enumerate(self.data) if el.utility == max_util]
@@ -89,3 +110,21 @@ class Archive:
         """
         x, y = self.to_numpy()
         return torch.from_numpy(x), torch.from_numpy(y)[:, None]
+
+
+# class DuellArchive(Archive):
+#    def __init__(self) -> None:
+#        super().__init__()
+#
+#    @property
+#    def max_utility(self) -> float:
+#        max(sum([[el.first.utility, el.second.utility] for el in self.data], []))
+#
+#    @property
+#    def incumbents(self) -> List[ArchiveItem]:
+#        max_util = self.max_utility
+#        [pos for pos, el in enumerate(self.data) if el.first.utility == max_util]
+#
+#    def to_utility_archive(self) -> UtilityArchive:
+#        pass
+#

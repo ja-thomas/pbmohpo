@@ -51,11 +51,13 @@ elif args.problem == "yahpo_iaml_forest":
     )
 else:
     print("Testing YAHPO - Random_Bot_v2 instance 41161 with xgboost")
+
     fix_hps = {
         "booster": "gbtree",
         "num.impute.selected.cpo": "impute.mean",
         "repl": 1,
     }
+
     prob = YAHPO(
         id="rbv2_xgboost",
         fix_hps=fix_hps,
