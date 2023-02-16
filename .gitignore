@@ -130,3 +130,5 @@ dmypy.json
 
 # YAHPO
 yahpo_data-main/
+
+Pipfile

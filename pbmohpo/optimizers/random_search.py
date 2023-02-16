@@ -37,4 +37,4 @@ class RandomSearch(Optimizer):
             Proposed Configuration
 
         """
-        return self.confic_space.sample_configuration()
+        return self.config_space.sample_configuration()

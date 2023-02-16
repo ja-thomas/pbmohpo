@@ -11,7 +11,13 @@ parser = argparse.ArgumentParser(description="Run some examples!")
 
 parser.add_argument(
     "--problem",
-    choices=["zdt1", "lcbench", "tree", "forest", "xgboost"],
+    choices=[
+        "zdt1",
+        "yahpo_lcbench",
+        "yahpo_iaml_tree",
+        "yahpo_iaml_forest",
+        "yahpo_rbv2_xgboost",
+    ],
     default="zdt1",
 )
 parser.add_argument("--budget", type=int, default=50)
@@ -29,45 +35,56 @@ if args.problem == "zdt1":
     prob = ZDT1(dimension=args.dimension)
 elif args.problem == "yahpo_lcbench":
     print("Testing YAHPO - lcbench instance 3945")
+    fix_hps = {"epoch": 52}
     prob = YAHPO(
-        id="lcbench", instance="3945", objective_names=["time", "val_accuracy"]
+        id="lcbench",
+        fix_hps=fix_hps,
+        instance="3945",
+        objective_names=["time", "val_accuracy"],
     )
 elif args.problem == "yahpo_iaml_tree":
-    print("Testing YAHPO - Instance 41146 with rpart")
-    prob = YAHPO(id="iaml_rpart", instance="41146", objective_names=["auc", "ias"])
+    print("Testing YAHPO - IAML instance 41146 with rpart")
+    fix_hps = {"trainsize": 1}
+    prob = YAHPO(
+        id="iaml_rpart",
+        fix_hps=fix_hps,
+        instance="41146",
+        objective_names=["auc", "ias"],
+    )
 elif args.problem == "yahpo_iaml_forest":
     print("Testing YAHPO - IAML instance 41146 with with ranger")
     fix_hps = {
+        "trainsize": 1,
         "replace": "TRUE",
         "respect.unordered.factors": "ignore",
         "splitrule": "gini",
-        "num_random_splits": 1,
     }
     prob = YAHPO(
         id="iaml_ranger",
         fix_hps=fix_hps,
         instance="41146",
-        objective_names=["auc", "ias"],
+        objective_names=["auc", "nf", "ias"],
     )
-else:
+elif args.problem == "yahpo_rbv2_xgboost":
     print("Testing YAHPO - Random_Bot_v2 instance 41161 with xgboost")
     fix_hps = {
+        "trainsize": 1,
         "booster": "gbtree",
         "num.impute.selected.cpo": "impute.mean",
-        "repl": 1,
+        "repl": 10,
     }
     prob = YAHPO(
         id="rbv2_xgboost",
         fix_hps=fix_hps,
         instance="41161",
-        objective_names=["auc", "memory", "timetrain"],
+        objective_names=["auc", "timetrain"],
     )
 
 
 if args.optimizer == "RS":
     print("Running Random Search")
     opt = RandomSearch(prob.get_config_space())
-else:
+elif args.optimizer == "BO":
     print("Running Bayesian Optimization on Utility Scores")
     opt = UtilityBayesianOptimization(prob.get_config_space())
 
