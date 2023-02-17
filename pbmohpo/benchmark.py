@@ -46,48 +46,32 @@ class Benchmark:
         Run the benchmark by conducting as many steps as given by the budget and
         populate the archive with the results
         """
-        if self.is_preferential:
-            self._preference_run()
-        else:
-            self._utility_run()
+
+        while len(self.archive) < self.budget:
+
+            if self.is_preferential:
+                first_config, second_config = self.optimizer.propose(self.archive)
+                first_result = self._compute_utility_evaluation(first_config)
+                second_result = self._compute_utility_evaluation(second_config)
+
+                result = PreferenceEvaluation(
+                    first=first_result,
+                    second=second_result,
+                    first_won=self.dm.compare(
+                        first_result.objectives, second_result.objectives
+                    ),
+                )
+            else:
+                config = self.optimizer.propose(self.archive)
+                result = self._compute_utility_evaluation(config)
+
+            self.archive.data.append(result)
+
+            print(
+                f"Running [{len(self.archive):{len(str(self.budget))}}|{self.budget}]: Best utility: {self.archive.max_utility}"
+            )
 
     def _compute_utility_evaluation(self, config):
         objectives = self.problem(config)
         utility = self.dm._compute_utility(objectives)
         return Evaluation(config=config, objectives=objectives, utility=utility)
-
-    def _utility_run(self) -> None:
-        for i in range(self.budget):
-            config = self.optimizer.propose(self.archive)
-            result = self._compute_utility_evaluation(config)
-            self.archive.data.append(result)
-
-            print(
-                f"Running [{i:{len(str(self.budget))}}|{self.budget}]: Best utility: {self.archive.max_utility}"
-            )
-
-    def _preference_run(self) -> None:
-
-        i = 0
-        while i <= self.budget:
-
-            first_config, second_config = self.optimizer.propose(self.archive)
-            first_result = self._compute_utility_evaluation(first_config)
-            second_result = self._compute_utility_evaluation(second_config)
-
-            result = PreferenceEvaluation(
-                first=first_result,
-                second=second_result,
-                first_won=self.dm.compare(
-                    first_result.objectives, second_result.objectives
-                ),
-            )
-
-            self.archive.data.append(result)
-            uti_archive = self.archive.to_utility_archive()
-
-            print(
-                f"Running [{i:{len(str(self.budget))}}|{self.budget}]: Best utility: {uti_archive.max_utility}"
-            )
-
-            i += 2

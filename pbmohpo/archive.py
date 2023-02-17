@@ -58,7 +58,7 @@ class Archive(ABC):
     @abstractmethod
     def to_numpy(self) -> Tuple:
         """
-        Convert evaluted configurations and utility values to numpy arrays
+        Convert evaluted configurations and targets to numpy arrays
 
         Returns
         -------
@@ -67,16 +67,20 @@ class Archive(ABC):
         """
         raise (NotImplementedError)
 
-    @abstractmethod
     def to_torch(self) -> Tuple:
         """
-        Convert evaluted configurations and utility values to torch arrays
+        Convert evaluted configurations and targets to torch arrays
 
         Returns
         -------
         tuple(x, y)
-            feature values x and target values y
+            feature values x and utility values y
         """
+        x, y = self.to_numpy()
+        return torch.from_numpy(x), torch.from_numpy(y)[:, None]
+
+    @abstractmethod
+    def __len__(self) -> int:
         raise (NotImplementedError)
 
 
@@ -130,42 +134,77 @@ class UtilityArchive(Archive):
         y = np.array([x.utility for x in self.data])
         return x, y
 
-    def to_torch(self) -> Tuple:
-        """
-        Convert evaluted configurations and utility values to torch arrays
-
-        Returns
-        -------
-        tuple(x, y)
-            feature values x and utility values y
-        """
-        x, y = self.to_numpy()
-        return torch.from_numpy(x), torch.from_numpy(y)[:, None]
+    def __len__(self) -> int:
+        return len(self.data)
 
 
 class PreferenceArchive(Archive):
     def __init__(self) -> None:
         super().__init__()
 
+    """
+    Create a utility archive from preferential evaluations.
+
+    Contains a list of PreferenceEvaluations
+    """
+
     def to_utility_archive(self) -> UtilityArchive:
+        """
+        Convert a PreferenceArchive in a UtilityArchive
+
+        Parameters
+        ----------
+        UtilityArchive
+            Archive with Evaluations extracted from PreferenceEvaluations
+        """
         uti_archive = UtilityArchive()
         uti_archive.data = sum([[el.first, el.second] for el in self.data], [])
         return uti_archive
 
     @property
     def max_utility(self) -> float:
+        """
+        Get current best utility value.
+
+        Returns
+        -------
+        float
+            highest utility value
+        """
         uti_archive = self.to_utility_archive()
         return uti_archive.max_utility
 
     @property
     def incumbents(self) -> float:
+        """
+        Get incumbents.
+
+        Returns list of incumbents, i.e. configurations with highest utility values.
+
+        Returns
+        -------
+        list[Evaluation]
+            Evaluation with highest utility
+        """
         uti_archive = self.to_utility_archive()
         return uti_archive.incumbents
 
     def to_numpy(self) -> Tuple:
-        uti_archive = self.to_utility_archive()
-        return uti_archive.to_numpy()
+        """
+        Convert evaluted configurations and utility values to numpy arrays
 
-    def to_torch(self) -> Tuple:
-        uti_archive = self.to_utility_archive()
-        return uti_archive.to_torch()
+        Returns
+        -------
+        tuple(x, y)
+            feature values x and binary indictors if first won
+        """
+        x_first = np.array(list([x.first.config.get_array() for x in self.data]))
+        x_second = np.array(list([x.second.config.get_array() for x in self.data]))
+        x = np.concatenate((x_first, x_second), axis=1)
+
+        y = np.array([int(el.first_won) for el in self.data])
+
+        return x, y
+
+    def __len__(self) -> int:
+        return 2 * len(self.data)

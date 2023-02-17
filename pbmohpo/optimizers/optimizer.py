@@ -25,7 +25,7 @@ class UtilityOptimizer(Optimizer):
     """
     Definition of an Optimizer
 
-    Implements the abstract interface to an Optimizer class.
+    Implements the abstract interface to an Optimizer that works with utility values.
 
     Parameters
     ----------
@@ -58,6 +58,17 @@ class UtilityOptimizer(Optimizer):
 
 
 class PreferenceOptimizer(Optimizer):
+    """
+    Definition of an Optimizer
+
+    Implements the abstract interface to an Optimizer that works with preference values.
+
+    Parameters
+    ----------
+    config_space: CS.ConfigurationSpace
+        The config space the optimizer searches over
+    """
+
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
         super().__init__(config_space)
 
