@@ -31,6 +31,21 @@ class Evaluation:
 
 @dataclass
 class PreferenceEvaluation:
+    """
+    Result of a Preference step.
+
+    Contains both contenders and the result of the decision maker
+
+    Parameters
+    ----------
+    first: Evaluation
+        First evaluation
+    second: Evaluation
+        Evaluation first is compared to
+    first_one: bool
+        Check if first or second evaluation won the duel.
+    """
+
     first: Evaluation
     second: Evaluation
     first_won: bool
@@ -42,10 +57,26 @@ class Archive(ABC):
 
     @abstractmethod
     def to_numpy(self) -> Tuple:
+        """
+        Convert evaluted configurations and utility values to numpy arrays
+
+        Returns
+        -------
+        tuple(x, y)
+            feature values x and targets y
+        """
         raise (NotImplementedError)
 
     @abstractmethod
     def to_torch(self) -> Tuple:
+        """
+        Convert evaluted configurations and utility values to torch arrays
+
+        Returns
+        -------
+        tuple(x, y)
+            feature values x and target values y
+        """
         raise (NotImplementedError)
 
 
@@ -120,6 +151,16 @@ class PreferenceArchive(Archive):
         uti_archive = UtilityArchive()
         uti_archive.data = sum([[el.first, el.second] for el in self.data], [])
         return uti_archive
+
+    @property
+    def max_utility(self) -> float:
+        uti_archive = self.to_utility_archive()
+        return uti_archive.max_utility
+
+    @property
+    def incumbents(self) -> float:
+        uti_archive = self.to_utility_archive()
+        return uti_archive.incumbents
 
     def to_numpy(self) -> Tuple:
         uti_archive = self.to_utility_archive()

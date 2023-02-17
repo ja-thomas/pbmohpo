@@ -2,6 +2,7 @@ import argparse
 
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
+from pbmohpo.optimizers.optimizer import PreferenceOptimizer
 from pbmohpo.optimizers.random_search import (
     UtilityRandomSearch,
     PreferentialRandomSearch,
@@ -87,5 +88,10 @@ print(dm.preferences)
 bench = Benchmark(prob, opt, dm, budget)
 bench.run()
 
-print(f"Best Configuration found in iteration [{bench.archive.incumbents[0]}]:")
-print(bench.archive.data[bench.archive.incumbents[0]])
+archive = bench.archive
+
+if issubclass(type(opt), PreferenceOptimizer):
+    archive = archive.to_utility_archive()
+
+print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
+print(archive.data[archive.incumbents[0]])
