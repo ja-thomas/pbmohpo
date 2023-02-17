@@ -7,12 +7,12 @@ from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
 from gpytorch.mlls import ExactMarginalLogLikelihood
 
-from pbmohpo.archive import Archive
-from pbmohpo.optimizers.optimizer import Optimizer
+from pbmohpo.archive import UtilityArchive
+from pbmohpo.optimizers.optimizer import UtilityOptimizer
 from pbmohpo.utils import get_botorch_bounds
 
 
-class UtilityBayesianOptimization(Optimizer):
+class UtilityBayesianOptimization(UtilityOptimizer):
     """
     Single objective Bayesian optimization of utility scores.
 
@@ -40,7 +40,11 @@ class UtilityBayesianOptimization(Optimizer):
         self.initial_design_size = initial_design_size
         super().__init__(config_space)
 
-    def propose(self, archive: List) -> CS.Configuration:
+    @property
+    def is_preferential(self) -> bool:
+        return False
+
+    def propose(self, archive: UtilityArchive) -> CS.Configuration:
         """
         Propose a new configuration to evaluate.
 
@@ -63,7 +67,7 @@ class UtilityBayesianOptimization(Optimizer):
         else:
             return self._surrogate_proposal(archive)
 
-    def _surrogate_proposal(self, archive: Archive) -> CS.Configuration:
+    def _surrogate_proposal(self, archive: UtilityArchive) -> CS.Configuration:
         """
         Propose a configuration based on a surrogate model.
         """
