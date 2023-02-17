@@ -11,7 +11,6 @@ class ZDT1(Problem):
     Synthetic Test Function ZDT1
 
     Can be scaled to an arbitraty number of dimensions and has two objectives.
-    For details see: https://datacrayon.com/posts/search-and-optimisation/practical-evolutionary-algorithms/synthetic-objective-functions-and-zdt1/
 
     Since we are always maximizing we're take the negative function values.
 

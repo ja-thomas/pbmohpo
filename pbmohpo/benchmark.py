@@ -67,8 +67,10 @@ class Benchmark:
 
             self.archive.data.append(result)
 
+            max_util = self.archive.max_utility
+
             print(
-                f"Running [{len(self.archive):{len(str(self.budget))}}|{self.budget}]: Best utility: {self.archive.max_utility}"
+                f"Running [{len(self.archive):{len(str(self.budget))}}|{self.budget}]: Best utility: {max_util}"
             )
 
     def _compute_utility_evaluation(self, config):

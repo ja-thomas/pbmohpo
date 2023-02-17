@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 
 import ConfigSpace as CS
 from botorch.acquisition import UpperConfidenceBound
