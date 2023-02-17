@@ -8,7 +8,7 @@ import torch
 
 
 @dataclass
-class UtilityArchiveItem:
+class Evaluation:
     """
     Result of one Tuning step.
 
@@ -30,9 +30,9 @@ class UtilityArchiveItem:
 
 
 @dataclass
-class DuelArchiveItem:
-    first: UtilityArchiveItem
-    second: UtilityArchiveItem
+class PreferenceEvaluation:
+    first: Evaluation
+    second: Evaluation
     first_won: bool
 
 
@@ -53,7 +53,7 @@ class UtilityArchive(Archive):
     """
     Tuning archive.
 
-    Contains a list of ArchiveItems of tuning steps
+    Contains a list of Evaluations of tuning steps
     """
 
     def __init__(self) -> None:
@@ -72,7 +72,7 @@ class UtilityArchive(Archive):
         return max([el.utility for el in self.data])
 
     @property
-    def incumbents(self) -> List[UtilityArchiveItem]:
+    def incumbents(self) -> List[Evaluation]:
         """
         Get incumbents.
 
@@ -80,8 +80,8 @@ class UtilityArchive(Archive):
 
         Returns
         -------
-        list[UtilityArchiveItem]
-            UtilityArchiveItems with highest utility
+        list[Evaluation]
+            Evaluation with highest utility
         """
         max_util = self.max_utility
         return [pos for pos, el in enumerate(self.data) if el.utility == max_util]
@@ -112,15 +112,13 @@ class UtilityArchive(Archive):
         return torch.from_numpy(x), torch.from_numpy(y)[:, None]
 
 
-class DuelArchive(Archive):
+class PreferenceArchive(Archive):
     def __init__(self) -> None:
         super().__init__()
 
     def to_utility_archive(self) -> UtilityArchive:
         uti_archive = UtilityArchive()
-        uti_archive.data = sum(
-            [[el.first.utility, el.second.utility] for el in self.data], []
-        )
+        uti_archive.data = sum([[el.first, el.second] for el in self.data], [])
         return uti_archive
 
     def to_numpy(self) -> Tuple:

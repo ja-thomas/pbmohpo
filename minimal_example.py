@@ -2,7 +2,10 @@ import argparse
 
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.random_search import UtilityRandomSearch
+from pbmohpo.optimizers.random_search import (
+    UtilityRandomSearch,
+    PreferentialRandomSearch,
+)
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
@@ -15,7 +18,7 @@ parser.add_argument(
     default="zdt1",
 )
 parser.add_argument("--budget", type=int, default=50)
-parser.add_argument("--optimizer", choices=["RS", "BO"], default="BO")
+parser.add_argument("--optimizer", choices=["RS", "PRS", "BO"], default="BO")
 parser.add_argument("--dimension", type=int, default=10)
 
 args = parser.parse_args()
@@ -69,6 +72,9 @@ else:
 if args.optimizer == "RS":
     print("Running Random Search")
     opt = UtilityRandomSearch(prob.get_config_space())
+elif args.optimizer == "PRS":
+    print("Running Preference Random Search")
+    opt = PreferentialRandomSearch(prob.get_config_space())
 else:
     print("Running Bayesian Optimization on Utility Scores")
     opt = UtilityBayesianOptimization(prob.get_config_space())

@@ -57,7 +57,7 @@ class UtilityOptimizer(Optimizer):
         raise NotImplementedError()
 
 
-class DuelOptimizer(Optimizer):
+class PreferenceOptimizer(Optimizer):
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
         super().__init__(config_space)
 
