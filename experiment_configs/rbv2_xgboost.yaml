@@ -5,6 +5,6 @@ PROBLEM:
   OBJECTIVE_NAMES: ["auc", "memory", "timetrain"]
 
 FIXED_HPS:
-  BOOSTER: (True, "booster", "gbtree")
-  RESPECT_UNORDERED_FACTORS: (True, "num.impute.selected.cpo", "impute.mean")
-  REPL: (True, "repl", 1)
+  BOOSTER: ("booster", "gbtree")
+  RESPECT_UNORDERED_FACTORS: ("num.impute.selected.cpo", "impute.mean")
+  REPL: ("repl", 1)

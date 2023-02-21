@@ -1,17 +1,36 @@
+import argparse
+
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.optimizer import PreferenceOptimizer
 from pbmohpo.optimizers.random_search import UtilityRandomSearch
-from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
+from pbmohpo.optimizers.utility_bayesian_optimization import \
+    UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
 
-import argparse
-
 
 def run_pbmohpo_bench(config):
+    """
+    Run a preferential bayesian hyperparameter optimization benchmark as
+    specified in the config file.
 
+    Parameters
+    ----------
+    config: str
+    path to config.yaml file. File should be in the following format.
+    --
+    PROBLEM:
+      DIMENSIONS: 7
+      PROBLEM_TYPE: "yahpo"
+
+    FIXED_HPS:
+      REPLACE: (True, "replace", "TRUE")
+      SPLITRULE: (True, "splitulre", "gini")
+    --
+    For options than can be set in config files, please see config.py
+    """
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
         print("Testing ZDT1")
         prob = ZDT1(dimension=config.PROBLEM.DIMENSIONS)
@@ -26,8 +45,8 @@ def run_pbmohpo_bench(config):
         fixed_hyperparams = {}
         for hyperparam in config.FIXED_HPS:
             if config.FIXED_HPS[hyperparam][0]:
-                hp_name = config.FIXED_HPS[hyperparam][1]
-                hp_value = config.FIXED_HPS[hyperparam][2]
+                hp_name = config.FIXED_HPS[hyperparam][0]
+                hp_value = config.FIXED_HPS[hyperparam][1]
                 fixed_hyperparams[hp_name] = hp_value
 
         prob = YAHPO(
@@ -73,7 +92,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     cfg = get_cfg_defaults()
-    # cfg.merge_from_file("minimal_example.yaml")
     cfg.merge_from_file(args.p)
     cfg.freeze()
     print(cfg)
