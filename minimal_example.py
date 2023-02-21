@@ -88,10 +88,12 @@ print(dm.preferences)
 bench = Benchmark(prob, opt, dm, budget)
 bench.run()
 
-archive = bench.archive
+archive = (
+    bench.archive.to_utility_archive()
+    if issubclass(type(opt), PreferenceOptimizer)
+    else bench.archive
+)
 
-if issubclass(type(opt), PreferenceOptimizer):
-    archive = archive.to_utility_archive()
 
 print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
 print(archive.data[archive.incumbents[0]])
