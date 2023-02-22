@@ -3,5 +3,5 @@ PROBLEM:
   PROBLEM_TYPE: "yahpo"
 
 FIXED_HPS:
-  REPLACE: (True, "replace", "TRUE")
-  SPLITRULE: (True, "splitulre", "gini")
+  REPLACE: ("replace", "TRUE")
+  SPLITRULE: ("splitulre", "gini")
