@@ -1,5 +1,7 @@
 import argparse
 
+import matplotlib.pyplot as plt
+
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
@@ -9,9 +11,10 @@ from pbmohpo.optimizers.utility_bayesian_optimization import \
     UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
+from pbmohpo.utils import visualize_archives
 
 
-def run_pbmohpo_bench(config):
+def run_pbmohpo_bench(config, visualize: bool = False):
     """
     Run a preferential bayesian hyperparameter optimization benchmark as
     specified in the config file.
@@ -30,6 +33,10 @@ def run_pbmohpo_bench(config):
       SPLITRULE: (True, "splitulre", "gini")
     --
     For options than can be set in config files, please see config.py
+
+    visualize: bool
+    Specify whether to create plots (with default configuration) for
+    benchmark.
     """
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
         print("Testing ZDT1")
@@ -80,14 +87,24 @@ def run_pbmohpo_bench(config):
     print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
     print(archive.data[archive.incumbents[0]])
 
+    if visualize:
+        fig = visualize_archives(archive_list=[archive])
+        plt.show()
+
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Specify the experiment to run")
+    parser = argparse.ArgumentParser(description="Specify experiment to run")
 
     parser.add_argument(
         "-p",
         default="./experiment_configs/iaml_ranger.yaml",
+    )
+
+    parser.add_argument(
+        "--visualize",
+        action="store_true",
+        help="creates plots (default config) of conducted benchmark",
     )
 
     args = parser.parse_args()
@@ -96,4 +113,4 @@ if __name__ == "__main__":
     cfg.freeze()
     print(cfg)
 
-    run_pbmohpo_bench(cfg)
+    run_pbmohpo_bench(cfg, visualize=args.visualize)
