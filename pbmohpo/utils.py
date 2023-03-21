@@ -1,5 +1,5 @@
 from itertools import accumulate
-from typing import Dict
+from typing import Dict, List
 
 import ConfigSpace as CS
 import matplotlib.pyplot as plt
@@ -79,7 +79,7 @@ def remove_hp_from_cs(
 
 
 def visualize_archives(
-    archive_list: list[Archive], plot_elements: list[str] = ["incumbent"]
+    archive_list: List[Archive], plot_elements: List[str] = ["incumbent"]
 ):
     """
     Visualize archive utility and incumbent utility over iterations.
