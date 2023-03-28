@@ -2,9 +2,10 @@ PROBLEM:
   PROBLEM_TYPE: "yahpo"
   ID: "iaml_ranger"
   INSTANCE: "41146"
-  OBJECTIVE_NAMES: ["auc", "ias"]
+  OBJECTIVE_NAMES: ["auc", "nf", "ias"]
 
 FIXED_HPS:
+  TRAINSIZE: ("trainsize", 1)
   REPLACE: ("replace", "TRUE")
   RESPECT_UNORDERED_FACTORS: ("respect.unordered.factors", "ignore")
   SPLITRULE: ("splitrule", "gini")

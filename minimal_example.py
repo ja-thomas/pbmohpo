@@ -18,8 +18,8 @@ parser.add_argument(
     choices=[
         "zdt1",
         "yahpo_lcbench",
-        "yahpo_iaml_tree",
-        "yahpo_iaml_forest",
+        "yahpo_iaml_rpart",
+        "yahpo_iaml_ranger",
         "yahpo_rbv2_xgboost",
     ],
     default="zdt1",
@@ -46,7 +46,7 @@ elif args.problem == "yahpo_lcbench":
         instance="3945",
         objective_names=["time", "val_accuracy"],
     )
-elif args.problem == "yahpo_iaml_tree":
+elif args.problem == "yahpo_iaml_rpart":
     print("Testing YAHPO - IAML instance 41146 with rpart")
     fix_hps = {"trainsize": 1}
     prob = YAHPO(
@@ -55,7 +55,7 @@ elif args.problem == "yahpo_iaml_tree":
         instance="41146",
         objective_names=["auc", "ias"],
     )
-elif args.problem == "yahpo_iaml_forest":
+elif args.problem == "yahpo_iaml_ranger":
     print("Testing YAHPO - IAML instance 41146 with with ranger")
     fix_hps = {
         "trainsize": 1,

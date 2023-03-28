@@ -3,3 +3,6 @@ PROBLEM:
   ID: "iaml_rpart"
   INSTANCE: "41146"
   OBJECTIVE_NAMES: ["auc", "ias"]
+
+FIXED_HPS:
+  TRAINSIZE: ("trainsize", 1)
