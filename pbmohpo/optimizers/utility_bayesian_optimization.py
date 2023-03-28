@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Tuple, Union
 
 import ConfigSpace as CS
 from botorch.acquisition import UpperConfidenceBound
@@ -7,12 +7,12 @@ from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
 from gpytorch.mlls import ExactMarginalLogLikelihood
 
-from pbmohpo.archive import UtilityArchive
-from pbmohpo.optimizers.optimizer import UtilityOptimizer
+from pbmohpo.archive import Archive
+from pbmohpo.optimizers.optimizer import Optimizer
 from pbmohpo.utils import get_botorch_bounds
 
 
-class UtilityBayesianOptimization(UtilityOptimizer):
+class UtilityBayesianOptimization(Optimizer):
     """
     Single objective Bayesian optimization of utility scores.
 
@@ -40,11 +40,7 @@ class UtilityBayesianOptimization(UtilityOptimizer):
         self.initial_design_size = initial_design_size
         super().__init__(config_space)
 
-    @property
-    def is_preferential(self) -> bool:
-        return False
-
-    def propose(self, archive: UtilityArchive) -> CS.Configuration:
+    def propose_config(self, archive: Archive) -> CS.Configuration:
         """
         Propose a new configuration to evaluate.
 
@@ -62,12 +58,18 @@ class UtilityBayesianOptimization(UtilityOptimizer):
             Proposed Configuration
 
         """
-        if len(archive.data) <= self.initial_design_size:
+        if len(archive.evaluations) <= self.initial_design_size:
             return self.config_space.sample_configuration()
         else:
             return self._surrogate_proposal(archive)
 
-    def _surrogate_proposal(self, archive: UtilityArchive) -> CS.Configuration:
+    def should_propose_config(self, archive: Archive) -> bool:
+        return True
+
+    def propose_duel(self, archive: Archive) -> Tuple[int, int]:
+        return super().propose_duel(archive)
+
+    def _surrogate_proposal(self, archive: Archive) -> CS.Configuration:
         """
         Propose a configuration based on a surrogate model.
         """

@@ -3,12 +3,11 @@ import argparse
 import matplotlib.pyplot as plt
 
 from config import get_cfg_defaults
+from pbmohpo.archive import Archive
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.optimizer import PreferenceOptimizer
-from pbmohpo.optimizers.random_search import UtilityRandomSearch
-from pbmohpo.optimizers.utility_bayesian_optimization import \
-    UtilityBayesianOptimization
+from pbmohpo.optimizers.random_search import RandomSearch
+from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
@@ -65,7 +64,7 @@ def run_pbmohpo_bench(config, visualize: bool = False):
 
     if config.OPTIMIZER.OPTIMIZER_TYPE == "RS":
         print("Running Random Search")
-        opt = UtilityRandomSearch(prob.get_config_space())
+        opt = RandomSearch(prob.get_config_space())
     else:
         print("Running Bayesian Optimization on Utility Scores")
         opt = UtilityBayesianOptimization(prob.get_config_space())
@@ -75,17 +74,13 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     print("Decision Maker Preference Scores:")
     print(dm.preferences)
 
-    bench = Benchmark(prob, opt, dm, config.BUDGET.BUDGET_AMOUNT)
+    bench = Benchmark(prob, opt, dm, config.BUDGET.EVAL_BUDGET, config.BUDGET.DM_BUDGET)
     bench.run()
 
-    archive = (
-        bench.archive.to_utility_archive()
-        if issubclass(type(opt), PreferenceOptimizer)
-        else bench.archive
-    )
+    archive = bench.archive
 
     print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
-    print(archive.data[archive.incumbents[0]])
+    print(archive.evaluations[archive.incumbents[0]])
 
     if visualize:
         fig = visualize_archives(archive_list=[archive])
