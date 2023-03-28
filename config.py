@@ -1,11 +1,11 @@
-from pbmohpo.problems.zdt1 import ZDT1
-
 from yacs.config import CfgNode as CN
+
+from pbmohpo.problems.zdt1 import ZDT1
 
 _C = CN()
 
 _C.PROBLEM = CN()
-_C.PROBLEM.PROBLEM_TYPE = 'zdt1'
+_C.PROBLEM.PROBLEM_TYPE = "zdt1"
 
 # ZDT1 Settings
 _C.PROBLEM.DIMENSIONS = 10
@@ -28,14 +28,14 @@ _C.FIXED_HPS.NUM_IMPUTE_SELECTED_CPOR = (None, None)
 _C.FIXED_HPS.REPL = (None, None)
 
 _C.OPTIMIZER = CN()
-_C.OPTIMIZER.OPTIMIZER_TYPE = 'BO'
+_C.OPTIMIZER.OPTIMIZER_TYPE = "BO"
 
 _C.DECISION_MAKER = CN()
 _C.DECISION_MAKER.DECISION_MAKER_TYPE = "DecisionMaker"
 
 _C.BUDGET = CN()
-_C.BUDGET.BUDGET_TYPE = "iterations"
-_C.BUDGET.BUDGET_AMOUNT = 50
+_C.BUDGET.EVAL_BUDGET = 50
+_C.BUDGET.DM_BUDGET = 50
 
 
 def get_cfg_defaults():
