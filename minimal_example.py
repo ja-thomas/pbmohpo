@@ -2,7 +2,11 @@ import argparse
 
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.random_search import RandomSearch
+from pbmohpo.optimizers.optimizer import PreferenceOptimizer
+from pbmohpo.optimizers.random_search import (
+    UtilityRandomSearch,
+    PreferentialRandomSearch,
+)
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
@@ -21,7 +25,7 @@ parser.add_argument(
     default="zdt1",
 )
 parser.add_argument("--budget", type=int, default=50)
-parser.add_argument("--optimizer", choices=["RS", "BO"], default="BO")
+parser.add_argument("--optimizer", choices=["RS", "PRS", "BO"], default="BO")
 parser.add_argument("--dimension", type=int, default=10)
 
 args = parser.parse_args()
@@ -67,12 +71,14 @@ elif args.problem == "yahpo_iaml_forest":
     )
 elif args.problem == "yahpo_rbv2_xgboost":
     print("Testing YAHPO - Random_Bot_v2 instance 41161 with xgboost")
+
     fix_hps = {
         "trainsize": 1,
         "booster": "gbtree",
         "num.impute.selected.cpo": "impute.mean",
         "repl": 10,
     }
+
     prob = YAHPO(
         id="rbv2_xgboost",
         fix_hps=fix_hps,
@@ -80,11 +86,13 @@ elif args.problem == "yahpo_rbv2_xgboost":
         objective_names=["auc", "timetrain"],
     )
 
-
 if args.optimizer == "RS":
     print("Running Random Search")
-    opt = RandomSearch(prob.get_config_space())
-elif args.optimizer == "BO":
+    opt = UtilityRandomSearch(prob.get_config_space())
+elif args.optimizer == "PRS":
+    print("Running Preference Random Search")
+    opt = PreferentialRandomSearch(prob.get_config_space())
+else:
     print("Running Bayesian Optimization on Utility Scores")
     opt = UtilityBayesianOptimization(prob.get_config_space())
 
@@ -96,5 +104,12 @@ print(dm.preferences)
 bench = Benchmark(prob, opt, dm, budget)
 bench.run()
 
-print(f"Best Configuration found in iteration [{bench.archive.incumbents[0]}]:")
-print(bench.archive.data[bench.archive.incumbents[0]])
+archive = (
+    bench.archive.to_utility_archive()
+    if issubclass(type(opt), PreferenceOptimizer)
+    else bench.archive
+)
+
+
+print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
+print(archive.data[archive.incumbents[0]])

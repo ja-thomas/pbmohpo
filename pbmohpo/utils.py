@@ -1,8 +1,12 @@
-from typing import Dict
+from itertools import accumulate
+from typing import Dict, List
 
 import ConfigSpace as CS
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
+
+from pbmohpo.archive import Archive
 
 
 def get_botorch_bounds(space: CS.ConfigurationSpace):
@@ -72,3 +76,80 @@ def remove_hp_from_cs(
     new_cs.add_hyperparameters(hps)
 
     return new_cs
+
+
+def visualize_archives(
+    archive_list: List[Archive], plot_elements: List[str] = ["incumbent"]
+):
+    """
+    Visualize archive utility and incumbent utility over iterations.
+    Parameters
+    ----------
+    archive_list: list[Archive]
+        List of archives to be visualized
+
+    plot_elements: list[str]
+        List of elements that should be plotted. Currently supports
+        "incumbent", which plots the incumbent utility over iteration and
+        "utilities", which plots the utility for each iterations over
+        iteration.
+
+    Returns
+    -------
+    matplotlib item
+    """
+    # 1. Store numbers to plot in lists.
+    utility_archives = []
+    for archive in archive_list:
+        utilities = [el.utility for el in archive.data]
+        incumbent_utilities = [el for el in accumulate(utilities, max)]
+        utility_archives.append(
+            {"utilities": utilities, "incumbent_utilities": incumbent_utilities}
+        )
+
+    # TODO: Check that only archives with the same preference function
+    # are compared?
+
+    # 2. Plot
+    cgen = color_generator()
+    fig, ax = plt.subplots()
+    for utility_archive in utility_archives:
+        col = next(cgen)
+        if "incumbent" in set(plot_elements):
+            ax.plot(
+                range(1, len(utility_archive["utilities"]) + 1),
+                utility_archive["incumbent_utilities"],
+                c=col,
+            )
+        if "utilities" in set(plot_elements):
+            ax.scatter(
+                range(1, len(utility_archive["utilities"]) + 1),
+                utility_archive["utilities"],
+                c=col,
+                marker="x",
+                alpha=0.3,
+            )
+
+    ax.set(xlabel="Iterations", ylabel="Utility (Not Normalized)")
+    return fig
+
+
+def color_generator():
+    """
+    Generates colors for archives visualization to match yahpo colors.
+    """
+    colors = [
+        "red",
+        "blue",
+        "orange",
+        "purple",
+        "green",
+        "gold",
+        "magenta",
+        "darkviolet",
+        "cyan",
+        "olive",
+    ]
+
+    for color in colors:
+        yield color

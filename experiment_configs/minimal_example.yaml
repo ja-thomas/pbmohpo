@@ -1,0 +1,7 @@
+PROBLEM:
+  DIMENSIONS: 7
+  PROBLEM_TYPE: "yahpo"
+
+FIXED_HPS:
+  REPLACE: ("replace", "TRUE")
+  SPLITRULE: ("splitulre", "gini")

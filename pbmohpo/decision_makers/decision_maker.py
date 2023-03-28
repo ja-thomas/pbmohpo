@@ -77,13 +77,3 @@ class DecisionMaker:
         assert objectives1.keys() == objectives2.keys()
 
         return self._compute_utility(objectives1) > self._compute_utility(objectives2)
-
-
-if __name__ == "__main__":
-
-    dm = Decision_maker(objective_names=["y0", "y1"])
-
-    obj1 = {"y0": 20, "y1": 10}
-    obj2 = {"y0": 7, "y1": 15}
-    print(f"Utility of objectives 1: {dm._compute_utility(obj1)}")
-    print(dm.compare(obj1, obj2))

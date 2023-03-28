@@ -1,0 +1,12 @@
+PROBLEM:
+  PROBLEM_TYPE: "yahpo"
+  ID: "iaml_ranger"
+  INSTANCE: "41146"
+  OBJECTIVE_NAMES: ["auc", "ias"]
+
+FIXED_HPS:
+  REPLACE: ("replace", "TRUE")
+  RESPECT_UNORDERED_FACTORS: ("respect.unordered.factors", "ignore")
+  SPLITRULE: ("splitrule", "gini")
+  NUM_RANDOM_SPLITS: ("num_random_splits", 1)
+

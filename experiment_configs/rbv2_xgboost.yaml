@@ -1,0 +1,10 @@
+PROBLEM:
+  PROBLEM_TYPE: "yahpo"
+  ID: "rbv2_xgboost"
+  INSTANCE: "41161"
+  OBJECTIVE_NAMES: ["auc", "memory", "timetrain"]
+
+FIXED_HPS:
+  BOOSTER: ("booster", "gbtree")
+  RESPECT_UNORDERED_FACTORS: ("num.impute.selected.cpo", "impute.mean")
+  REPL: ("repl", 1)
