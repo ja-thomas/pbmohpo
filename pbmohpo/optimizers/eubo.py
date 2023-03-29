@@ -4,9 +4,15 @@ from typing import List, Tuple, Union
 
 import ConfigSpace as CS
 import numpy as np
+import torch
+from botorch.acquisition import AnalyticExpectedUtilityOfBestOption
+from botorch.fit import fit_gpytorch_mll
+from botorch.models.pairwise_gp import PairwiseGP, PairwiseLaplaceMarginalLogLikelihood
+from botorch.optim import optimize_acqf
 
 from pbmohpo.archive import Archive
 from pbmohpo.optimizers.optimizer import Optimizer
+from pbmohpo.utils import get_botorch_bounds
 
 
 class EUBO(Optimizer):
@@ -99,4 +105,39 @@ class EUBO(Optimizer):
         return True
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> CS.Configuration:
-        return self.config_space.sample_configuration(n)
+
+        x, _ = archive.to_torch()
+        y = torch.Tensor(archive.comparisons)
+
+        model = PairwiseGP(x, y)
+        mll = PairwiseLaplaceMarginalLogLikelihood(model.likelihood, model)
+        mll = fit_gpytorch_mll(mll)
+
+        acq_func = AnalyticExpectedUtilityOfBestOption(pref_model=model)
+        bounds = get_botorch_bounds(self.config_space)
+        candidates, _ = optimize_acqf(
+            acq_function=acq_func,
+            bounds=bounds,
+            q=n,
+            num_restarts=5,
+            raw_samples=20,
+        )
+
+        configurations = []
+        hp_names = self.config_space.get_hyperparameter_names()
+
+        candidates = [candidates] if n == 1 else candidates.split(1)
+
+        for candidate in candidates:
+            hp_values = candidate[0].tolist()
+
+            config_dict = {}
+
+            # candidate contains only floats, round integer HPs
+            for hp, val in zip(hp_names, hp_values):
+                if not self.config_space.get_hyperparameter(hp).is_legal(val):
+                    val = round(val)
+                config_dict[hp] = val
+            configurations.append(CS.Configuration(self.config_space, config_dict))
+
+        return configurations

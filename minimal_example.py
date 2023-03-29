@@ -10,5 +10,7 @@ dm = DecisionMaker(objective_names=prob.get_objective_names())
 print("Decision Maker Preference Scores:")
 print(dm.preferences)
 
-bench = Benchmark(prob, opt, dm, eval_budget=50, dm_budget=15, eval_batch_size=2)
+bench = Benchmark(
+    prob, opt, dm, eval_budget=20, dm_budget=200, eval_batch_size=2, dm_batch_size=1
+)
 bench.run()
