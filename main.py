@@ -74,7 +74,15 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     print("Decision Maker Preference Scores:")
     print(dm.preferences)
 
-    bench = Benchmark(prob, opt, dm, config.BUDGET.EVAL_BUDGET, config.BUDGET.DM_BUDGET)
+    bench = Benchmark(
+        prob,
+        opt,
+        dm,
+        eval_budget=config.BUDGET.EVAL_BUDGET,
+        dm_budget=config.BUDGET.DM_BUDGET,
+        eval_batch_size=config.BATCH_SIZE.EVAL_BATCH_SIZE,
+        dm_batch_size=config.BATCH_SIZE.DM_BATCH_SIZE,
+    )
     bench.run()
 
     archive = bench.archive

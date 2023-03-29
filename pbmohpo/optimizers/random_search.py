@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 import ConfigSpace as CS
 
@@ -21,16 +21,19 @@ class RandomSearch(Optimizer):
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
         super().__init__(config_space)
 
-    def propose_config(self, archive: Archive) -> Dict:
+    def propose_config(self, archive: Archive, n: int = 1) -> List[CS.Configuration]:
         """
         Propose a new configuration to evaluate.
 
-        Takes an list of previous evaluations and proposes a new configuration to evaluate at random.
+        Takes an archive of previous evaluations and duels and proposes n new configurations.
 
         Parameters
         ----------
-        archive: List
-            List of previous evaluations
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
 
         Returns
         -------
@@ -38,7 +41,8 @@ class RandomSearch(Optimizer):
             Proposed Configuration
 
         """
-        return self.config_space.sample_configuration()
+        configs = self.config_space.sample_configuration(n)
+        return configs if n > 1 else [configs]
 
     def propose_duel(self, archive: Archive) -> Tuple[int, int]:
         return super().propose_duel(archive)

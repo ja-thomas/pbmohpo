@@ -102,4 +102,4 @@ bench.run()
 archive = bench.archive
 
 print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
-print(archive.data[archive.incumbents[0]])
+print(archive.evaluations[archive.incumbents[0]])
