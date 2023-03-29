@@ -3,7 +3,6 @@ import argparse
 import matplotlib.pyplot as plt
 
 from config import get_cfg_defaults
-from pbmohpo.archive import Archive
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.random_search import RandomSearch

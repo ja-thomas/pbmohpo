@@ -51,6 +51,7 @@ class Benchmark:
                 self.optimizer.should_propose_config(self.archive)
                 and len(self.archive.evaluations) < self.eval_budget
             ):
+                print("Propose Configuration")
                 config = self.optimizer.propose_config(self.archive)
                 objectives = self.problem(config)
                 utility = self.dm._compute_utility(objectives)
@@ -63,6 +64,7 @@ class Benchmark:
                 not self.optimizer.should_propose_config(self.archive)
                 and len(self.archive.comparisons) < self.dm_budget
             ):
+                print("Propose Duel")
                 c1, c2 = self.optimizer.propose_duel(self.archive)
                 c1_won = self.dm.compare(
                     self.archive.evaluations[c1].objectives,
