@@ -63,7 +63,6 @@ class YAHPO(Problem):
     def __call__(
         self, x: CS.Configuration, seed: Union[np.random.RandomState, int, None] = None
     ) -> Dict:
-
         # Add instance information to configuration
         x = x.get_dictionary()
         x.update({self.benchmark.config.instance_names: self.benchmark.instance})
@@ -90,7 +89,6 @@ class YAHPO(Problem):
 
 
 if __name__ == "__main__":
-
     targets = ["time", "val_accuracy"]
 
     prob = YAHPO(id="lcbench", instance="3945", objective_names=targets)

@@ -11,12 +11,16 @@ _C.PROBLEM.PROBLEM_TYPE = "zdt1"
 _C.PROBLEM.DIMENSIONS = 10
 
 # YAHPO Setting
+# FIXME: epochs should be fixed here see minimal_example.py
 _C.PROBLEM.ID = "lcbench"
 _C.PROBLEM.INSTANCE = 3945
 _C.PROBLEM.OBJECTIVE_NAMES = ["time", "val_accuracy"]
 
 # Fixed HPs for YAHPO
+# FIXME: different HPs for different learners are listed on the same level which can be confugsign
 _C.FIXED_HPS = CN()
+
+_C.FIXED_HPS.TRAINSIZE = (None, None)
 
 _C.FIXED_HPS.REPLACE = (None, None)
 _C.FIXED_HPS.SPLITRULE = (None, None)
@@ -24,7 +28,7 @@ _C.FIXED_HPS.RESPECT_UNORDERED_FACTORS = (None, None)
 _C.FIXED_HPS.NUM_RANDOM_SPLITS = (None, None)
 
 _C.FIXED_HPS.BOOSTER = (None, None)
-_C.FIXED_HPS.NUM_IMPUTE_SELECTED_CPOR = (None, None)
+_C.FIXED_HPS.NUM_IMPUTE_SELECTED_CPO = (None, None)
 _C.FIXED_HPS.REPL = (None, None)
 
 _C.OPTIMIZER = CN()

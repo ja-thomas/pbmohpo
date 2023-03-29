@@ -33,7 +33,6 @@ class UtilityBayesianOptimization(Optimizer):
         config_space: CS.ConfigurationSpace,
         initial_design_size: Union[int, None] = None,
     ) -> None:
-
         if initial_design_size is None:
             initial_design_size = 2 * len(config_space.items())
 
