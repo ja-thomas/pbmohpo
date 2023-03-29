@@ -68,11 +68,12 @@ class UtilityBayesianOptimization(Optimizer):
 
         return configs
 
-    def should_propose_config(self, archive: Archive) -> bool:
-        return True
+    def propose_duel(self, archive: Archive, n: int = 1) -> List[Tuple[int, int]]:
+        return super().propose_duel(archive, n)
 
-    def propose_duel(self, archive: Archive) -> Tuple[int, int]:
-        return super().propose_duel(archive)
+    @property
+    def dueling(self) -> bool:
+        return False
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> CS.Configuration:
         """

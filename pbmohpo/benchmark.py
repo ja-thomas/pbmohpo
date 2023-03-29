@@ -56,13 +56,11 @@ class Benchmark:
         populate the archive with the results
         """
 
-        while True:
-            # Case1: There is evaluation budget left and the optimizer wants to propose new configurations
-            if (
-                self.optimizer.should_propose_config(self.archive)
-                and len(self.archive.evaluations) < self.eval_budget
-            ):
+        while len(self.archive.evaluations) < self.eval_budget or (
+            self.optimizer.dueling and len(self.archive.comparisons) < self.dm_budget
+        ):
 
+            if len(self.archive.evaluations) < self.eval_budget:
                 # Number of configurations to propose is either the batch size or the remaining budget
                 n_eval = min(
                     self.eval_budget - len(self.archive.evaluations),
@@ -78,9 +76,9 @@ class Benchmark:
                         config=config, objectives=objectives, utility=utility
                     )
                     self.archive.evaluations.append(result)
-            # Case2: There is evaluation budget left and the optimizer wants to propose a new duel
-            elif (
-                not self.optimizer.should_propose_config(self.archive)
+
+            if (
+                self.optimizer.dueling
                 and len(self.archive.comparisons) < self.dm_budget
             ):
                 c1, c2 = self.optimizer.propose_duel(self.archive, n=self.dm_batch_size)
@@ -89,11 +87,9 @@ class Benchmark:
                     self.archive.evaluations[c2].objectives,
                 )
                 self.archive.comparisons.append([c1, c2] if c1_won else [c2, c1])
-            # Case3: No budget left
-            else:
-                break
 
             max_util = self.archive.max_utility
+
             print(
                 f"Running: [{len(self.archive.evaluations):{len(str(self.eval_budget))}}|{self.eval_budget}]: Best utility: {max_util}"
             )
