@@ -2,11 +2,7 @@ import argparse
 
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.optimizer import PreferenceOptimizer
-from pbmohpo.optimizers.random_search import (
-    UtilityRandomSearch,
-    PreferentialRandomSearch,
-)
+from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
@@ -18,13 +14,15 @@ parser.add_argument(
     choices=["zdt1", "lcbench", "tree", "forest", "xgboost"],
     default="zdt1",
 )
-parser.add_argument("--budget", type=int, default=50)
-parser.add_argument("--optimizer", choices=["RS", "PRS", "BO"], default="BO")
+parser.add_argument("--eval_budget", type=int, default=50)
+parser.add_argument("--dm_budget", type=int, default=50)
+parser.add_argument("--optimizer", choices=["RS", "BO"], default="BO")
 parser.add_argument("--dimension", type=int, default=10)
 
 args = parser.parse_args()
 
-budget = args.budget
+eval_budget = args.eval_budget
+dm_budget = args.dm_budget
 optimizer = args.optimizer
 problem = args.problem
 
@@ -72,10 +70,7 @@ else:
 
 if args.optimizer == "RS":
     print("Running Random Search")
-    opt = UtilityRandomSearch(prob.get_config_space())
-elif args.optimizer == "PRS":
-    print("Running Preference Random Search")
-    opt = PreferentialRandomSearch(prob.get_config_space())
+    opt = RandomSearch(prob.get_config_space())
 else:
     print("Running Bayesian Optimization on Utility Scores")
     opt = UtilityBayesianOptimization(prob.get_config_space())
@@ -85,15 +80,10 @@ dm = DecisionMaker(objective_names=prob.get_objective_names())
 print("Decision Maker Preference Scores:")
 print(dm.preferences)
 
-bench = Benchmark(prob, opt, dm, budget)
+bench = Benchmark(prob, opt, dm, eval_budget=eval_budget, dm_budget=dm_budget)
 bench.run()
 
-archive = (
-    bench.archive.to_utility_archive()
-    if issubclass(type(opt), PreferenceOptimizer)
-    else bench.archive
-)
-
+archive = bench.archive
 
 print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
 print(archive.data[archive.incumbents[0]])
