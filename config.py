@@ -41,6 +41,10 @@ _C.BUDGET = CN()
 _C.BUDGET.EVAL_BUDGET = 50
 _C.BUDGET.DM_BUDGET = 50
 
+_C.BATCH_SIZE = CN()
+_C.BATCH_SIZE.EVAL_BATCH_SIZE = 1
+_C.BATCH_SIZE.DM_BATCH_SIZE = 1
+
 
 def get_cfg_defaults():
     """Get a yacs CfgNode object with default values for my_project."""

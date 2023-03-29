@@ -23,16 +23,19 @@ class Optimizer(ABC):
         self.config_space = config_space
 
     @abstractmethod
-    def propose_config(self, archive: Archive) -> CS.Configuration:
+    def propose_config(self, archive: Archive, n: int = 1) -> List[CS.Configuration]:
         """
         Propose a new configuration to evaluate.
 
-        Takes an archive of previous evaluations and proposes a new configuration to.
+        Takes an archive of previous evaluations and duels and proposes n new configurations.
 
         Parameters
         ----------
         archive: Archive
             Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
 
         Returns
         -------
@@ -43,21 +46,24 @@ class Optimizer(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def propose_duel(self, archive: Archive) -> Tuple[int, int]:
+    def propose_duel(self, archive: Archive, n: int = 1) -> List[Tuple[int, int]]:
         """
         Propose a duel between two Evaluations
 
-        Takes an archive of previous evaluations and duels to propose a new duel of two configurations.
+        Takes an archive of previous evaluations and duels to propose n new duels of two configurations each.
 
         Parameters
         ----------
         archive: Archive
             Archive containing previous evaluations
 
+        n: int
+            Number of duels to propose in one batch
+
         Returns
         -------
-        Tuple(int, int):
-            two indicies of Archive evaluations to compare
+        List(Tuple(int, int)):
+            List of tuples of two indicies of Archive evaluations to compare
 
         """
         raise NotImplementedError()
