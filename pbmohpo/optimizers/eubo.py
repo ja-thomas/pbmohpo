@@ -1,7 +1,8 @@
-from random import sample
-from typing import Tuple, Union
+from itertools import combinations
+from typing import List, Tuple, Union
 
 import ConfigSpace as CS
+import numpy as np
 
 from pbmohpo.archive import Archive
 from pbmohpo.optimizers.optimizer import Optimizer
@@ -20,20 +21,74 @@ class EUBO(Optimizer):
 
         self.initial_design_size = initial_design_size
         self.duels_per_eval = duels_per_eval
+        self.new_configs = 0
         super().__init__(config_space)
 
-    def propose_config(self, archive: Archive) -> CS.Configuration:
-        if len(archive.evaluations) <= self.initial_design_size:
-            return self.config_space.sample_configuration()
-        else:
-            return self._surrogate_proposal(archive)
+    def propose_config(self, archive: Archive, n: int = 1) -> List[CS.Configuration]:
+        """
+        Propose a new configuration to evaluate.
 
-    def propose_duel(self, archive: Archive) -> Tuple[int, int]:
-        newest_eval = len(archive.evaluations)
-        if len(archive.evaluations) <= self.initial_design_size:
-            return tuple(sample(range(newest_eval), 2))
+        Takes an archive of previous evaluations and duels and proposes n new configurations.
+
+        Parameters
+        ----------
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
+
+        Returns
+        -------
+        CS.Configuration:
+            Proposed Configuration
+
+        """
+        if len(archive.evaluations) == 0:
+            print(f"Running: Intial Design of size {self.initial_design_size}")
+            n = self.initial_design_size
+            configs = self.config_space.sample_configuration(self.initial_design_size)
         else:
-            return tuple(newest_eval, sample(range(newest_eval - 1)))
+            configs = self._surrogate_proposal(archive, n=n)
+
+        self.new_configs = len(configs)
+
+        return configs
+
+    def propose_duel(self, archive: Archive, n: int = 1) -> List[Tuple[int, int]]:
+        """
+        Propose a duel between two Evaluations
+
+        Takes an archive of previous evaluations and duels to propose n new duels of two configurations each.
+
+        Parameters
+        ----------
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of duels to propose in one batch
+
+        Returns
+        -------
+        List(Tuple(int, int)):
+            List of tuples of two indicies of Archive evaluations to compare
+
+        """
+
+        evals = len(archive.evaluations)
+
+        if len(archive.comparisons) == 0:
+            n = self.initial_design_size * self.duels_per_eval
+            print(f"Running: Initial duels of size {n}")
+            candidates = range(evals)
+        else:
+            candidates = range(evals - self.new_configs, evals)
+
+        pairs = np.array(list(combinations(candidates, 2)))
+        comp_pairs = pairs[np.random.choice(range(len(pairs)), n, replace=False)]
+
+        return [tuple(pair) for pair in comp_pairs]
 
     def should_propose_config(self, archive: Archive) -> bool:
         return len(archive.evaluations) / self.duels_per_eval < len(archive.comparisons)
