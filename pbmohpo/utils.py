@@ -53,7 +53,6 @@ def remove_hp_from_cs(
     while True:
         for condition in conditions:
             if condition.parent.name in affected_params:
-
                 # if the current value of parent is not legal, add children to
                 # affected params. Equal conditions have only one value,
                 # set conditions have a list of values
@@ -116,7 +115,7 @@ def visualize_archives(
     for utility_archive in utility_archives:
         col = next(cgen)
         if "incumbent" in set(plot_elements):
-            ax.plot(
+            ax.step(
                 range(1, len(utility_archive["utilities"]) + 1),
                 utility_archive["incumbent_utilities"],
                 c=col,

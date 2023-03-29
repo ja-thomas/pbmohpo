@@ -1,7 +1,7 @@
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 import ConfigSpace as CS
-from botorch.acquisition import UpperConfidenceBound
+from botorch.acquisition import qUpperConfidenceBound
 from botorch.fit import fit_gpytorch_mll
 from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
@@ -33,24 +33,25 @@ class UtilityBayesianOptimization(Optimizer):
         config_space: CS.ConfigurationSpace,
         initial_design_size: Union[int, None] = None,
     ) -> None:
-
         if initial_design_size is None:
             initial_design_size = 2 * len(config_space.items())
 
         self.initial_design_size = initial_design_size
         super().__init__(config_space)
 
-    def propose_config(self, archive: Archive) -> CS.Configuration:
+    def propose_config(self, archive: Archive, n: int = 1) -> List[CS.Configuration]:
         """
         Propose a new configuration to evaluate.
 
-        Takes an list of previous evaluations and proposes a new configuration to evaluate.
-        If the number of observations in the archive is smaller than the initial design, propose a random configuration.
+        Takes an archive of previous evaluations and duels and proposes n new configurations.
 
         Parameters
         ----------
-        archive: List
-            List of previous evaluations
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
 
         Returns
         -------
@@ -58,10 +59,14 @@ class UtilityBayesianOptimization(Optimizer):
             Proposed Configuration
 
         """
-        if len(archive.evaluations) <= self.initial_design_size:
-            return self.config_space.sample_configuration()
+        if len(archive.evaluations) == 0:
+            print(f"Running: Intial Design of size {self.initial_design_size}")
+            n = self.initial_design_size
+            configs = self.config_space.sample_configuration(self.initial_design_size)
         else:
-            return self._surrogate_proposal(archive)
+            configs = self._surrogate_proposal(archive, n=n)
+
+        return configs
 
     def should_propose_config(self, archive: Archive) -> bool:
         return True
@@ -69,7 +74,7 @@ class UtilityBayesianOptimization(Optimizer):
     def propose_duel(self, archive: Archive) -> Tuple[int, int]:
         return super().propose_duel(archive)
 
-    def _surrogate_proposal(self, archive: Archive) -> CS.Configuration:
+    def _surrogate_proposal(self, archive: Archive, n: int) -> CS.Configuration:
         """
         Propose a configuration based on a surrogate model.
         """
@@ -77,25 +82,31 @@ class UtilityBayesianOptimization(Optimizer):
         gp = SingleTaskGP(x, y)
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
         fit_gpytorch_mll(mll)
-        ucb = UpperConfidenceBound(gp, beta=0.1)
+        ucb = qUpperConfidenceBound(gp, beta=0.1)
         bounds = get_botorch_bounds(self.config_space)
-        candidate, _ = optimize_acqf(
+        candidates, _ = optimize_acqf(
             ucb,
             bounds=bounds,
-            q=1,
+            q=n,
             num_restarts=5,
             raw_samples=20,
         )
 
+        configurations = []
         hp_names = self.config_space.get_hyperparameter_names()
-        hp_values = candidate[0].tolist()
 
-        config_dict = {}
+        candidates = [candidates] if n == 1 else candidates.split(1)
 
-        # candidate contains only floats, round integer HPs
-        for hp, val in zip(hp_names, hp_values):
-            if not self.config_space.get_hyperparameter(hp).is_legal(val):
-                val = round(val)
-            config_dict[hp] = val
+        for candidate in candidates:
+            hp_values = candidate[0].tolist()
 
-        return CS.Configuration(self.config_space, config_dict)
+            config_dict = {}
+
+            # candidate contains only floats, round integer HPs
+            for hp, val in zip(hp_names, hp_values):
+                if not self.config_space.get_hyperparameter(hp).is_legal(val):
+                    val = round(val)
+                config_dict[hp] = val
+            configurations.append(CS.Configuration(self.config_space, config_dict))
+
+        return configurations
