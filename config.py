@@ -1,6 +1,6 @@
-from pbmohpo.problems.zdt1 import ZDT1
-
 from yacs.config import CfgNode as CN
+
+from pbmohpo.problems.zdt1 import ZDT1
 
 _C = CN()
 
@@ -38,8 +38,8 @@ _C.DECISION_MAKER = CN()
 _C.DECISION_MAKER.DECISION_MAKER_TYPE = "DecisionMaker"
 
 _C.BUDGET = CN()
-_C.BUDGET.BUDGET_TYPE = "iterations"
-_C.BUDGET.BUDGET_AMOUNT = 50
+_C.BUDGET.EVAL_BUDGET = 50
+_C.BUDGET.DM_BUDGET = 50
 
 
 def get_cfg_defaults():

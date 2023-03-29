@@ -1,11 +1,6 @@
-from pbmohpo.archive import (
-    UtilityArchive,
-    Evaluation,
-    PreferenceArchive,
-    PreferenceEvaluation,
-)
+from pbmohpo.archive import Archive, Evaluation
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.optimizer import Optimizer, PreferenceOptimizer
+from pbmohpo.optimizers.optimizer import Optimizer
 from pbmohpo.problems.problem import Problem
 
 
@@ -28,16 +23,20 @@ class Benchmark:
     """
 
     def __init__(
-        self, problem: Problem, optimizer: Optimizer, dm: DecisionMaker, budget: int
+        self,
+        problem: Problem,
+        optimizer: Optimizer,
+        dm: DecisionMaker,
+        eval_budget: int,
+        dm_budget: int,
     ) -> None:
         self.problem = problem
         self.optimizer = optimizer
         self.dm = dm
-        self.budget = budget
+        self.eval_budget = eval_budget
+        self.dm_budget = dm_budget
 
-        self.is_preferential = issubclass(type(optimizer), PreferenceOptimizer)
-
-        self.archive = PreferenceArchive() if self.is_preferential else UtilityArchive()
+        self.archive = Archive()
 
     def run(self) -> None:
         """
@@ -47,33 +46,33 @@ class Benchmark:
         populate the archive with the results
         """
 
-        while len(self.archive) < self.budget:
-
-            if self.is_preferential:
-                first_config, second_config = self.optimizer.propose(self.archive)
-                first_result = self._compute_utility_evaluation(first_config)
-                second_result = self._compute_utility_evaluation(second_config)
-
-                result = PreferenceEvaluation(
-                    first=first_result,
-                    second=second_result,
-                    first_won=self.dm.compare(
-                        first_result.objectives, second_result.objectives
-                    ),
+        while True:
+            if (
+                self.optimizer.should_propose_config(self.archive)
+                and len(self.archive.evaluations) < self.eval_budget
+            ):
+                config = self.optimizer.propose_config(self.archive)
+                objectives = self.problem(config)
+                utility = self.dm._compute_utility(objectives)
+                result = Evaluation(
+                    config=config, objectives=objectives, utility=utility
                 )
-            else:
-                config = self.optimizer.propose(self.archive)
-                result = self._compute_utility_evaluation(config)
+                self.archive.evaluations.append(result)
 
-            self.archive.data.append(result)
+            elif (
+                not self.optimizer.should_propose_config(self.archive)
+                and len(self.archive.comparisons) < self.dm_budget
+            ):
+                c1, c2 = self.optimizer.propose_duel(self.archive)
+                c1_won = self.dm.compare(
+                    self.archive.evaluations[c1].objectives,
+                    self.archive.evaluations[c2].objectives,
+                )
+                self.archive.comparisons.append([c1, c2] if c1_won else [c2, c1])
+            else:
+                break
 
             max_util = self.archive.max_utility
-
             print(
-                f"Running [{len(self.archive):{len(str(self.budget))}}|{self.budget}]: Best utility: {max_util}"
+                f"Running [{len(self.archive.evaluations):{len(str(self.eval_budget))}}|{self.eval_budget}]: Best utility: {max_util}"
             )
-
-    def _compute_utility_evaluation(self, config):
-        objectives = self.problem(config)
-        utility = self.dm._compute_utility(objectives)
-        return Evaluation(config=config, objectives=objectives, utility=utility)

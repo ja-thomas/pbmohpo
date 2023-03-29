@@ -135,3 +135,4 @@ Pipfile
 Pipfile.lock
 
 .idea
+.vscode

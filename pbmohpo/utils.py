@@ -100,7 +100,7 @@ def visualize_archives(
     # 1. Store numbers to plot in lists.
     utility_archives = []
     for archive in archive_list:
-        utilities = [el.utility for el in archive.data]
+        utilities = [el.utility for el in archive.evaluations]
         incumbent_utilities = [el for el in accumulate(utilities, max)]
         utility_archives.append(
             {"utilities": utilities, "incumbent_utilities": incumbent_utilities}

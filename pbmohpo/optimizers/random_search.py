@@ -1,11 +1,12 @@
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 import ConfigSpace as CS
 
-from pbmohpo.optimizers.optimizer import UtilityOptimizer, PreferenceOptimizer
+from pbmohpo.archive import Archive
+from pbmohpo.optimizers.optimizer import Optimizer
 
 
-class UtilityRandomSearch(UtilityOptimizer):
+class RandomSearch(Optimizer):
     """
     Random Search Optimizer
 
@@ -20,7 +21,7 @@ class UtilityRandomSearch(UtilityOptimizer):
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
         super().__init__(config_space)
 
-    def propose(self, archive: List) -> Dict:
+    def propose_config(self, archive: Archive) -> Dict:
         """
         Propose a new configuration to evaluate.
 
@@ -39,37 +40,8 @@ class UtilityRandomSearch(UtilityOptimizer):
         """
         return self.config_space.sample_configuration()
 
+    def propose_duel(self, archive: Archive) -> Tuple[int, int]:
+        return super().propose_duel(archive)
 
-class PreferentialRandomSearch(PreferenceOptimizer):
-    """
-    Random Search Optimizer
-
-    Implementation of a simple random search as baseline and sanity check.
-
-    Parameters
-    ----------
-    config_space: CS.ConfigurationSpace
-        The config space the optimizer searches over
-    """
-
-    def __init__(self, config_space: CS.ConfigurationSpace) -> None:
-        super().__init__(config_space)
-
-    def propose(self, archive: List) -> Tuple[CS.Configuration, CS.Configuration]:
-        """
-        Propose a new configuration to evaluate.
-
-        Takes an list of previous evaluations and proposes two new configurations at random for the next duel.
-
-        Parameters
-        ----------
-        archive: List
-            List of previous evaluations
-
-        Returns
-        -------
-        Tuple(CS.Configuration, CS.Configuration):
-            Proposed Configurations for duel
-
-        """
-        return tuple(self.config_space.sample_configuration(2))
+    def should_propose_config(self, archive: Archive) -> bool:
+        return True
