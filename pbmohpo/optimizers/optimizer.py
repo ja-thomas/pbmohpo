@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from typing import List, Tuple
 
 import ConfigSpace as CS
@@ -68,21 +68,6 @@ class Optimizer(ABC):
         """
         raise NotImplementedError()
 
-    @abstractmethod
-    def should_propose_config(self, archive: Archive) -> bool:
-        """
-         Should the optimizer propose a configuration for evaluation?
-
-         If false, it is assumed that one or multiple duels should be evaluated first
-
-        Parameters
-         ----------
-         archive: Archive
-             Archive containing previous evaluations
-
-         Returns
-         -------
-         bool:
-             True if a configuration should be proposed
-        """
+    @abstractproperty
+    def dueling(self) -> bool:
         raise NotImplementedError()

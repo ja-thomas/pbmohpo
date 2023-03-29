@@ -44,8 +44,9 @@ class RandomSearch(Optimizer):
         configs = self.config_space.sample_configuration(n)
         return configs if n > 1 else [configs]
 
-    def propose_duel(self, archive: Archive) -> Tuple[int, int]:
-        return super().propose_duel(archive)
+    def propose_duel(self, archive: Archive, n: int = 1) -> List[Tuple[int, int]]:
+        return super().propose_duel(archive, n)
 
-    def should_propose_config(self, archive: Archive) -> bool:
-        return True
+    @property
+    def dueling(self) -> bool:
+        return False
