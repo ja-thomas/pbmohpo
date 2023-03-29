@@ -1,4 +1,5 @@
 from itertools import combinations
+from math import comb
 from typing import List, Tuple, Union
 
 import ConfigSpace as CS
@@ -20,7 +21,6 @@ class EUBO(Optimizer):
             initial_design_size = 2 * len(config_space.items())
 
         self.initial_design_size = initial_design_size
-        self.duels_per_eval = duels_per_eval
         self.new_configs = 0
         super().__init__(config_space)
 
@@ -79,10 +79,14 @@ class EUBO(Optimizer):
         evals = len(archive.evaluations)
 
         if len(archive.comparisons) == 0:
-            n = self.initial_design_size * self.duels_per_eval
+            n = min(
+                self.initial_design_size * n,
+                comb(self.initial_design_size, 2),
+            )
             print(f"Running: Initial duels of size {n}")
             candidates = range(evals)
         else:
+            n = min(self.new_configs * n, comb(self.new_configs, 2))
             candidates = range(evals - self.new_configs, evals)
 
         pairs = np.array(list(combinations(candidates, 2)))
@@ -90,8 +94,9 @@ class EUBO(Optimizer):
 
         return [tuple(pair) for pair in comp_pairs]
 
-    def should_propose_config(self, archive: Archive) -> bool:
-        return len(archive.evaluations) / self.duels_per_eval < len(archive.comparisons)
+    @property
+    def dueling(self) -> bool:
+        return True
 
-    def _surrogate_proposal(self, archive: Archive) -> CS.Configuration:
-        return self.config_space.sample_configuration()
+    def _surrogate_proposal(self, archive: Archive, n: int) -> CS.Configuration:
+        return self.config_space.sample_configuration(n)
