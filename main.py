@@ -104,8 +104,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Specify experiment to run")
 
     parser.add_argument(
-        "-p",
+        "-c",
+        "--config",
+        help="Config file of experiment",
         default="./experiment_configs/iaml_ranger.yaml",
+        dest="config",
     )
 
     parser.add_argument(
@@ -127,16 +130,18 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--visualize",
-        action="store_true",
+        "-p",
+        "--plot",
         help="creates plots (default config) of conducted benchmark",
+        action="store_true",
+        dest="visualize",
     )
 
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
     cfg = get_cfg_defaults()
-    cfg.merge_from_file(args.p)
+    cfg.merge_from_file(args.config)
     cfg.freeze()
     logging.debug(cfg)
 
