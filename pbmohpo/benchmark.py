@@ -76,20 +76,24 @@ class Benchmark:
                         config=config, objectives=objectives, utility=utility
                     )
                     self.archive.evaluations.append(result)
+                max_util = self.archive.max_utility
+                print(
+                    f"Running Evaluations: [{len(self.archive.evaluations):{len(str(self.eval_budget))}}|{self.eval_budget}]: Best utility: {max_util}"
+                )
 
             if (
                 self.optimizer.dueling
                 and len(self.archive.comparisons) < self.dm_budget
             ):
-                c1, c2 = self.optimizer.propose_duel(self.archive, n=self.dm_batch_size)
-                c1_won = self.dm.compare(
-                    self.archive.evaluations[c1].objectives,
-                    self.archive.evaluations[c2].objectives,
+                duels = self.optimizer.propose_duel(self.archive, n=self.dm_batch_size)
+
+                for c1, c2 in duels:
+                    c1_won = self.dm.compare(
+                        self.archive.evaluations[c1].objectives,
+                        self.archive.evaluations[c2].objectives,
+                    )
+                    self.archive.comparisons.append([c1, c2] if c1_won else [c2, c1])
+
+                print(
+                    f"Running Duels: [{len(self.archive.comparisons):{len(str(self.dm_budget))}}|{self.dm_budget}]: Best utility: {max_util}"
                 )
-                self.archive.comparisons.append([c1, c2] if c1_won else [c2, c1])
-
-            max_util = self.archive.max_utility
-
-            print(
-                f"Running: [{len(self.archive.evaluations):{len(str(self.eval_budget))}}|{self.eval_budget}]: Best utility: {max_util}"
-            )
