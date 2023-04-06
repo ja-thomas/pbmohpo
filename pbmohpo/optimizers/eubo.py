@@ -20,7 +20,6 @@ class EUBO(BayesianOptimization):
         self,
         config_space: CS.ConfigurationSpace,
         initial_design_size: Union[int, None] = None,
-        duels_per_eval: int = 10,
     ) -> None:
 
         if initial_design_size is None:
