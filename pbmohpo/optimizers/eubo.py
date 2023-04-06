@@ -112,17 +112,19 @@ class EUBO(BayesianOptimization):
 
         model = PairwiseGP(x, y)
         mll = PairwiseLaplaceMarginalLogLikelihood(model.likelihood, model)
-        mll = fit_gpytorch_mll(mll)
+        fit_gpytorch_mll(mll)
 
         acq_func = AnalyticExpectedUtilityOfBestOption(pref_model=model)
         bounds = get_botorch_bounds(self.config_space)
-        candidates, _ = optimize_acqf(
+        candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
             q=n,
             num_restarts=3,
             raw_samples=256,
         )
+
+        logging.debug(f"Acquisition function value: {acq_val}")
 
         configs = self._candidates_to_configs(candidates, n)
         return configs
