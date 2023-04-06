@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod, abstractproperty
 from typing import List, Tuple
 
@@ -99,14 +100,14 @@ class BayesianOptimization(Optimizer):
 
         """
         if len(archive.evaluations) == 0:
-            print(f"Running: Intial Design of size {self.initial_design_size}")
+            logging.info(f"Running: Intial Design of size {self.initial_design_size}")
             n = self.initial_design_size
             configs = self.config_space.sample_configuration(self.initial_design_size)
         else:
             try:
                 configs = self._surrogate_proposal(archive, n=n)
             except:
-                print("WARNING: Surrogate proposal failed, return random config")
+                logging.warn("Surrogate proposal failed, return random config")
                 configs = self.config_space.sample_configuration(n)
 
         self.new_configs = len(configs)

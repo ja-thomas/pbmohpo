@@ -1,3 +1,4 @@
+import logging
 from itertools import combinations
 from math import comb
 from typing import List, Tuple, Union
@@ -72,7 +73,7 @@ class EUBO(BayesianOptimization):
                 self.initial_design_size * n,
                 comb(self.initial_design_size, 2),
             )
-            print(f"Running: Initial duels of size {n}")
+            logging.info(f"Running: Initial duels of size {n}")
             candidates = range(evals)
         else:
             n = min(self.new_configs * n, comb(self.new_configs, 2))
@@ -111,17 +112,19 @@ class EUBO(BayesianOptimization):
 
         model = PairwiseGP(x, y)
         mll = PairwiseLaplaceMarginalLogLikelihood(model.likelihood, model)
-        mll = fit_gpytorch_mll(mll)
+        fit_gpytorch_mll(mll)
 
         acq_func = AnalyticExpectedUtilityOfBestOption(pref_model=model)
         bounds = get_botorch_bounds(self.config_space)
-        candidates, _ = optimize_acqf(
+        candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
             q=n,
             num_restarts=3,
             raw_samples=256,
         )
+
+        logging.debug(f"Acquisition function value: {acq_val}")
 
         configs = self._candidates_to_configs(candidates, n)
         return configs

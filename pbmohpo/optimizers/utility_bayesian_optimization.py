@@ -1,3 +1,4 @@
+import logging
 from typing import List, Tuple, Union
 
 import ConfigSpace as CS
@@ -68,16 +69,19 @@ class UtilityBayesianOptimization(BayesianOptimization):
         x, y = archive.to_torch()
         gp = SingleTaskGP(x, y)
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
+
         fit_gpytorch_mll(mll)
         ucb = qUpperConfidenceBound(gp, beta=0.1)
         bounds = get_botorch_bounds(self.config_space)
-        candidates, _ = optimize_acqf(
+        candidates, acq_val = optimize_acqf(
             ucb,
             bounds=bounds,
             q=n,
             num_restarts=5,
             raw_samples=20,
         )
+
+        logging.debug(f"Acquisition function value: {acq_val}")
 
         configs = self._candidates_to_configs(candidates, n)
         return configs
