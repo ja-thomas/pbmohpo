@@ -1,3 +1,4 @@
+import logging
 from itertools import combinations
 from math import comb
 from typing import List, Tuple, Union
@@ -72,7 +73,7 @@ class EUBO(BayesianOptimization):
                 self.initial_design_size * n,
                 comb(self.initial_design_size, 2),
             )
-            print(f"Running: Initial duels of size {n}")
+            logging.info(f"Running: Initial duels of size {n}")
             candidates = range(evals)
         else:
             n = min(self.new_configs * n, comb(self.new_configs, 2))

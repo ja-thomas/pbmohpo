@@ -53,10 +53,3 @@ class ZDT1(Problem):
         f2 = g * h  # objective 2
 
         return {self.objective_names[0]: -f1, self.objective_names[1]: -f2}
-
-
-if __name__ == "__main__":
-    p = ZDT1(dimension=10)
-    space = p.get_config_space()
-    x = space.sample_configuration()
-    print(p(x))

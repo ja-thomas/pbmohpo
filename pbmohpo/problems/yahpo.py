@@ -54,7 +54,6 @@ class YAHPO(Problem):
         )
 
         cs = remove_hp_from_cs(csn, remove_hp_dict=hps_to_remove)
-        print(cs)
         return cs
 
     def get_objective_names(self) -> List:
@@ -86,13 +85,3 @@ class YAHPO(Problem):
             for el, key in enumerate(self.get_objective_names())
         }
         return val_dict
-
-
-if __name__ == "__main__":
-    targets = ["time", "val_accuracy"]
-
-    prob = YAHPO(id="lcbench", instance="3945", objective_names=targets)
-
-    conf = prob.get_config_space().sample_configuration()
-
-    prob(conf)

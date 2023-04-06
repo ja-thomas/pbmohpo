@@ -1,4 +1,5 @@
 import argparse
+import logging
 
 import matplotlib.pyplot as plt
 
@@ -38,15 +39,15 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     benchmark.
     """
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
-        print("Testing ZDT1")
+        logging.info("Testing ZDT1")
         prob = ZDT1(dimension=config.PROBLEM.DIMENSIONS)
 
     elif config.PROBLEM.PROBLEM_TYPE == "yahpo":
 
-        print("Testing YAHPO")
-        print(f"id: {config.PROBLEM.ID}")
-        print(f"instance: {config.PROBLEM.INSTANCE}")
-        print(f"objectives: {config.PROBLEM.OBJECTIVE_NAMES}")
+        logging.info("Testing YAHPO")
+        logging.info(f"id: {config.PROBLEM.ID}")
+        logging.info(f"instance: {config.PROBLEM.INSTANCE}")
+        logging.info(f"objectives: {config.PROBLEM.OBJECTIVE_NAMES}")
 
         fixed_hyperparams = {}
         for hyperparam in config.FIXED_HPS:
@@ -63,19 +64,19 @@ def run_pbmohpo_bench(config, visualize: bool = False):
         )
 
     if config.OPTIMIZER.OPTIMIZER_TYPE == "RS":
-        print("Running Random Search")
+        logging.info("Running Random Search")
         opt = RandomSearch(prob.get_config_space())
     elif config.OPTIMIZER.OPTIMIZER_TYPE == "BO":
-        print("Running Bayesian Optimization on Utility Scores")
+        logging.info("Running Bayesian Optimization on Utility Scores")
         opt = UtilityBayesianOptimization(prob.get_config_space())
     else:
-        print("Running Bayesian Optimization on Pairwise Comparisons")
+        logging.info("Running Bayesian Optimization on Pairwise Comparisons")
         opt = EUBO(prob.get_config_space())
 
     dm = DecisionMaker(objective_names=prob.get_objective_names())
 
-    print("Decision Maker Preference Scores:")
-    print(dm.preferences)
+    logging.info("Decision Maker Preference Scores:")
+    logging.info(dm.preferences)
 
     bench = Benchmark(
         prob,
@@ -90,8 +91,8 @@ def run_pbmohpo_bench(config, visualize: bool = False):
 
     archive = bench.archive
 
-    print(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
-    print(archive.evaluations[archive.incumbents[0]])
+    logging.info(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
+    logging.info(archive.evaluations[archive.incumbents[0]])
 
     if visualize:
         fig = visualize_archives(archive_list=[archive])
@@ -108,15 +109,35 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "-d",
+        "--debug",
+        help="Print debugging statements",
+        action="store_const",
+        dest="loglevel",
+        const=logging.DEBUG,
+        default=logging.WARNING,
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="Be verbose",
+        action="store_const",
+        dest="loglevel",
+        const=logging.INFO,
+    )
+
+    parser.add_argument(
         "--visualize",
         action="store_true",
         help="creates plots (default config) of conducted benchmark",
     )
 
     args = parser.parse_args()
+    logging.basicConfig(level=args.loglevel)
+
     cfg = get_cfg_defaults()
     cfg.merge_from_file(args.p)
     cfg.freeze()
-    print(cfg)
+    logging.debug(cfg)
 
     run_pbmohpo_bench(cfg, visualize=args.visualize)
