@@ -1,7 +1,7 @@
 import logging
 from itertools import combinations
 from math import comb
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple
 
 import ConfigSpace as CS
 import numpy as np
@@ -35,7 +35,7 @@ class EUBO(BayesianOptimization):
     def __init__(
         self,
         config_space: CS.ConfigurationSpace,
-        initial_design_size: Union[int, None] = None,
+        initial_design_size: Optional[int] = None,
     ) -> None:
 
         if initial_design_size is None:

@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import ConfigSpace as CS
 import numpy as np
@@ -25,7 +25,7 @@ class ZDT1(Problem):
     objective_names = ["y0", "y1"]
 
     def __init__(
-        self, seed: Union[int, np.random.RandomState, None] = 42, dimension: int = 2
+        self, seed: Optional[Union[np.random.RandomState, int]] = 42, dimension: int = 2
     ) -> None:
         super().__init__(seed)
         assert dimension >= 2
@@ -45,7 +45,9 @@ class ZDT1(Problem):
         return self.objective_names
 
     def __call__(
-        self, x: CS.Configuration, seed: Union[np.random.RandomState, int, None] = None
+        self,
+        x: CS.Configuration,
+        seed: Optional[Union[np.random.RandomState, int]] = None,
     ) -> Dict:
         f1 = x["x0"]  # objective 1
         g = 1 + 9 * np.sum(x.get_array()[1:] / (self.dimension - 1))

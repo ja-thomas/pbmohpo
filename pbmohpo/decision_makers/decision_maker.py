@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -20,8 +20,8 @@ class DecisionMaker:
 
     def __init__(
         self,
-        preferences: Union[Dict, None] = None,
-        objective_names: Union[List, None] = None,
+        preferences: Optional[Dict] = None,
+        objective_names: Optional[List] = None,
     ) -> None:
 
         assert not (preferences is None and objective_names is None)

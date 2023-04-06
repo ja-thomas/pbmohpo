@@ -1,5 +1,5 @@
 import copy
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import ConfigSpace as CS
 import numpy as np
@@ -35,7 +35,7 @@ class YAHPO(Problem):
         instance: str,
         objective_names: List,
         fix_hps: dict = None,
-        seed: Union[int, np.random.RandomState, None] = 42,
+        seed: Optional[Union[np.random.RandomState, int]] = 42,
     ) -> None:
         super().__init__(seed)
         if fix_hps is None:
@@ -60,7 +60,9 @@ class YAHPO(Problem):
         return self.objective_names
 
     def __call__(
-        self, x: CS.Configuration, seed: Union[np.random.RandomState, int, None] = None
+        self,
+        x: CS.Configuration,
+        seed: Optional[Union[np.random.RandomState, int]] = None,
     ) -> Dict:
         # Add instance information to configuration
         x = x.get_dictionary()

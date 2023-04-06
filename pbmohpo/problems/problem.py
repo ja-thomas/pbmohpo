@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import ConfigSpace as CS
 import numpy as np
@@ -19,7 +19,7 @@ class Problem(ABC):
 
     def __init__(
         self,
-        seed: Union[int, np.random.RandomState, None] = 42,
+        seed: Optional[Union[np.random.RandomState, int]] = 42,
     ) -> None:
         self.seed = seed
 
@@ -63,7 +63,7 @@ class Problem(ABC):
     def __call__(
         self,
         x: CS.Configuration,
-        seed: Union[np.random.RandomState, int, None] = None,
+        seed: Optional[Union[np.random.RandomState, int]] = None,
     ) -> Dict:
         """
         Objective function.

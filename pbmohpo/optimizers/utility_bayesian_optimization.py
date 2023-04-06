@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple
 
 import ConfigSpace as CS
 from botorch.acquisition import qUpperConfidenceBound
@@ -32,7 +32,7 @@ class UtilityBayesianOptimization(BayesianOptimization):
     def __init__(
         self,
         config_space: CS.ConfigurationSpace,
-        initial_design_size: Union[int, None] = None,
+        initial_design_size: Optional[int] = None,
     ) -> None:
         if initial_design_size is None:
             initial_design_size = 2 * len(config_space.items())
