@@ -72,7 +72,24 @@ class EUBO(BayesianOptimization):
     def dueling(self) -> bool:
         return True
 
-    def _surrogate_proposal(self, archive: Archive, n: int) -> CS.Configuration:
+    def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
+        """
+        Propose a new configuration by surrogate
+
+        Parameters
+        ----------
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
+
+        Returns
+        -------
+        CS.Configuration:
+            Proposed Configuration
+
+        """
 
         x, _ = archive.to_torch()
         y = torch.Tensor(archive.comparisons)

@@ -116,6 +116,23 @@ class BayesianOptimization(Optimizer):
     def _candidates_to_configs(
         self, candidates: Tensor, n: int
     ) -> List[CS.Configuration]:
+        """
+        Convert a tensor of candidates found by optimize_acqf to a list of configurations
+
+        Parameters
+        ----------
+
+        candidates: Tensor
+            Candidate tensor
+        n: int
+            Number of configurations to propose in one batch
+
+        Returns
+        -------
+        List(CS.Configuration):
+            Converted Configurations
+
+        """
         configurations = []
         hp_names = self.config_space.get_hyperparameter_names()
 

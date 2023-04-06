@@ -48,7 +48,21 @@ class UtilityBayesianOptimization(BayesianOptimization):
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
         """
-        Propose a configuration based on a surrogate model.
+        Propose a new configuration by surrogate
+
+        Parameters
+        ----------
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
+
+        Returns
+        -------
+        CS.Configuration:
+            Proposed Configuration
+
         """
 
         x, y = archive.to_torch()
