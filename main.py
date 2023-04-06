@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
+from pbmohpo.optimizers.eubo import EUBO
 from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
@@ -64,9 +65,12 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     if config.OPTIMIZER.OPTIMIZER_TYPE == "RS":
         print("Running Random Search")
         opt = RandomSearch(prob.get_config_space())
-    else:
+    elif config.OPTIMIZER.OPTIMIZER_TYPE == "BO":
         print("Running Bayesian Optimization on Utility Scores")
         opt = UtilityBayesianOptimization(prob.get_config_space())
+    else:
+        print("Running Bayesian Optimization on Pairwise Comparisons")
+        opt = EUBO(prob.get_config_space())
 
     dm = DecisionMaker(objective_names=prob.get_objective_names())
 

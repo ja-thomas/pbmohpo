@@ -16,6 +16,21 @@ from pbmohpo.utils import get_botorch_bounds
 
 
 class EUBO(BayesianOptimization):
+    """
+    Bayesian Optimization for Pairwise Comparison Data.
+
+    Implements the Analytic Expected Utility Of Best Option algrithm.
+    For details see: https://botorch.org/tutorials/preference_bo
+
+    Parameters
+    ----------
+    config_space: CS.ConfigurationSpace
+        The config space the optimizer searches over
+
+    initial_design_size: int, None
+        Size of the initial design, if not specified, two times the number of HPs is used
+    """
+
     def __init__(
         self,
         config_space: CS.ConfigurationSpace,
@@ -104,8 +119,8 @@ class EUBO(BayesianOptimization):
             acq_function=acq_func,
             bounds=bounds,
             q=n,
-            num_restarts=5,
-            raw_samples=20,
+            num_restarts=3,
+            raw_samples=256,
         )
 
         configs = self._candidates_to_configs(candidates, n)
