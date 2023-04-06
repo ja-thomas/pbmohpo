@@ -8,11 +8,11 @@ from botorch.optim import optimize_acqf
 from gpytorch.mlls import ExactMarginalLogLikelihood
 
 from pbmohpo.archive import Archive
-from pbmohpo.optimizers.optimizer import Optimizer
+from pbmohpo.optimizers.optimizer import BayesianOptimization
 from pbmohpo.utils import get_botorch_bounds
 
 
-class UtilityBayesianOptimization(Optimizer):
+class UtilityBayesianOptimization(BayesianOptimization):
     """
     Single objective Bayesian optimization of utility scores.
 
@@ -39,35 +39,6 @@ class UtilityBayesianOptimization(Optimizer):
         self.initial_design_size = initial_design_size
         super().__init__(config_space)
 
-    def propose_config(self, archive: Archive, n: int = 1) -> List[CS.Configuration]:
-        """
-        Propose a new configuration to evaluate.
-
-        Takes an archive of previous evaluations and duels and proposes n new configurations.
-
-        Parameters
-        ----------
-        archive: Archive
-            Archive containing previous evaluations
-
-        n: int
-            Number of configurations to propose in one batch
-
-        Returns
-        -------
-        CS.Configuration:
-            Proposed Configuration
-
-        """
-        if len(archive.evaluations) == 0:
-            print(f"Running: Intial Design of size {self.initial_design_size}")
-            n = self.initial_design_size
-            configs = self.config_space.sample_configuration(self.initial_design_size)
-        else:
-            configs = self._surrogate_proposal(archive, n=n)
-
-        return configs
-
     def propose_duel(self, archive: Archive, n: int = 1) -> List[Tuple[int, int]]:
         return super().propose_duel(archive, n)
 
@@ -75,10 +46,11 @@ class UtilityBayesianOptimization(Optimizer):
     def dueling(self) -> bool:
         return False
 
-    def _surrogate_proposal(self, archive: Archive, n: int) -> CS.Configuration:
+    def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
         """
         Propose a configuration based on a surrogate model.
         """
+
         x, y = archive.to_torch()
         gp = SingleTaskGP(x, y)
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
@@ -93,21 +65,5 @@ class UtilityBayesianOptimization(Optimizer):
             raw_samples=20,
         )
 
-        configurations = []
-        hp_names = self.config_space.get_hyperparameter_names()
-
-        candidates = [candidates] if n == 1 else candidates.split(1)
-
-        for candidate in candidates:
-            hp_values = candidate[0].tolist()
-
-            config_dict = {}
-
-            # candidate contains only floats, round integer HPs
-            for hp, val in zip(hp_names, hp_values):
-                if not self.config_space.get_hyperparameter(hp).is_legal(val):
-                    val = round(val)
-                config_dict[hp] = val
-            configurations.append(CS.Configuration(self.config_space, config_dict))
-
-        return configurations
+        configs = self._candidates_to_configs(candidates, n)
+        return configs
