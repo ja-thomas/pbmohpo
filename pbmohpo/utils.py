@@ -152,3 +152,25 @@ def color_generator():
 
     for color in colors:
         yield color
+
+
+def convert_torch_archive_for_variational_preferential_gp(
+    X: torch.Tensor, y: torch.Tensor
+):
+    """
+    Get bounds of hyperparameters in the format botorch needs
+
+    Parameters
+    ----------
+    X: torch.Tensor of configs in archive as given by archive.to_torch()
+    y: torch.Tensor of recorded duels in archive as given by archive.to_torch()
+
+    Returns
+    -------
+    new_X: n x q x n torch.Tensor Each of the `n` queries is constituted
+           by `q` `d`-dimensional decision vectors.
+    new_y: A `n x 1` tensor of training outputs. Each of the `n` responses is an integer
+           between 0 and `q-1` indicating the decision vector selected by the user.
+    """
+    # x[int(y[0][0].item())]
+    pass

@@ -8,12 +8,18 @@ import numpy as np
 import torch
 from botorch.acquisition import AnalyticExpectedUtilityOfBestOption
 from botorch.fit import fit_gpytorch_mll
-from botorch.models.pairwise_gp import PairwiseGP, PairwiseLaplaceMarginalLogLikelihood
+from botorch.models.pairwise_gp import (PairwiseGP,
+                                        PairwiseLaplaceMarginalLogLikelihood)
 from botorch.optim import optimize_acqf
-
+from botorch.sampling import SobolQMCNormalSampler
+from gpytorch.mlls.variational_elbo import VariationalELBO
 from pbmohpo.archive import Archive
+from pbmohpo.models.variational_preferential_gp import \
+    VariationalPreferentialGP
 from pbmohpo.optimizers.optimizer import BayesianOptimization
 from pbmohpo.utils import get_botorch_bounds
+from pbmohpo.acquisition_functions.qexpected_utility_of_best_option import \
+    qExpectedUtilityOfBestOption
 
 
 class EUBO(BayesianOptimization):
@@ -116,6 +122,61 @@ class EUBO(BayesianOptimization):
 
         acq_func = AnalyticExpectedUtilityOfBestOption(pref_model=model)
         bounds = get_botorch_bounds(self.config_space)
+        candidates, acq_val = optimize_acqf(
+            acq_function=acq_func,
+            bounds=bounds,
+            q=n,
+            num_restarts=3,
+            raw_samples=256,
+        )
+
+        logging.debug(f"Acquisition function value: {acq_val}")
+
+        configs = self._candidates_to_configs(candidates, n)
+        return configs
+
+
+class qEUBO(EUBO):
+    """description"""
+
+    def __init__(
+        self,
+        config_space: CS.ConfigurationSpace,
+        initial_design_size: Optional[int] = None,
+    ) -> None:
+
+        # TODO: Is this really needed or can I pass None along?
+        if initial_design_size:
+            super().__init__(config_space, initial_design_size)
+        else:
+            super().__init__(config_space)
+
+    def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
+
+        x, _ = archive.to_torch()
+        y = torch.Tensor(archive.comparisons)
+        import pdb; pdb.set_trace()
+
+        model = VariationalPreferentialGP(x, y)
+        model.train()
+        model.likelihood.train()
+
+        mll = VariationalELBO(
+            likelihood=model.likelihood,
+            model=model,
+            num_data=2 * model.num_data,
+        )
+        mll = fit_gpytorch_mll(mll)
+
+        # model.eval()
+        # model.likelihood.eval()
+
+        sampler = SobolQMCNormalSampler(sample_shape=64)
+
+        acq_func = qExpectedUtilityOfBestOption(model=model, sampler=sampler)
+
+        bounds = get_botorch_bounds(self.config_space)
+
         candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
