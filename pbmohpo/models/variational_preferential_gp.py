@@ -17,9 +17,9 @@ from gpytorch.variational import (
 )
 from torch import Tensor
 
-# from src.models.likelihoods.preferential_softmax_likelihood import (
-    # PreferentialSoftmaxLikelihood,
-# )
+from pbmohpo.models.likelihoods.preferential_softmax_likelihood import (
+    PreferentialSoftmaxLikelihood,
+)
 
 
 class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
@@ -49,7 +49,8 @@ class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
         )  # Reshape queries in the form of "standard training inputs"
         train_y = responses.squeeze(-1)  # Squeeze out output dimension
         bounds = torch.tensor(
-            [[0, 1] for _ in range(self.input_dim)], dtype=torch.double
+            [[0, 1] for _ in range(self.input_dim)], dtype=torch.float
+            # [[0, 1] for _ in range(self.input_dim)], dtype=torch.double
         ).T  # This assumes the input space has been normalized beforehand
         # Construct variational distribution and strategy
         if use_withening:

@@ -173,4 +173,13 @@ def convert_torch_archive_for_variational_preferential_gp(
            between 0 and `q-1` indicating the decision vector selected by the user.
     """
     # x[int(y[0][0].item())]
-    pass
+    helper_list_X = []
+
+    for duel in y:
+        temp_2d_tensor = torch.stack([X[int(duel[0])], X[int(duel[1])]])
+        helper_list_X.append(temp_2d_tensor)
+
+    new_X = torch.stack(helper_list_X)
+    new_y = torch.ones(len(new_X), dtype=torch.float32)
+
+    return new_X.type(torch.Tensor), new_y
