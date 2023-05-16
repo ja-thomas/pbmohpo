@@ -13,6 +13,6 @@ setup(
     extras_require={
         "dev": ["black", "flake8", "isort"],
         "experiments": ["yacs"],
-        "tests": ["pytest>=4.6"],
+        "test": ["pytest>=4.6"],
     },
 )
