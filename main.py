@@ -1,7 +1,10 @@
 import argparse
 import logging
+import time
 
 import matplotlib.pyplot as plt
+import mlflow
+from mlflow import log_metric, log_metrics, log_params
 
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
@@ -14,7 +17,7 @@ from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
 
 
-def run_pbmohpo_bench(config, visualize: bool = False):
+def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False):
     """
     Run a preferential bayesian hyperparameter optimization benchmark as
     specified in the config file.
@@ -38,12 +41,16 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     Specify whether to create plots (with default configuration) for
     benchmark.
     """
+
+    if use_mlflow:
+        mlflow.set_experiment(config.NAME.NAME)
+        log_params(config)
+
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
         logging.info("Testing ZDT1")
         prob = ZDT1(dimension=config.PROBLEM.DIMENSIONS)
 
     elif config.PROBLEM.PROBLEM_TYPE == "yahpo":
-
         logging.info("Testing YAHPO")
         logging.info(f"id: {config.PROBLEM.ID}")
         logging.info(f"instance: {config.PROBLEM.INSTANCE}")
@@ -90,9 +97,14 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     bench.run()
 
     archive = bench.archive
+    best_eval = archive.evaluations[archive.incumbents[0]]
+
+    if use_mlflow:
+        log_metric("utility", best_eval.utility)
+        log_metrics(best_eval.objectives)
 
     logging.info(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
-    logging.info(archive.evaluations[archive.incumbents[0]])
+    logging.info(best_eval)
 
     if visualize:
         fig = visualize_archives(archive_list=[archive])
@@ -100,7 +112,6 @@ def run_pbmohpo_bench(config, visualize: bool = False):
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Specify experiment to run")
 
     parser.add_argument(
@@ -137,6 +148,14 @@ if __name__ == "__main__":
         dest="visualize",
     )
 
+    parser.add_argument(
+        "-m",
+        "--mlflow",
+        help="Should experiment be tracked by mlflow",
+        action="store_true",
+        dest="use_mlflow",
+    )
+
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
@@ -145,4 +164,4 @@ if __name__ == "__main__":
     cfg.freeze()
     logging.debug(cfg)
 
-    run_pbmohpo_bench(cfg, visualize=args.visualize)
+    run_pbmohpo_bench(cfg, visualize=args.visualize, use_mlflow=args.use_mlflow)

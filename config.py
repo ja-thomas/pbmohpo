@@ -4,6 +4,9 @@ from pbmohpo.problems.zdt1 import ZDT1
 
 _C = CN()
 
+_C.NAME = CN()
+_C.NAME.NAME = "PBMOHPO"
+
 _C.PROBLEM = CN()
 _C.PROBLEM.PROBLEM_TYPE = "zdt1"
 
