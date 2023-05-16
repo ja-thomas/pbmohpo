@@ -43,7 +43,7 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
     """
 
     if use_mlflow:
-        mlflow.set_experiment(config.NAME.NAME)
+        mlflow.set_experiment(config.NAME.EXPERIMENT_NAME)
         log_params(config)
 
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
