@@ -138,7 +138,23 @@ class EUBO(BayesianOptimization):
 
 
 class qEUBO(EUBO):
-    """description"""
+    """
+    Bayesian Optimization for Pairwise Comparison Data.
+
+    Implements the expected utility of the best option algrithm.
+    For details see: https://arxiv.org/pdf/2303.15746.pdf
+
+    Their implementation can be found here: https://github.com/facebookresearch/qEUBO
+    Large parts of that code have been used in this implementation.
+
+    Parameters
+    ----------
+    config_space: CS.ConfigurationSpace
+        The config space the optimizer searches over
+
+    initial_design_size: int, None
+        Size of the initial design, if not specified, two times the number of HPs is used
+    """
 
     def __init__(
         self,
@@ -153,6 +169,23 @@ class qEUBO(EUBO):
             super().__init__(config_space)
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
+        """
+        Propose a new configuration by surrogate
+
+        Parameters
+        ----------
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
+
+        Returns
+        -------
+        CS.Configuration:
+            Proposed Configuration
+
+        """
 
         X, _ = archive.to_torch()
         y = torch.Tensor(archive.comparisons)
@@ -171,11 +204,7 @@ class qEUBO(EUBO):
 
         mll = fit_gpytorch_mll(mll)
 
-        # model.eval()
-        # model.likelihood.eval()
-
         sampler = SobolQMCNormalSampler(sample_shape=64)
-
         acq_func = qExpectedUtilityOfBestOption(model=model, sampler=sampler)
 
         bounds = get_botorch_bounds(self.config_space)

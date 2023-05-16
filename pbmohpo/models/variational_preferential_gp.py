@@ -10,16 +10,12 @@ from gpytorch.kernels import Kernel, RBFKernel, ScaleKernel
 from gpytorch.means import ConstantMean
 from gpytorch.models import ApproximateGP
 from gpytorch.priors.torch_priors import GammaPrior
-from gpytorch.variational import (
-    CholeskyVariationalDistribution,
-    UnwhitenedVariationalStrategy,
-    VariationalStrategy,
-)
+from gpytorch.variational import (CholeskyVariationalDistribution,
+                                  UnwhitenedVariationalStrategy,
+                                  VariationalStrategy)
+from pbmohpo.models.likelihoods.preferential_softmax_likelihood import \
+    PreferentialSoftmaxLikelihood
 from torch import Tensor
-
-from pbmohpo.models.likelihoods.preferential_softmax_likelihood import (
-    PreferentialSoftmaxLikelihood,
-)
 
 
 class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
@@ -31,13 +27,22 @@ class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
         covar_module: Optional[Kernel] = None,
     ) -> None:
         r"""
-        Args:
-            queries: A `n x q x d` tensor of training inputs. Each of the `n` queries is constituted
-                by `q` `d`-dimensional decision vectors.
-            responses: A `n x 1` tensor of training outputs. Each of the `n` responses is an integer
-                between 0 and `q-1` indicating the decision vector selected by the user.
-            use_withening: If true, use withening to enhance variational inference.
-            covar_module: The module computing the covariance matrix.
+        Parameters
+        ----------
+        queries: torch.Tensor
+            A `n x q x d` tensor of training inputs. Each of the `n` queries
+            is constituted by `q` `d`-dimensional decision vectors.
+
+        responses: torch.Tensor
+            A `n x 1` tensor of training outputs. Each of the `n` responses is
+            an integer between 0 and `q-1` indicating the decision vector
+            selected by the user.
+
+        use_withening: bool
+            If true, use withening to enhance variational inference.
+
+        covar_module:
+            The module computing the covariance matrix.
         """
         self.queries = queries
         self.responses = responses
@@ -49,7 +54,8 @@ class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
         )  # Reshape queries in the form of "standard training inputs"
         train_y = responses.squeeze(-1)  # Squeeze out output dimension
         bounds = torch.tensor(
-            [[0, 1] for _ in range(self.input_dim)], dtype=torch.float
+            [[0, 1] for _ in range(self.input_dim)],
+            dtype=torch.float
             # [[0, 1] for _ in range(self.input_dim)], dtype=torch.double
         ).T  # This assumes the input space has been normalized beforehand
         # Construct variational distribution and strategy

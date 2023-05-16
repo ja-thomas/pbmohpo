@@ -1,6 +1,6 @@
 import torch
-from botorch.sampling import SobolQMCNormalSampler
 from botorch.posteriors.gpytorch import GPyTorchPosterior
+from botorch.sampling import SobolQMCNormalSampler
 from gpytorch.distributions import base_distributions
 from gpytorch.likelihoods import Likelihood
 
@@ -9,10 +9,13 @@ class PreferentialSoftmaxLikelihood(Likelihood):
     r"""
     Implements the softmax likelihood used for GP-based preference learning.
 
-    .. math::
-        p(\mathbf y \mid \mathbf f) = \text{Softmax} \left( \mathbf f \right)
+    Underlying math:
+    p(\mathbf y \mid \mathbf f) = \text{Softmax} \left( \mathbf f \right)
 
-    :param int num_alternatives: Number of alternatives (i.e., q).
+    Parameters
+    ----------
+    num_alternatives: int
+        Number of alternatives (i.e., q)
     """
 
     def __init__(self, num_alternatives):
@@ -20,8 +23,8 @@ class PreferentialSoftmaxLikelihood(Likelihood):
         self.num_alternatives = num_alternatives
         self.noise = torch.tensor(1e-4)  # This is only used to draw RFFs-based
         # samples. We set it close to zero because we want noise-free samples
-        self.sampler = SobolQMCNormalSampler(sample_shape=512)  # This allows for
-        # SAA-based optimization of the ELBO
+        self.sampler = SobolQMCNormalSampler(sample_shape=512)  # This allows
+        # for SAA-based optimization of the ELBO
 
     def _draw_likelihood_samples(
         self, function_dist, *args, sample_shape=None, **kwargs
