@@ -1,6 +1,5 @@
 import argparse
 import logging
-import time
 
 import matplotlib.pyplot as plt
 import mlflow
@@ -80,7 +79,9 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
         logging.info("Running Bayesian Optimization on Pairwise Comparisons")
         opt = EUBO(prob.get_config_space())
 
-    dm = DecisionMaker(objective_names=prob.get_objective_names())
+    dm = DecisionMaker(
+        objective_names=prob.get_objective_names(), seed=config.DECISION_MAKER.SEED
+    )
 
     logging.info("Decision Maker Preference Scores:")
     logging.info(dm.preferences)
