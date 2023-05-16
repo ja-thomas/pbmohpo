@@ -1,7 +1,5 @@
 from yacs.config import CfgNode as CN
 
-from pbmohpo.problems.zdt1 import ZDT1
-
 _C = CN()
 
 _C.NAME = CN()
