@@ -16,6 +16,8 @@ class DecisionMaker:
         Dict containing a weight for each objective
     objective_names: List, None
         List of objective names, if preferences are not given, preference values are sampled randomely
+    seed: int, np.random.RandomState
+        Seed used to generate the preferences if not given
     """
 
     def __init__(
