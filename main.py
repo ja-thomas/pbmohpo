@@ -1,9 +1,10 @@
 import argparse
 import logging
+import tempfile
 
 import matplotlib.pyplot as plt
 import mlflow
-from mlflow import log_metric, log_metrics, log_params
+from mlflow import log_artifact, log_metric, log_metrics, log_params
 
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
@@ -108,8 +109,13 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
     logging.info(best_eval)
 
     if visualize:
-        fig = visualize_archives(archive_list=[archive])
-        plt.show()
+        visualize_archives(archive_list=[archive])
+        if mlflow:
+            logging.info("Storing trace")
+            plt.savefig(f"{tempfile.gettempdir()}/trace.png")
+            log_artifact(f"{tempfile.gettempdir()}/trace.png")
+        else:
+            plt.show()
 
 
 if __name__ == "__main__":
