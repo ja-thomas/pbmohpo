@@ -1,20 +1,21 @@
-# from https://github.com/facebookresearch/qEUBO
-
 from typing import Optional
 
 import torch
 from botorch.models.gpytorch import GPyTorchModel
+from botorch.posteriors.gpytorch import GPyTorchPosterior
+from botorch.sampling import SobolQMCNormalSampler
 from botorch.utils.sampling import draw_sobol_samples
-from gpytorch.distributions import MultivariateNormal
+from gpytorch.distributions import MultivariateNormal, base_distributions
 from gpytorch.kernels import Kernel, RBFKernel, ScaleKernel
+from gpytorch.likelihoods import Likelihood
 from gpytorch.means import ConstantMean
 from gpytorch.models import ApproximateGP
 from gpytorch.priors.torch_priors import GammaPrior
 from gpytorch.variational import (CholeskyVariationalDistribution,
                                   UnwhitenedVariationalStrategy,
                                   VariationalStrategy)
-from pbmohpo.models.likelihoods.preferential_softmax_likelihood import \
-    PreferentialSoftmaxLikelihood
+# from pbmohpo.models.likelihoods.preferential_softmax_likelihood import \
+    # PreferentialSoftmaxLikelihood
 from torch import Tensor
 
 
@@ -26,7 +27,7 @@ class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
         use_withening: bool = True,
         covar_module: Optional[Kernel] = None,
     ) -> None:
-        r"""
+        """
         Parameters
         ----------
         queries: torch.Tensor
@@ -113,5 +114,52 @@ class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
 
     @property
     def num_outputs(self) -> int:
-        r"""The number of outputs of the model."""
+        """The number of outputs of the model."""
         return 1
+
+
+class PreferentialSoftmaxLikelihood(Likelihood):
+    """
+    Implements the softmax likelihood used for GP-based preference learning.
+
+    Underlying math:
+    p(\mathbf y \mid \mathbf f) = \text{Softmax} \left( \mathbf f \right)
+
+    Parameters
+    ----------
+    num_alternatives: int
+        Number of alternatives (i.e., q)
+    """
+
+    def __init__(self, num_alternatives):
+        super().__init__()
+        self.num_alternatives = num_alternatives
+        self.noise = torch.tensor(1e-4)  # This is only used to draw RFFs-based
+        # samples. We set it close to zero because we want noise-free samples
+        self.sampler = SobolQMCNormalSampler(sample_shape=512)  # This allows
+        # for SAA-based optimization of the ELBO
+
+    def _draw_likelihood_samples(
+        self, function_dist, *args, sample_shape=None, **kwargs
+    ):
+        function_samples = self.sampler(GPyTorchPosterior(function_dist)).squeeze(-1)
+        return self.forward(function_samples, *args, **kwargs)
+
+    def forward(self, function_samples, *params, **kwargs):
+        function_samples = function_samples.reshape(
+            function_samples.shape[:-1]
+            + torch.Size(
+                (
+                    int(function_samples.shape[-1] / self.num_alternatives),
+                    self.num_alternatives,
+                )
+            )
+        )  # Reshape samples as if they came from a multi-output model (with `q` outputs)
+        num_alternatives = function_samples.shape[-1]
+
+        if num_alternatives != self.num_alternatives:
+            raise RuntimeError("There should be %d points" % self.num_alternatives)
+
+        res = base_distributions.Categorical(logits=function_samples)  # Passing the
+        # function values as logits recovers the softmax likelihood
+        return res

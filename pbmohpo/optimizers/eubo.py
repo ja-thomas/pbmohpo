@@ -16,8 +16,7 @@ from gpytorch.mlls.variational_elbo import VariationalELBO
 from pbmohpo.acquisition_functions.qexpected_utility_of_best_option import \
     qExpectedUtilityOfBestOption
 from pbmohpo.archive import Archive
-from pbmohpo.models.variational_preferential_gp import \
-    VariationalPreferentialGP
+from pbmohpo.optimizers.botorch_utils import VariationalPreferentialGP
 from pbmohpo.optimizers.optimizer import BayesianOptimization
 from pbmohpo.utils import (
     convert_torch_archive_for_variational_preferential_gp, get_botorch_bounds)

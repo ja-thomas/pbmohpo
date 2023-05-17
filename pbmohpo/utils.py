@@ -158,7 +158,8 @@ def convert_torch_archive_for_variational_preferential_gp(
     X: torch.Tensor, y: torch.Tensor
 ):
     """
-    Get bounds of hyperparameters in the format botorch needs
+    Converts inputs and targets to the form the implementation of the 
+    variational preferential gp needs.
 
     Parameters
     ----------
@@ -181,8 +182,9 @@ def convert_torch_archive_for_variational_preferential_gp(
     helper_list_X = []
 
     for duel in y:
-        temp_2d_tensor = torch.stack([X[int(duel[0])], X[int(duel[1])]])
-        helper_list_X.append(temp_2d_tensor)
+        # temp_2d_tensor = torch.stack([X[int(duel[0])], X[int(duel[1])]])
+        # helper_list_X.append(temp_2d_tensor)
+        helper_list_X = [torch.stack([X[int(duel[0])], X[int(duel[1])]]) for duel in y]
 
     new_X = torch.stack(helper_list_X)
     new_y = torch.ones(len(new_X), dtype=torch.float32)
