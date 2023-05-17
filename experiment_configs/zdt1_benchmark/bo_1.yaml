@@ -1,3 +1,6 @@
+NAME:
+  EXPERIMENT_NAME: "ZDT1_test"
+
 PROBLEM:
   PROBLEM_TYPE: "zdt1"
 
