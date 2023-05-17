@@ -10,5 +10,8 @@ setup(
     license="LGPL",
     packages=find_packages(),
     install_requires=["configspace", "botorch", "yahpo-gym"],
-    extras_require={"dev": ["black", "flake8", "isort"], "experiments": ["yacs"]},
+    extras_require={
+        "dev": ["black", "flake8", "isort"],
+        "experiments": ["yacs", "mlflow"],
+    },
 )

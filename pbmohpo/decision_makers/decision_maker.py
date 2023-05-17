@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 
@@ -16,24 +16,27 @@ class DecisionMaker:
         Dict containing a weight for each objective
     objective_names: List, None
         List of objective names, if preferences are not given, preference values are sampled randomely
+    seed: int, np.random.RandomState
+        Seed used to generate the preferences if not given
     """
 
     def __init__(
         self,
         preferences: Optional[Dict] = None,
         objective_names: Optional[List] = None,
+        seed: Optional[Union[np.random.RandomState, int]] = 42,
     ) -> None:
-
         assert not (preferences is None and objective_names is None)
 
         # if preference dict is not given, sample random preference weights and construct dict
         if preferences is None:
+            np.random.seed(seed)
             pref_weights = np.random.random(len(objective_names))
             pref_weights /= sum(pref_weights)
             preferences = dict(zip(objective_names, pref_weights))
         else:
             assert sum(preferences.values()) == 1.0
-
+        self.seed = seed
         self.preferences = preferences
 
     def _compute_utility(self, objectives: Dict) -> float:
