@@ -154,39 +154,3 @@ def color_generator():
         yield color
 
 
-def convert_torch_archive_for_variational_preferential_gp(
-    X: torch.Tensor, y: torch.Tensor
-):
-    """
-    Converts inputs and targets to the form the implementation of the 
-    variational preferential gp needs.
-
-    Parameters
-    ----------
-    X: torch.Tensor
-        Configs in archive as given by archive.to_torch()
-    y: torch.Tensor
-        Recorded duels in archive as given by archive.to_torch()
-
-    Returns
-    -------
-    new_X: torch.Tensor
-        An n x q x n tensor Each of the `n` queries is constituted
-        by `q` `d`-dimensional decision vectors.
-
-    new_y: torch.Tensor
-        An n x 1 tensor of training outputs. Each of the `n` responses is an
-        integer between 0 and `q-1` indicating the decision vector selected by
-        the user.
-    """
-    helper_list_X = []
-
-    for duel in y:
-        # temp_2d_tensor = torch.stack([X[int(duel[0])], X[int(duel[1])]])
-        # helper_list_X.append(temp_2d_tensor)
-        helper_list_X = [torch.stack([X[int(duel[0])], X[int(duel[1])]]) for duel in y]
-
-    new_X = torch.stack(helper_list_X)
-    new_y = torch.ones(len(new_X), dtype=torch.float32)
-
-    return new_X.type(torch.Tensor), new_y

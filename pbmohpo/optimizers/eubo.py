@@ -13,13 +13,11 @@ from botorch.models.pairwise_gp import (PairwiseGP,
 from botorch.optim import optimize_acqf
 from botorch.sampling import SobolQMCNormalSampler
 from gpytorch.mlls.variational_elbo import VariationalELBO
-from pbmohpo.acquisition_functions.qexpected_utility_of_best_option import \
-    qExpectedUtilityOfBestOption
 from pbmohpo.archive import Archive
-from pbmohpo.optimizers.botorch_utils import VariationalPreferentialGP
+from pbmohpo.botorch_utils import (VariationalPreferentialGP,
+                                   qExpectedUtilityOfBestOption)
 from pbmohpo.optimizers.optimizer import BayesianOptimization
-from pbmohpo.utils import (
-    convert_torch_archive_for_variational_preferential_gp, get_botorch_bounds)
+from pbmohpo.utils import get_botorch_bounds
 
 
 class EUBO(BayesianOptimization):
@@ -162,10 +160,10 @@ class qEUBO(EUBO):
     ) -> None:
 
         # TODO: Is this really needed or can I pass None along?
-        if initial_design_size:
-            super().__init__(config_space, initial_design_size)
-        else:
-            super().__init__(config_space)
+        # if initial_design_size:
+        super().__init__(config_space, initial_design_size)
+        # else:
+        # super().__init__(config_space)
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
         """
@@ -189,7 +187,7 @@ class qEUBO(EUBO):
         X, _ = archive.to_torch()
         y = torch.Tensor(archive.comparisons)
 
-        X, y = convert_torch_archive_for_variational_preferential_gp(X, y)
+        X, y = self._convert_torch_archive_for_variational_preferential_gp(X, y)
 
         model = VariationalPreferentialGP(X, y)
         model.train()
@@ -221,3 +219,40 @@ class qEUBO(EUBO):
 
         configs = self._candidates_to_configs(candidates, n)
         return configs
+
+    def _convert_torch_archive_for_variational_preferential_gp(
+        self, X: torch.Tensor, y: torch.Tensor
+    ):
+        """
+        Converts inputs and targets to the form the implementation of the
+        variational preferential gp needs.
+
+        Parameters
+        ----------
+        X: torch.Tensor
+            Configs in archive as given by archive.to_torch()
+        y: torch.Tensor
+            Recorded duels in archive as given by archive.to_torch()
+
+        Returns
+        -------
+        new_X: torch.Tensor
+            An n x q x n tensor Each of the `n` queries is constituted
+            by `q` `d`-dimensional decision vectors.
+
+        new_y: torch.Tensor
+            An n x 1 tensor of training outputs. Each of the `n` responses is
+            an integer between 0 and `q-1` indicating the decision vector
+            selected by the user.
+        """
+        helper_list_X = []
+
+        for duel in y:
+            helper_list_X = [
+                torch.stack([X[int(duel[0])], X[int(duel[1])]]) for duel in y
+            ]
+
+        new_X = torch.stack(helper_list_X)
+        new_y = torch.ones(len(new_X), dtype=torch.float32)
+
+        return new_X.type(torch.Tensor), new_y
