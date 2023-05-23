@@ -40,6 +40,9 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
     visualize: bool
     Specify whether to create plots (with default configuration) for
     benchmark.
+
+    use_mlflow: bool
+    Should the experiment be tracked with mlflow.
     """
 
     if use_mlflow:
