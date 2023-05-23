@@ -44,7 +44,8 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
 
     if use_mlflow:
         mlflow.set_experiment(config.NAME.EXPERIMENT_NAME)
-        log_params(config)
+        for c_item in config.values():
+            log_params(c_item)
 
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
         logging.info("Testing ZDT1")
