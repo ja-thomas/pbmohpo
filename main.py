@@ -1,7 +1,10 @@
 import argparse
 import logging
+import tempfile
 
 import matplotlib.pyplot as plt
+import mlflow
+from mlflow import log_artifact, log_metric, log_metrics, log_params
 
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
@@ -14,7 +17,7 @@ from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
 
 
-def run_pbmohpo_bench(config, visualize: bool = False):
+def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False):
     """
     Run a preferential bayesian hyperparameter optimization benchmark as
     specified in the config file.
@@ -37,13 +40,21 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     visualize: bool
     Specify whether to create plots (with default configuration) for
     benchmark.
+
+    use_mlflow: bool
+    Should the experiment be tracked with mlflow.
     """
+
+    if use_mlflow:
+        mlflow.set_experiment(config.NAME.EXPERIMENT_NAME)
+        for c_item in config.values():
+            log_params(c_item)
+
     if config.PROBLEM.PROBLEM_TYPE == "zdt1":
         logging.info("Testing ZDT1")
         prob = ZDT1(dimension=config.PROBLEM.DIMENSIONS)
 
     elif config.PROBLEM.PROBLEM_TYPE == "yahpo":
-
         logging.info("Testing YAHPO")
         logging.info(f"id: {config.PROBLEM.ID}")
         logging.info(f"instance: {config.PROBLEM.INSTANCE}")
@@ -73,7 +84,9 @@ def run_pbmohpo_bench(config, visualize: bool = False):
         logging.info("Running Bayesian Optimization on Pairwise Comparisons")
         opt = EUBO(prob.get_config_space())
 
-    dm = DecisionMaker(objective_names=prob.get_objective_names())
+    dm = DecisionMaker(
+        objective_names=prob.get_objective_names(), seed=config.DECISION_MAKER.SEED
+    )
 
     logging.info("Decision Maker Preference Scores:")
     logging.info(dm.preferences)
@@ -90,17 +103,26 @@ def run_pbmohpo_bench(config, visualize: bool = False):
     bench.run()
 
     archive = bench.archive
+    best_eval = archive.evaluations[archive.incumbents[0]]
+
+    if use_mlflow:
+        log_metric("utility", best_eval.utility)
+        log_metrics(best_eval.objectives)
 
     logging.info(f"Best Configuration found in iteration [{archive.incumbents[0]}]:")
-    logging.info(archive.evaluations[archive.incumbents[0]])
+    logging.info(best_eval)
 
     if visualize:
-        fig = visualize_archives(archive_list=[archive])
-        plt.show()
+        visualize_archives(archive_list=[archive])
+        if mlflow:
+            logging.info("Storing trace")
+            plt.savefig(f"{tempfile.gettempdir()}/trace.png")
+            log_artifact(f"{tempfile.gettempdir()}/trace.png")
+        else:
+            plt.show()
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(description="Specify experiment to run")
 
     parser.add_argument(
@@ -137,6 +159,14 @@ if __name__ == "__main__":
         dest="visualize",
     )
 
+    parser.add_argument(
+        "-m",
+        "--mlflow",
+        help="Should experiment be tracked by mlflow",
+        action="store_true",
+        dest="use_mlflow",
+    )
+
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
@@ -145,4 +175,4 @@ if __name__ == "__main__":
     cfg.freeze()
     logging.debug(cfg)
 
-    run_pbmohpo_bench(cfg, visualize=args.visualize)
+    run_pbmohpo_bench(cfg, visualize=args.visualize, use_mlflow=args.use_mlflow)
