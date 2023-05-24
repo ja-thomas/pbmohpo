@@ -19,6 +19,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[test]
 
+      - name: Prepare YAHPO
+        run: |
+          cd ~/work
+          git clone https://github.com/slds-lmu/yahpo_data.git
+          printf "data_path: ~/work/yahpo_data\n" >> ~/.config/yahpo_gym
+
       - name: Run pytest
         run: |
           pytest -sv tests/
