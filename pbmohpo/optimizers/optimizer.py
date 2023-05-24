@@ -1,5 +1,5 @@
 import logging
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from typing import List, Tuple
 
 import ConfigSpace as CS
@@ -70,13 +70,16 @@ class Optimizer(ABC):
         """
         raise NotImplementedError()
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def dueling(self) -> bool:
         raise NotImplementedError()
 
 
 class BayesianOptimization(Optimizer):
     def __init__(self, config_space: CS.ConfigurationSpace) -> None:
+        # FIXME: same as initial_design_size new_configs is always used and should be moved to the base class
+        self.new_configs = 0
         super().__init__(config_space)
 
     def propose_config(self, archive: Archive, n: int = 1) -> List[CS.Configuration]:
@@ -99,16 +102,16 @@ class BayesianOptimization(Optimizer):
             Proposed Configuration
 
         """
+        # FIXME: where does initial_design_size come from? probably from the subclass but should be moved to the base class
         if len(archive.evaluations) == 0:
             logging.info(f"Running: Intial Design of size {self.initial_design_size}")
-            n = self.initial_design_size
             configs = self.config_space.sample_configuration(self.initial_design_size)
         else:
             try:
-                configs = self._surrogate_proposal(archive, n=n)
+                configs = self._surrogate_proposal(archive, n=self.initial_design_size)
             except Exception as e:
-                logging.warn(f"Surrogate proposal failed with: \n{e}\n")
-                logging.warn("Generating random configuration(s) instead")
+                logging.warning(f"Surrogate proposal failed with: \n{e}\n")
+                logging.warning("Generating random configuration(s) instead")
                 configs = self.config_space.sample_configuration(n)
 
         self.new_configs = len(configs)
@@ -159,4 +162,4 @@ class BayesianOptimization(Optimizer):
         """
         Propose a configuration based on a surrogate model.
         """
-        raise (NotImplementedError)
+        raise NotImplementedError
