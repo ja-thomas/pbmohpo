@@ -9,7 +9,17 @@ setup(
     author_email="janek.thomas@stat.uni-muenchen.de",
     license="LGPL",
     packages=find_packages(),
-    install_requires=["ConfigSpace", "botorch", "gpytorch", "torch", "yahpo-gym", "matplotlib", "numpy"],
+    install_requires=[
+        "ConfigSpace",
+        "botorch",
+        "gpytorch",
+        "torch",
+        "yahpo-gym",
+        "openml",
+        "lightgbm",
+        "matplotlib",
+        "numpy",
+    ],
     extras_require={
         "dev": ["black", "flake8", "isort"],
         "experiments": ["yacs"],

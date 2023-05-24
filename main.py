@@ -12,6 +12,7 @@ from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.eubo import EUBO
 from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
+from pbmohpo.problems.lgboml import LgbOpenML
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
@@ -73,6 +74,12 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
             instance=str(config.PROBLEM.INSTANCE),
             objective_names=config.PROBLEM.OBJECTIVE_NAMES,
         )
+
+    elif config.PROBLEM.PROBLEM_TYPE == "lgboml":
+        logging.info(
+            f"Testing LightGBM Tuning on OpenML Task {config.PROBLEM.OML_TASK}"
+        )
+        prob = LgbOpenML(task_id=config.PROBLEM.OML_TASK)
 
     if config.OPTIMIZER.OPTIMIZER_TYPE == "RS":
         logging.info("Running Random Search")
