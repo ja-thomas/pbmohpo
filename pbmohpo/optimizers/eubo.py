@@ -37,7 +37,6 @@ class EUBO(BayesianOptimization):
         config_space: CS.ConfigurationSpace,
         initial_design_size: Optional[int] = None,
     ) -> None:
-
         if initial_design_size is None:
             initial_design_size = 2 * len(config_space.items())
 

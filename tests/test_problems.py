@@ -1,8 +1,10 @@
 import pytest
-from pbmohpo.problems.zdt1 import *
-from pbmohpo.problems.yahpo import *
 from ConfigSpace import ConfigurationSpace
 from yahpo_gym import benchmark_set
+
+from pbmohpo.problems.yahpo import *
+from pbmohpo.problems.zdt1 import *
+
 
 def test_zdt1():
     with pytest.raises(AssertionError) as e:
@@ -24,12 +26,24 @@ def test_zdt1():
     assert ys["y0"] == 0.0
     assert ys["y1"] == -1.0
 
+
 def test_yahpo():
-    problem = YAHPO("iaml_rpart", instance="41146", objective_names=["auc", "nf"], fix_hps={"trainsize": 1}, seed=0)
+    problem = YAHPO(
+        "iaml_rpart",
+        instance="41146",
+        objective_names=["auc", "nf"],
+        fix_hps={"trainsize": 1},
+        seed=0,
+    )
     assert type(problem) == YAHPO
     configspace = problem.get_config_space()
     assert type(configspace) == ConfigurationSpace
-    assert configspace.get_hyperparameter_names() == ["cp", "maxdepth", "minbucket", "minsplit"]
+    assert configspace.get_hyperparameter_names() == [
+        "cp",
+        "maxdepth",
+        "minbucket",
+        "minsplit",
+    ]
     assert problem.n_objectives == 2
     assert problem.get_objective_names() == ["auc", "nf"]
     ys = problem(configspace.get_default_configuration())
@@ -44,14 +58,22 @@ def test_yahpo():
     config.update({"task_id": bench.instance, "trainsize": 1})
     ys_yahpo = bench.objective_function(config)
     assert ys_yahpo[0]["auc"] == ys["auc"]
-    assert ys_yahpo[0]["nf"] == - ys["nf"]
+    assert ys_yahpo[0]["nf"] == -ys["nf"]
 
     # test without fix_hps
-    problem = YAHPO("iaml_rpart", instance="41146", objective_names=["auc", "nf"], seed=0)
+    problem = YAHPO(
+        "iaml_rpart", instance="41146", objective_names=["auc", "nf"], seed=0
+    )
     assert type(problem) == YAHPO
     configspace = problem.get_config_space()
     assert type(configspace) == ConfigurationSpace
-    assert configspace.get_hyperparameter_names() == ["cp", "maxdepth", "minbucket", "minsplit", "trainsize"]
+    assert configspace.get_hyperparameter_names() == [
+        "cp",
+        "maxdepth",
+        "minbucket",
+        "minsplit",
+        "trainsize",
+    ]
     assert problem.n_objectives == 2
     assert problem.get_objective_names() == ["auc", "nf"]
     ys = problem(configspace.get_default_configuration())
