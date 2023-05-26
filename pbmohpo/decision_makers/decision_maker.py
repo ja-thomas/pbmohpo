@@ -26,7 +26,9 @@ class DecisionMaker:
         objective_names: Optional[List] = None,
         seed: Optional[Union[np.random.RandomState, int]] = 42,
     ) -> None:
-        assert not (preferences is None and objective_names is None), "Either preferences or objective_names must be provided."
+        assert not (
+            preferences is None and objective_names is None
+        ), "Either preferences or objective_names must be provided."
         # FIXME: there is likely the edge case that both are given but do not match
         # if preference dict is not given, sample random preference weights and construct dict
         if preferences is None:
@@ -35,7 +37,9 @@ class DecisionMaker:
             pref_weights /= sum(pref_weights)
             preferences = dict(zip(objective_names, pref_weights))
         else:
-            assert sum(preferences.values()) == 1.0, "Preference weights need to sum to 1."
+            assert (
+                sum(preferences.values()) == 1.0
+            ), "Preference weights need to sum to 1."
         self.seed = seed
         self.preferences = preferences
 
@@ -53,7 +57,9 @@ class DecisionMaker:
         float
             Utility value
         """
-        assert self.preferences.keys() == objectives.keys(), "Preferences and objectives need to match."
+        assert (
+            self.preferences.keys() == objectives.keys()
+        ), "Preferences and objectives need to match."
 
         pref_vals = [
             self.preferences[k] * objectives[k] for k in self.preferences.keys()

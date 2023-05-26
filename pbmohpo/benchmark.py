@@ -61,7 +61,6 @@ class Benchmark:
         while len(self.archive.evaluations) < self.eval_budget or (
             self.optimizer.dueling and len(self.archive.comparisons) < self.dm_budget
         ):
-
             if len(self.archive.evaluations) < self.eval_budget:
                 # Number of configurations to propose is either the batch size or the remaining budget
                 n_eval = min(

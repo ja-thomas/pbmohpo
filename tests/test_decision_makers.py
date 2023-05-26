@@ -1,4 +1,5 @@
 import pytest
+
 from pbmohpo.decision_makers.decision_maker import *
 
 
@@ -18,11 +19,11 @@ def test_decision_maker():
     with pytest.raises(AssertionError) as e:
         dm.compare({"y0": 0, "y1": 1}, {"y0": 1, "y2": 0})
     assert str(e.value) == "Objectives need to match."
-    
+
     with pytest.raises(AssertionError) as e:
         dm.compare({"y0": 0, "y2": 1}, {"y0": 1, "y2": 0})
     assert str(e.value) == "Preferences and objectives need to match."
-        
+
     assert dm.compare({"y0": 0, "y1": 1}, {"y0": 1, "y1": 0}) is False
     assert dm.compare({"y0": 1, "y1": 0}, {"y0": 0, "y1": 1}) is False
     assert dm.compare({"y0": 0.1, "y1": 1}, {"y0": 0, "y1": 1}) is True
