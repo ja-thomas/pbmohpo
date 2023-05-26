@@ -18,7 +18,7 @@ class UtilityBayesianOptimization(BayesianOptimization):
     Single objective Bayesian optimization of utility scores.
 
     Implements a simple BO loop to optimize the utility scores provided by the decision maker.
-    Uses a GP surrogate and UCB acquision function with beta=0.1.
+    Uses a GP surrogate and UCB acquisition function with beta=0.1.
 
     Parameters
     ----------

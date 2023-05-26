@@ -1,0 +1,17 @@
+python main.py -vm --config experiment_configs/zdt1_benchmark/random_1.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/random_2.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/random_3.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/random_4.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/random_5.yaml
+
+python main.py -vm --config experiment_configs/zdt1_benchmark/bo_1.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/bo_2.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/bo_3.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/bo_4.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/bo_5.yaml
+
+python main.py -vm --config experiment_configs/zdt1_benchmark/eubo_1.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/eubo_2.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/eubo_3.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/eubo_4.yaml
+python main.py -vm --config experiment_configs/zdt1_benchmark/eubo_5.yaml

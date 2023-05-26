@@ -1,8 +1,9 @@
 from yacs.config import CfgNode as CN
 
-from pbmohpo.problems.zdt1 import ZDT1
-
 _C = CN()
+
+_C.NAME = CN()
+_C.NAME.EXPERIMENT_NAME = "PBMOHPO"
 
 _C.PROBLEM = CN()
 _C.PROBLEM.PROBLEM_TYPE = "zdt1"
@@ -31,11 +32,14 @@ _C.FIXED_HPS.BOOSTER = (None, None)
 _C.FIXED_HPS.NUM_IMPUTE_SELECTED_CPO = (None, None)
 _C.FIXED_HPS.REPL = (None, None)
 
+_C.PROBLEM.OML_TASK = 359960
+
 _C.OPTIMIZER = CN()
 _C.OPTIMIZER.OPTIMIZER_TYPE = "BO"
 
 _C.DECISION_MAKER = CN()
 _C.DECISION_MAKER.DECISION_MAKER_TYPE = "DecisionMaker"
+_C.DECISION_MAKER.SEED = 123
 
 _C.BUDGET = CN()
 _C.BUDGET.EVAL_BUDGET = 50

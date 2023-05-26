@@ -37,7 +37,7 @@ def remove_hp_from_cs(
     ----------
     old_cs: CS.ConfigurationSpace
     remove_hp_dict: Dict
-        Dict of with hyperparameters as keys and defaults as values
+        Dict of hyperparameters with hyperparameters as keys and defaults as values
     Returns
     -------
         CS.ConfigurationSpace
@@ -90,7 +90,7 @@ def visualize_archives(
     plot_elements: list[str]
         List of elements that should be plotted. Currently supports
         "incumbent", which plots the incumbent utility over iteration and
-        "utilities", which plots the utility for each iterations over
+        "utilities", which plots the utility for each iteration over
         iteration.
 
     Returns
@@ -135,7 +135,7 @@ def visualize_archives(
 
 def color_generator():
     """
-    Generates colors for archives visualization to match yahpo colors.
+    Generates colors for archives visualization to match YAHPO colors.
     """
     colors = [
         "red",

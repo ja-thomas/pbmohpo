@@ -41,7 +41,6 @@ class EUBO(BayesianOptimization):
         config_space: CS.ConfigurationSpace,
         initial_design_size: Optional[int] = None,
     ) -> None:
-
         if initial_design_size is None:
             initial_design_size = 2 * len(config_space.items())
 
@@ -66,7 +65,7 @@ class EUBO(BayesianOptimization):
         Returns
         -------
         List(Tuple(int, int)):
-            List of tuples of two indicies of Archive evaluations to compare
+            List of tuples of two indices of Archive evaluations to compare
 
         """
 
@@ -123,7 +122,7 @@ class EUBO(BayesianOptimization):
         candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
-            q=n,
+            q=n,  # FIXME: this will always fail if n is not 2 or 1 with a previous winner specified which we do not do?
             num_restarts=3,
             raw_samples=256,
         )

@@ -13,7 +13,7 @@ class YAHPO(Problem):
     """
     YAHPO Gym Problem.
 
-    This class wrappes YAHPO gym (https://github.com/slds-lmu/yahpo_gym/).
+    This class wraps YAHPO Gym (https://github.com/slds-lmu/yahpo_gym/).
 
     Parameters
     ----------
