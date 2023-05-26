@@ -10,9 +10,9 @@ class ZDT1(Problem):
     """
     Synthetic Test Function ZDT1
 
-    Can be scaled to an arbitraty number of dimensions and has two objectives.
+    Can be scaled to an arbitrary number of dimensions and has two objectives.
 
-    Since we are always maximizing we're take the negative function values.
+    Since we are always maximizing we're taking the negative function values.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ class ZDT1(Problem):
         self, seed: Optional[Union[np.random.RandomState, int]] = 42, dimension: int = 2
     ) -> None:
         super().__init__(seed)
-        assert dimension >= 2
+        assert dimension >= 2, "Dimension must be >= 2."
         self.dimension = dimension
 
     def get_config_space(self) -> CS.ConfigurationSpace:

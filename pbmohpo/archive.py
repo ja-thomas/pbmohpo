@@ -35,7 +35,7 @@ class Archive:
 
     def to_numpy(self) -> Tuple:
         """
-        Convert evaluted configurations and utility values to numpy arrays
+        Convert evaluated configurations and utility values to numpy arrays
 
         Returns
         -------
@@ -48,7 +48,7 @@ class Archive:
 
     def to_torch(self) -> Tuple:
         """
-        Convert evaluted configurations and targets to torch arrays
+        Convert evaluated configurations and targets to torch arrays
 
         Returns
         -------
