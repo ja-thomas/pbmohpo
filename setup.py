@@ -24,6 +24,6 @@ setup(
         "dev": ["black", "flake8", "isort"],
         "experiments": ["yacs"],
         "test": ["pytest>=4.6"],
-        "docs": ["sphinx", "sphinx_rtd_theme"]
+        "docs": ["sphinx", "sphinx_rtd_theme"],
     },
 )
