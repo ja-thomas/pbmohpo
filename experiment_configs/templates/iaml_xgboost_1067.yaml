@@ -1,0 +1,10 @@
+PROBLEM:
+  PROBLEM_TYPE: "yahpo"
+  ID: "iaml_xgboost"
+  INSTANCE: "1067"
+  OBJECTIVE_NAMES: ["auc", "nf"]
+
+FIXED_HPS:
+  BOOSTER: ("booster", "gbtree")
+  TRAINSIZE: ("trainsize", 1)
+

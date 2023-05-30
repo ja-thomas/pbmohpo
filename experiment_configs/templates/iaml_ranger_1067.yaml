@@ -1,7 +1,7 @@
 PROBLEM:
   PROBLEM_TYPE: "yahpo"
   ID: "iaml_ranger"
-  INSTANCE: "40981"
+  INSTANCE: "1067"
   OBJECTIVE_NAMES: ["auc", "nf"]
 
 FIXED_HPS:
@@ -9,5 +9,4 @@ FIXED_HPS:
   REPLACE: ("replace", "TRUE")
   RESPECT_UNORDERED_FACTORS: ("respect.unordered.factors", "ignore")
   SPLITRULE: ("splitrule", "gini")
-  NUM_RANDOM_SPLITS: ("num_random_splits", 1)
 

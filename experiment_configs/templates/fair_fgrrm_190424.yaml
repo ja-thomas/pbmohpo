@@ -1,0 +1,10 @@
+PROBLEM:
+  PROBLEM_TYPE: "yahpo"
+  ID: "fair_fgrrm"
+  INSTANCE: "190424"
+  OBJECTIVE_NAMES: ["mmce", "feo"]
+
+FIXED_HPS:
+  TRAINSIZE: ("trainsize", 1)
+  DEFINITION: ("definition", "eo-komiyama")
+

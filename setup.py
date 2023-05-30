@@ -14,7 +14,7 @@ setup(
         "botorch",
         "gpytorch",
         "torch",
-        "yahpo-gym",
+        "yahpo-gym @ git+https://github.com/slds-lmu/yahpo_gym.git@v2#subdirectory=yahpo_gym",
         "openml",
         "lightgbm",
         "matplotlib",

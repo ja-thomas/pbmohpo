@@ -29,14 +29,18 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
     path to config.yaml file. File should be in the following format.
     --
     PROBLEM:
-      DIMENSIONS: 7
       PROBLEM_TYPE: "yahpo"
+      ID: "iaml_ranger"
+      INSTANCE: "1067"
+      OBJECTIVE_NAMES: ["auc", "nf"]
 
     FIXED_HPS:
-      REPLACE: (True, "replace", "TRUE")
-      SPLITRULE: (True, "splitulre", "gini")
+      TRAINSIZE: ("trainsize", 1)
+      REPLACE: ("replace", "TRUE")
+      RESPECT_UNORDERED_FACTORS: ("respect.unordered.factors", "ignore")
+      SPLITRULE: ("splitrule", "gini")
     --
-    For options than can be set in config files, please see config.py
+    For options than can be set in config files, please see config.py.
 
     visualize: bool
     Specify whether to create plots (with default configuration) for
