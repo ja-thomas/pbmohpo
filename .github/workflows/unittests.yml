@@ -22,7 +22,7 @@ jobs:
       - name: Set up Yahpo Gym and data
         run: |
           cd ~/work
-          git clone -b yahpo_v2 https://github.com/slds-lmu/yahpo_data.git
+          git clone -b v2 https://github.com/slds-lmu/yahpo_data.git
           printf "data_path: ~/work/yahpo_data\n" >> ~/.config/yahpo_gym
 
       - name: Run pytest
