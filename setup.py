@@ -22,7 +22,7 @@ setup(
     ],
     extras_require={
         "dev": ["black", "flake8", "isort"],
-        "experiments": ["yacs"],
+        "experiments": ["yacs", "mlflow"],
         "test": ["pytest>=4.6"],
         "docs": ["sphinx", "sphinx_rtd_theme"],
     },
