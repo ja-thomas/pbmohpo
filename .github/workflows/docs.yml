@@ -6,9 +6,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Enable debugging
+        uses: lhotari/action-upterm@v1
+
       - name: Checkout repository
         uses: actions/checkout@v3
-        uses: lhotari/action-upterm@v1
 
       - name: Set up Python
         uses: actions/setup-python@v3
