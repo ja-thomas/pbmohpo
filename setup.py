@@ -12,7 +12,7 @@ setup(
     install_requires=[
         "ConfigSpace==0.6.0",
         "botorch==0.8.0",
-        "gpytorch==1.8.1",
+        "gpytorch==1.9.0",
         "torch==1.13.0",
         "yahpo-gym",
         "openml",
