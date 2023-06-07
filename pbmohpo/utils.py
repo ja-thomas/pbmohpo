@@ -82,6 +82,7 @@ def visualize_archives(
 ):
     """
     Visualize archive utility and incumbent utility over iterations.
+
     Parameters
     ----------
     archive_list: list[Archive]
