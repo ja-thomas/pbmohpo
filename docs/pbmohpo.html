@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module Handbook &mdash; PBMOHPO  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to PBMOHPO’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PBMOHPO
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PBMOHPO</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module Handbook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.archive">Archive</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.archive.Archive"><code class="docutils literal notranslate"><span class="pre">Archive</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Archive.incumbents"><code class="docutils literal notranslate"><span class="pre">Archive.incumbents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Archive.max_utility"><code class="docutils literal notranslate"><span class="pre">Archive.max_utility</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Archive.to_numpy"><code class="docutils literal notranslate"><span class="pre">Archive.to_numpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Archive.to_torch"><code class="docutils literal notranslate"><span class="pre">Archive.to_torch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.archive.Evaluation"><code class="docutils literal notranslate"><span class="pre">Evaluation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Evaluation.config"><code class="docutils literal notranslate"><span class="pre">Evaluation.config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Evaluation.objectives"><code class="docutils literal notranslate"><span class="pre">Evaluation.objectives</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.archive.Evaluation.utility"><code class="docutils literal notranslate"><span class="pre">Evaluation.utility</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.benchmark">Benchmark</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.benchmark.Benchmark"><code class="docutils literal notranslate"><span class="pre">Benchmark</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.benchmark.Benchmark.run"><code class="docutils literal notranslate"><span class="pre">Benchmark.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.problems.problem">Problems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.problems.problem.Problem"><code class="docutils literal notranslate"><span class="pre">Problem</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.problem.Problem.get_config_space"><code class="docutils literal notranslate"><span class="pre">Problem.get_config_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.problem.Problem.get_objective_names"><code class="docutils literal notranslate"><span class="pre">Problem.get_objective_names()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.problem.Problem.n_objectives"><code class="docutils literal notranslate"><span class="pre">Problem.n_objectives</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.problems.lgboml.LgbOpenML"><code class="docutils literal notranslate"><span class="pre">LgbOpenML</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.lgboml.LgbOpenML.get_config_space"><code class="docutils literal notranslate"><span class="pre">LgbOpenML.get_config_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.lgboml.LgbOpenML.get_objective_names"><code class="docutils literal notranslate"><span class="pre">LgbOpenML.get_objective_names()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.problems.zdt1.ZDT1"><code class="docutils literal notranslate"><span class="pre">ZDT1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.zdt1.ZDT1.get_config_space"><code class="docutils literal notranslate"><span class="pre">ZDT1.get_config_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.zdt1.ZDT1.get_objective_names"><code class="docutils literal notranslate"><span class="pre">ZDT1.get_objective_names()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.zdt1.ZDT1.objective_names"><code class="docutils literal notranslate"><span class="pre">ZDT1.objective_names</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.problems.yahpo.YAHPO"><code class="docutils literal notranslate"><span class="pre">YAHPO</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.yahpo.YAHPO.get_config_space"><code class="docutils literal notranslate"><span class="pre">YAHPO.get_config_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.problems.yahpo.YAHPO.get_objective_names"><code class="docutils literal notranslate"><span class="pre">YAHPO.get_objective_names()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.optimizers.optimizer">Optimizers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.BayesianOptimization"><code class="docutils literal notranslate"><span class="pre">BayesianOptimization</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.BayesianOptimization.propose_config"><code class="docutils literal notranslate"><span class="pre">BayesianOptimization.propose_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer"><code class="docutils literal notranslate"><span class="pre">Optimizer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer.dueling"><code class="docutils literal notranslate"><span class="pre">Optimizer.dueling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer.propose_config"><code class="docutils literal notranslate"><span class="pre">Optimizer.propose_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer.propose_duel"><code class="docutils literal notranslate"><span class="pre">Optimizer.propose_duel()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.optimizers.random_search.RandomSearch"><code class="docutils literal notranslate"><span class="pre">RandomSearch</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.random_search.RandomSearch.dueling"><code class="docutils literal notranslate"><span class="pre">RandomSearch.dueling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.random_search.RandomSearch.propose_config"><code class="docutils literal notranslate"><span class="pre">RandomSearch.propose_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.random_search.RandomSearch.propose_duel"><code class="docutils literal notranslate"><span class="pre">RandomSearch.propose_duel()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization"><code class="docutils literal notranslate"><span class="pre">UtilityBayesianOptimization</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization.dueling"><code class="docutils literal notranslate"><span class="pre">UtilityBayesianOptimization.dueling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization.propose_duel"><code class="docutils literal notranslate"><span class="pre">UtilityBayesianOptimization.propose_duel()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.optimizers.eubo.EUBO"><code class="docutils literal notranslate"><span class="pre">EUBO</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.eubo.EUBO.dueling"><code class="docutils literal notranslate"><span class="pre">EUBO.dueling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.eubo.EUBO.propose_duel"><code class="docutils literal notranslate"><span class="pre">EUBO.propose_duel()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.decision_makers.decision_maker">Decision Makers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.decision_makers.decision_maker.DecisionMaker"><code class="docutils literal notranslate"><span class="pre">DecisionMaker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pbmohpo.decision_makers.decision_maker.DecisionMaker.compare"><code class="docutils literal notranslate"><span class="pre">DecisionMaker.compare()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.utils">Utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.utils.color_generator"><code class="docutils literal notranslate"><span class="pre">color_generator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.utils.get_botorch_bounds"><code class="docutils literal notranslate"><span class="pre">get_botorch_bounds()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.utils.remove_hp_from_cs"><code class="docutils literal notranslate"><span class="pre">remove_hp_from_cs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.utils.visualize_archives"><code class="docutils literal notranslate"><span class="pre">visualize_archives()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PBMOHPO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Module Handbook</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pbmohpo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-handbook">
+<h1>Module Handbook<a class="headerlink" href="#module-handbook" title="Permalink to this heading"></a></h1>
+<section id="module-pbmohpo.archive">
+<span id="archive"></span><h2>Archive<a class="headerlink" href="#module-pbmohpo.archive" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.archive.Archive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.archive.</span></span><span class="sig-name descname"><span class="pre">Archive</span></span><a class="headerlink" href="#pbmohpo.archive.Archive" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.archive.Archive.incumbents">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">incumbents</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pbmohpo.archive.Evaluation" title="pbmohpo.archive.Evaluation"><span class="pre">Evaluation</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pbmohpo.archive.Archive.incumbents" title="Permalink to this definition"></a></dt>
+<dd><p>Get incumbents.</p>
+<p>Returns list of incumbents, i.e. configurations with highest utility values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Evaluation with highest utility</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#pbmohpo.archive.Evaluation" title="pbmohpo.archive.Evaluation">Evaluation</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.archive.Archive.max_utility">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_utility</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pbmohpo.archive.Archive.max_utility" title="Permalink to this definition"></a></dt>
+<dd><p>Get current best utility value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>highest utility value</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.archive.Archive.to_numpy">
+<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span></span></span><a class="headerlink" href="#pbmohpo.archive.Archive.to_numpy" title="Permalink to this definition"></a></dt>
+<dd><p>Convert evaluated configurations and utility values to numpy arrays</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>feature values x and utility values y</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple(x, y)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.archive.Archive.to_torch">
+<span class="sig-name descname"><span class="pre">to_torch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span></span></span><a class="headerlink" href="#pbmohpo.archive.Archive.to_torch" title="Permalink to this definition"></a></dt>
+<dd><p>Convert evaluated configurations and targets to torch arrays</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>feature values x and utility values y</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple(x, y)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.archive.Evaluation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.archive.</span></span><span class="sig-name descname"><span class="pre">Evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">utility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.archive.Evaluation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Result of one Tuning step.</p>
+<p>Contains the data from one tuning iteration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>CS.Configuration</em>) – Evaluated configuration</p></li>
+<li><p><strong>objectives</strong> (<em>Dict</em>) – Dict of resulting objective values</p></li>
+<li><p><strong>utility</strong> (<em>float</em>) – Utility assigned by DM</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pbmohpo.archive.Evaluation.config">
+<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Configuration</span></em><a class="headerlink" href="#pbmohpo.archive.Evaluation.config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pbmohpo.archive.Evaluation.objectives">
+<span class="sig-name descname"><span class="pre">objectives</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pbmohpo.archive.Evaluation.objectives" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pbmohpo.archive.Evaluation.utility">
+<span class="sig-name descname"><span class="pre">utility</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pbmohpo.archive.Evaluation.utility" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pbmohpo.benchmark">
+<span id="benchmark"></span><h2>Benchmark<a class="headerlink" href="#module-pbmohpo.benchmark" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.benchmark.Benchmark">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.benchmark.</span></span><span class="sig-name descname"><span class="pre">Benchmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.problems.problem.Problem" title="pbmohpo.problems.problem.Problem"><span class="pre">Problem</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer" title="pbmohpo.optimizers.optimizer.Optimizer"><span class="pre">Optimizer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.decision_makers.decision_maker.DecisionMaker" title="pbmohpo.decision_makers.decision_maker.DecisionMaker"><span class="pre">DecisionMaker</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_budget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm_budget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.benchmark.Benchmark" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Conduct a benchmark.</p>
+<p>Run an optimizer with a decision maker and problem for a given budget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>problem</strong> (<a class="reference internal" href="#pbmohpo.problems.problem.Problem" title="pbmohpo.problems.problem.Problem"><em>Problem</em></a>) – Problem to be optimized</p></li>
+<li><p><strong>optimizer</strong> (<a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer" title="pbmohpo.optimizers.optimizer.Optimizer"><em>Optimizer</em></a>) – Used optimizer</p></li>
+<li><p><strong>dm</strong> (<a class="reference internal" href="#pbmohpo.decision_makers.decision_maker.DecisionMaker" title="pbmohpo.decision_makers.decision_maker.DecisionMaker"><em>DecisionMaker</em></a>) – Decision maker that evaluates objective values from problems</p></li>
+<li><p><strong>eval_budget</strong> (<em>int</em>) – Number of configurations that can be evaluated</p></li>
+<li><p><strong>dm_budget</strong> (<em>int</em>) – Number of comparisons the DM can make</p></li>
+<li><p><strong>eval_batch_size</strong> (<em>int</em>) – How many configurations to propose in one step</p></li>
+<li><p><strong>dm_batch_size</strong> (<em>int</em>) – How many comparisons does the DM in one step</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.benchmark.Benchmark.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pbmohpo.benchmark.Benchmark.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run the benchmark.</p>
+<p>Run the benchmark by conducting as many steps as given by the budget and
+populate the archive with the results</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pbmohpo.problems.problem">
+<span id="problems"></span><h2>Problems<a class="headerlink" href="#module-pbmohpo.problems.problem" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.problems.problem.Problem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.problems.problem.</span></span><span class="sig-name descname"><span class="pre">Problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RandomState</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.problems.problem.Problem" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Definition of an Optimization Problem.</p>
+<p>Implements the abstract interface to problems used as benchmarks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> (<em>int</em><em>, </em><em>np.random.RandomState</em>) – Seed passed to the problem</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.problem.Problem.get_config_space">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_config_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ConfigurationSpace</span></span></span><a class="headerlink" href="#pbmohpo.problems.problem.Problem.get_config_space" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the configuration space of the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The configuration space of the problem</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ConfigSpace.ConfigurationSpace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.problem.Problem.get_objective_names">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_objective_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#pbmohpo.problems.problem.Problem.get_objective_names" title="Permalink to this definition"></a></dt>
+<dd><p>Get the names of the objectives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Names of objectives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.problems.problem.Problem.n_objectives">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_objectives</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pbmohpo.problems.problem.Problem.n_objectives" title="Permalink to this definition"></a></dt>
+<dd><p>Get number of objectives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of objectives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pbmohpo.problems.lgboml"></span><dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.problems.lgboml.LgbOpenML">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.problems.lgboml.</span></span><span class="sig-name descname"><span class="pre">LgbOpenML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">RandomState</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.problems.lgboml.LgbOpenML" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.problems.problem.Problem" title="pbmohpo.problems.problem.Problem"><code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></a></p>
+<p>LightGBM Tuning Problem.</p>
+<p>Tune LightGBM for a multiclass classification Problem.</p>
+<p>One call evaluates a cross-validation as defined in the OpenML task and computes the average accuracy per class.</p>
+<p>Objectives are the accuracies of each class (representing different missclassification costs of a DM)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<em>int</em>) – OpenML task ID</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>np.random.RandomState</em>) – Seed passed to the problem</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.lgboml.LgbOpenML.get_config_space">
+<span class="sig-name descname"><span class="pre">get_config_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ConfigurationSpace</span></span></span><a class="headerlink" href="#pbmohpo.problems.lgboml.LgbOpenML.get_config_space" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the tuning space for LightGBM</p>
+<p>Number of iterations (1, 100, log),
+Learning rate (0.001, 0.3, log),
+Bagging fraction (0, 1),
+Feature fraction (0, 1)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The configuration space of the problem</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ConfigSpace.ConfigurationSpace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.lgboml.LgbOpenML.get_objective_names">
+<span class="sig-name descname"><span class="pre">get_objective_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#pbmohpo.problems.lgboml.LgbOpenML.get_objective_names" title="Permalink to this definition"></a></dt>
+<dd><p>Get the names of the objectives, i.e. names of classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Names of objectives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pbmohpo.problems.zdt1"></span><dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.problems.zdt1.ZDT1">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.problems.zdt1.</span></span><span class="sig-name descname"><span class="pre">ZDT1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">RandomState</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.problems.zdt1.ZDT1" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.problems.problem.Problem" title="pbmohpo.problems.problem.Problem"><code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></a></p>
+<p>Synthetic Test Function ZDT1</p>
+<p>Can be scaled to an arbitrary number of dimensions and has two objectives.</p>
+<p>Since we are always maximizing we’re taking the negative function values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>np.random.RandomState</em>) – Seed passed to the problem</p></li>
+<li><p><strong>dimension</strong> (<em>int</em>) – Number of dimensions, needs to be at least 2.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.zdt1.ZDT1.get_config_space">
+<span class="sig-name descname"><span class="pre">get_config_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ConfigurationSpace</span></span></span><a class="headerlink" href="#pbmohpo.problems.zdt1.ZDT1.get_config_space" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the configuration space of the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The configuration space of the problem</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ConfigSpace.ConfigurationSpace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.zdt1.ZDT1.get_objective_names">
+<span class="sig-name descname"><span class="pre">get_objective_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#pbmohpo.problems.zdt1.ZDT1.get_objective_names" title="Permalink to this definition"></a></dt>
+<dd><p>Get the names of the objectives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Names of objectives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pbmohpo.problems.zdt1.ZDT1.objective_names">
+<span class="sig-name descname"><span class="pre">objective_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['y0',</span> <span class="pre">'y1']</span></em><a class="headerlink" href="#pbmohpo.problems.zdt1.ZDT1.objective_names" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pbmohpo.problems.yahpo"></span><dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.problems.yahpo.YAHPO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.problems.yahpo.</span></span><span class="sig-name descname"><span class="pre">YAHPO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_hps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">RandomState</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.problems.yahpo.YAHPO" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.problems.problem.Problem" title="pbmohpo.problems.problem.Problem"><code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code></a></p>
+<p>YAHPO Gym Problem.</p>
+<p>This class wraps YAHPO Gym (<a class="reference external" href="https://github.com/slds-lmu/yahpo_gym/">https://github.com/slds-lmu/yahpo_gym/</a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Benchmark class from YAHPO</p></li>
+<li><p><strong>instance</strong> (<em>str</em>) – Instance of benchmark</p></li>
+<li><p><strong>objective_names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Objectives to optimize</p></li>
+<li><p><strong>fix_hps</strong> (<em>Dict</em>) – Dictionary of fixed HPs that should not be optimized</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>np.random.RandomState</em>) – Seed passed to the problem</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.yahpo.YAHPO.get_config_space">
+<span class="sig-name descname"><span class="pre">get_config_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ConfigurationSpace</span></span></span><a class="headerlink" href="#pbmohpo.problems.yahpo.YAHPO.get_config_space" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the configuration space of the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The configuration space of the problem</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ConfigSpace.ConfigurationSpace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.problems.yahpo.YAHPO.get_objective_names">
+<span class="sig-name descname"><span class="pre">get_objective_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#pbmohpo.problems.yahpo.YAHPO.get_objective_names" title="Permalink to this definition"></a></dt>
+<dd><p>Get the names of the objectives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Names of objectives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pbmohpo.optimizers.optimizer">
+<span id="optimizers"></span><h2>Optimizers<a class="headerlink" href="#module-pbmohpo.optimizers.optimizer" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.optimizer.BayesianOptimization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.optimizers.optimizer.</span></span><span class="sig-name descname"><span class="pre">BayesianOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.optimizers.optimizer.BayesianOptimization" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer" title="pbmohpo.optimizers.optimizer.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.optimizer.BayesianOptimization.propose_config">
+<span class="sig-name descname"><span class="pre">propose_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Configuration</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.optimizer.BayesianOptimization.propose_config" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a new configuration to evaluate.</p>
+<p>Takes an archive of previous evaluations and duels and proposes n new configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of configurations to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Proposed Configuration</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CS.Configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.optimizer.Optimizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.optimizers.optimizer.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.optimizers.optimizer.Optimizer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Definition of an Optimizer</p>
+<p>Implements the abstract interface to an Optimizer class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_space</strong> (<em>CS.ConfigurationSpace</em>) – The config space the optimizer searches over</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.optimizer.Optimizer.dueling">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dueling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pbmohpo.optimizers.optimizer.Optimizer.dueling" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.optimizer.Optimizer.propose_config">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">propose_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Configuration</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.optimizer.Optimizer.propose_config" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a new configuration to evaluate.</p>
+<p>Takes an archive of previous evaluations and duels and proposes n new configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of configurations to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Proposed Configuration</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CS.Configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.optimizer.Optimizer.propose_duel">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">propose_duel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.optimizer.Optimizer.propose_duel" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a duel between two Evaluations</p>
+<p>Takes an archive of previous evaluations and duels to propose n new duels of two configurations each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of duels to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples of two indicies of Archive evaluations to compare</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List(Tuple(int, int))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pbmohpo.optimizers.random_search"></span><dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.random_search.RandomSearch">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.optimizers.random_search.</span></span><span class="sig-name descname"><span class="pre">RandomSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.optimizers.random_search.RandomSearch" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.optimizers.optimizer.Optimizer" title="pbmohpo.optimizers.optimizer.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></a></p>
+<p>Random Search Optimizer</p>
+<p>Implementation of a simple random search as baseline and sanity check.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_space</strong> (<em>CS.ConfigurationSpace</em>) – The config space the optimizer searches over</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.random_search.RandomSearch.dueling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dueling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pbmohpo.optimizers.random_search.RandomSearch.dueling" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.random_search.RandomSearch.propose_config">
+<span class="sig-name descname"><span class="pre">propose_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Configuration</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.random_search.RandomSearch.propose_config" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a new configuration to evaluate.</p>
+<p>Takes an archive of previous evaluations and duels and proposes n new configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of configurations to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Proposed Configuration</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CS.Configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.random_search.RandomSearch.propose_duel">
+<span class="sig-name descname"><span class="pre">propose_duel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.random_search.RandomSearch.propose_duel" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a duel between two Evaluations</p>
+<p>Takes an archive of previous evaluations and duels to propose n new duels of two configurations each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of duels to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples of two indicies of Archive evaluations to compare</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List(Tuple(int, int))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pbmohpo.optimizers.utility_bayesian_optimization"></span><dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.optimizers.utility_bayesian_optimization.</span></span><span class="sig-name descname"><span class="pre">UtilityBayesianOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_design_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.optimizers.optimizer.BayesianOptimization" title="pbmohpo.optimizers.optimizer.BayesianOptimization"><code class="xref py py-class docutils literal notranslate"><span class="pre">BayesianOptimization</span></code></a></p>
+<p>Single objective Bayesian optimization of utility scores.</p>
+<p>Implements a simple BO loop to optimize the utility scores provided by the decision maker.
+Uses a GP surrogate and UCB acquisition function with beta=0.1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_space</strong> (<em>CS.ConfigurationSpace</em>) – The config space the optimizer searches over</p></li>
+<li><p><strong>initial_design_size</strong> (<em>int</em><em>, </em><em>None</em>) – Size of the initial design, if not specified, two times the number of HPs is used</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization.dueling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dueling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization.dueling" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization.propose_duel">
+<span class="sig-name descname"><span class="pre">propose_duel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.utility_bayesian_optimization.UtilityBayesianOptimization.propose_duel" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a duel between two Evaluations</p>
+<p>Takes an archive of previous evaluations and duels to propose n new duels of two configurations each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of duels to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples of two indicies of Archive evaluations to compare</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List(Tuple(int, int))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pbmohpo.optimizers.eubo"></span><dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.eubo.EUBO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.optimizers.eubo.</span></span><span class="sig-name descname"><span class="pre">EUBO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_design_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.optimizers.eubo.EUBO" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.optimizers.optimizer.BayesianOptimization" title="pbmohpo.optimizers.optimizer.BayesianOptimization"><code class="xref py py-class docutils literal notranslate"><span class="pre">BayesianOptimization</span></code></a></p>
+<p>Bayesian Optimization for Pairwise Comparison Data.</p>
+<p>Implements the Analytic Expected Utility Of Best Option algrithm.
+For details see: <a class="reference external" href="https://botorch.org/tutorials/preference_bo">https://botorch.org/tutorials/preference_bo</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_space</strong> (<em>CS.ConfigurationSpace</em>) – The config space the optimizer searches over</p></li>
+<li><p><strong>initial_design_size</strong> (<em>int</em><em>, </em><em>None</em>) – Size of the initial design, if not specified, two times the number of HPs is used</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.eubo.EUBO.dueling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dueling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pbmohpo.optimizers.eubo.EUBO.dueling" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.eubo.EUBO.propose_duel">
+<span class="sig-name descname"><span class="pre">propose_duel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pbmohpo.optimizers.eubo.EUBO.propose_duel" title="Permalink to this definition"></a></dt>
+<dd><p>Propose a duel between two Evaluations</p>
+<p>Takes an archive of previous evaluations and duels to propose n new duels of two configurations each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a>) – Archive containing previous evaluations</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Number of duels to propose in one batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples of two indices of Archive evaluations to compare</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List(Tuple(int, int))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pbmohpo.decision_makers.decision_maker">
+<span id="decision-makers"></span><h2>Decision Makers<a class="headerlink" href="#module-pbmohpo.decision_makers.decision_maker" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.decision_makers.decision_maker.DecisionMaker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.decision_makers.decision_maker.</span></span><span class="sig-name descname"><span class="pre">DecisionMaker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preferences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RandomState</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.decision_makers.decision_maker.DecisionMaker" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple Decision Maker.</p>
+<p>This class constructs a decision maker that has a weight for each objective.
+Preference weights need to sum to 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>preferences</strong> (<em>Dict</em><em>, </em><em>None</em>) – Dict containing a weight for each objective</p></li>
+<li><p><strong>objective_names</strong> (<em>List</em><em>, </em><em>None</em>) – List of objective names, if preferences are not given, preference values are sampled randomly</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>np.random.RandomState</em>) – Seed used to generate the preferences if not given</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pbmohpo.decision_makers.decision_maker.DecisionMaker.compare">
+<span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objectives1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectives2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pbmohpo.decision_makers.decision_maker.DecisionMaker.compare" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the DM prefers objectives 1 over objectives 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objectives1</strong> (<em>Dict</em>) – Dict of objectives with associated values that should be checked for preference</p></li>
+<li><p><strong>objectives2</strong> (<em>Dict</em>) – Dict of objectives with associated values, that should be checked if objectives1 is preferred by DM</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Does DM prefer objectives1 over objectives2</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pbmohpo.utils">
+<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-pbmohpo.utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pbmohpo.utils.color_generator">
+<span class="sig-prename descclassname"><span class="pre">pbmohpo.utils.</span></span><span class="sig-name descname"><span class="pre">color_generator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.utils.color_generator" title="Permalink to this definition"></a></dt>
+<dd><p>Generates colors for archives visualization to match YAHPO colors.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pbmohpo.utils.get_botorch_bounds">
+<span class="sig-prename descclassname"><span class="pre">pbmohpo.utils.</span></span><span class="sig-name descname"><span class="pre">get_botorch_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.utils.get_botorch_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Get bounds of hyperparameters in the format botorch needs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>space</strong> (<em>CS.configuration_space</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of [lower, upper] bounds of each hyperparameter</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pbmohpo.utils.remove_hp_from_cs">
+<span class="sig-prename descclassname"><span class="pre">pbmohpo.utils.</span></span><span class="sig-name descname"><span class="pre">remove_hp_from_cs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_cs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_hp_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ConfigurationSpace</span></span></span><a class="headerlink" href="#pbmohpo.utils.remove_hp_from_cs" title="Permalink to this definition"></a></dt>
+<dd><p>Remove parameters from the search space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_cs</strong> (<em>CS.ConfigurationSpace</em>) – </p></li>
+<li><p><strong>remove_hp_dict</strong> (<em>Dict</em>) – Dict of hyperparameters with hyperparameters as keys and defaults as values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>CS.ConfigurationSpace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pbmohpo.utils.visualize_archives">
+<span class="sig-prename descclassname"><span class="pre">pbmohpo.utils.</span></span><span class="sig-name descname"><span class="pre">visualize_archives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><span class="pre">Archive</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_elements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['incumbent']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.utils.visualize_archives" title="Permalink to this definition"></a></dt>
+<dd><p>Visualize archive utility and incumbent utility over iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive_list</strong> (<em>list</em><em>[</em><a class="reference internal" href="#pbmohpo.archive.Archive" title="pbmohpo.archive.Archive"><em>Archive</em></a><em>]</em>) – List of archives to be visualized</p></li>
+<li><p><strong>plot_elements</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of elements that should be plotted. Currently supports
+“incumbent”, which plots the incumbent utility over iteration and
+“utilities”, which plots the utility for each iteration over
+iteration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>matplotlib item</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PBMOHPO’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Janek Thomas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
