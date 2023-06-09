@@ -10,10 +10,10 @@ setup(
     license="LGPL",
     packages=find_packages(),
     install_requires=[
-        "ConfigSpace",
-        "botorch",
-        "gpytorch",
-        "torch",
+        "ConfigSpace==0.6.0",
+        "botorch==0.8.0",
+        "gpytorch==1.9.0",
+        "torch==1.13.0",
         "yahpo-gym @ git+https://github.com/slds-lmu/yahpo_gym.git@v2#subdirectory=yahpo_gym",
         "openml",
         "lightgbm",
@@ -22,7 +22,8 @@ setup(
     ],
     extras_require={
         "dev": ["black", "flake8", "isort"],
-        "experiments": ["yacs"],
+        "experiments": ["yacs", "mlflow"],
         "test": ["pytest>=4.6"],
+        "docs": ["sphinx", "sphinx_rtd_theme"],
     },
 )
