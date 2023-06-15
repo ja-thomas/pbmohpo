@@ -157,7 +157,6 @@ class qEUBO(EUBO):
         config_space: CS.ConfigurationSpace,
         initial_design_size: Optional[int] = None,
     ) -> None:
-
         super().__init__(config_space, initial_design_size)
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
