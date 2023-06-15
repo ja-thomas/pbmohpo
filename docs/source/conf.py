@@ -31,12 +31,13 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
-    "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
     "sphinx.ext.ifconfig",
     "sphinx.ext.githubpages",
 ]
 templates_path = ["_templates"]
+source_suffix = ".rst"
+master_doc = "index"
 exclude_patterns = []
 
 
