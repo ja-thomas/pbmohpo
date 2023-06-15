@@ -158,11 +158,7 @@ class qEUBO(EUBO):
         initial_design_size: Optional[int] = None,
     ) -> None:
 
-        # TODO: Is this really needed or can I pass None along?
-        # if initial_design_size:
         super().__init__(config_space, initial_design_size)
-        # else:
-        # super().__init__(config_space)
 
     def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
         """
@@ -195,6 +191,7 @@ class qEUBO(EUBO):
         mll = VariationalELBO(
             likelihood=model.likelihood,
             model=model,
+            # Magic num proposed in https://github.com/facebookresearch/qEUBO
             num_data=2 * model.num_data,
         )
 

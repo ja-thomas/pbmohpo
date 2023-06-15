@@ -152,5 +152,3 @@ def color_generator():
 
     for color in colors:
         yield color
-
-
