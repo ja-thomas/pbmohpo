@@ -1,0 +1,9 @@
+PROBLEM:
+  PROBLEM_TYPE: "yahpo"
+  ID: "iaml_rpart"
+  INSTANCE: "40981"
+  OBJECTIVE_NAMES: ["auc", "nf"]
+
+FIXED_HPS:
+  TRAINSIZE: ("trainsize", 1)
+

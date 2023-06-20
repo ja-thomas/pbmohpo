@@ -1,7 +1,7 @@
 PROBLEM:
   PROBLEM_TYPE: "yahpo"
   ID: "iaml_ranger"
-  INSTANCE: "40981"
+  INSTANCE: "1067"
   OBJECTIVE_NAMES: ["auc", "nf"]
 
 FIXED_HPS:
