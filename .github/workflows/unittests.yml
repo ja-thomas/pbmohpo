@@ -7,10 +7,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: "3.10"
 
@@ -22,7 +22,7 @@ jobs:
       - name: Set up Yahpo Gym and data
         run: |
           cd ~/work
-          git clone https://github.com/slds-lmu/yahpo_data.git
+          git clone -b v2 https://github.com/slds-lmu/yahpo_data.git
           printf "data_path: ~/work/yahpo_data\n" >> ~/.config/yahpo_gym
 
       - name: Run pytest
