@@ -3,12 +3,13 @@ import pytest
 from pbmohpo.benchmark import *
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.eubo import EUBO
+from pbmohpo.optimizers.eubo import qEUBO
 from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.zdt1 import ZDT1
 
 
-@pytest.fixture(params=[RandomSearch, UtilityBayesianOptimization, EUBO])
+@pytest.fixture(params=[RandomSearch, UtilityBayesianOptimization, EUBO, qEUBO])
 def optimizer(request):
     return request.param
 
@@ -19,8 +20,7 @@ def test_optimizer(optimizer):
     decision_maker = DecisionMaker(
         objective_names=problem.get_objective_names(), seed=0
     )
-    # FIXME: EUBO will only work if eval_batch_size is a multiple of 2 due to the dueling?
-    # still the acquisition function is not working properly see comments in eubo.py
+    # NOTE: EUBO will only work if eval_batch_size is a multiple of 2 due to the dueling
     # probably we want the BO fallback mechanisms to be optional so that we can actually catch and debug such errors
     benchmark = Benchmark(
         problem=problem,
