@@ -65,7 +65,7 @@ class YAHPO(Problem):
         seed: Optional[Union[np.random.RandomState, int]] = None,
     ) -> Dict:
         # Add instance information to configuration
-        x = x.get_dictionary()
+        x = copy.deepcopy(x.get_dictionary())
         x.update({self.benchmark.config.instance_names: self.benchmark.instance})
         # Add fixed HPs back to configuration
         x.update(self.fix_hps)
