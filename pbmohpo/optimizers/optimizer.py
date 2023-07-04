@@ -108,7 +108,7 @@ class BayesianOptimization(Optimizer):
             configs = self.config_space.sample_configuration(self.initial_design_size)
         else:
             try:
-                configs = self._surrogate_proposal(archive, n=self.initial_design_size)
+                configs = self._surrogate_proposal(archive, n=n)
             except Exception as e:
                 logging.warning(f"Surrogate proposal failed with: \n{e}\n")
                 logging.warning("Generating random configuration(s) instead")
