@@ -119,6 +119,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#pbmohpo.optimizers.eubo.EUBO.propose_duel"><code class="docutils literal notranslate"><span class="pre">EUBO.propose_duel()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#pbmohpo.optimizers.eubo.qEUBO"><code class="docutils literal notranslate"><span class="pre">qEUBO</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pbmohpo.decision_makers.decision_maker">Decision Makers</a><ul>
@@ -733,6 +734,25 @@ For details see: <a class="reference external" href="https://botorch.org/tutoria
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pbmohpo.optimizers.eubo.qEUBO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pbmohpo.optimizers.eubo.</span></span><span class="sig-name descname"><span class="pre">qEUBO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConfigurationSpace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_design_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pbmohpo.optimizers.eubo.qEUBO" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pbmohpo.optimizers.eubo.EUBO" title="pbmohpo.optimizers.eubo.EUBO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EUBO</span></code></a></p>
+<p>Bayesian Optimization for Pairwise Comparison Data.</p>
+<p>Implements the expected utility of the best option algrithm.</p>
+<p>For details see: <a class="reference external" href="https://arxiv.org/pdf/2303.15746.pdf">https://arxiv.org/pdf/2303.15746.pdf</a></p>
+<p>Their implementation can be found here: <a class="reference external" href="https://github.com/facebookresearch/qEUBO">https://github.com/facebookresearch/qEUBO</a></p>
+<p>Large parts of that code have been used in this implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_space</strong> (<em>CS.ConfigurationSpace</em>) – The config space the optimizer searches over</p></li>
+<li><p><strong>initial_design_size</strong> (<em>int</em><em>, </em><em>None</em>) – Size of the initial design, if not specified, two times the number of HPs is used</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
