@@ -9,7 +9,7 @@ from mlflow import log_artifact, log_metric, log_metrics, log_params
 from config import get_cfg_defaults
 from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
-from pbmohpo.optimizers.eubo import EUBO
+from pbmohpo.optimizers.eubo import EUBO, qEUBO
 from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.lgboml import LgbOpenML
@@ -91,6 +91,9 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
     elif config.OPTIMIZER.OPTIMIZER_TYPE == "BO":
         logging.info("Running Bayesian Optimization on Utility Scores")
         opt = UtilityBayesianOptimization(prob.get_config_space())
+    elif config.OPTIMIZER.OPTIMIZER_TYPE == "qEUBO":
+        logging.info("Running Bayesian Optimization on Pairwise Comparisons (qEUBO)")
+        opt = qEUBO(prob.get_config_space())
     else:
         logging.info("Running Bayesian Optimization on Pairwise Comparisons")
         opt = EUBO(prob.get_config_space())

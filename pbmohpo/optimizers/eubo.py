@@ -10,8 +10,14 @@ from botorch.acquisition import AnalyticExpectedUtilityOfBestOption
 from botorch.fit import fit_gpytorch_mll
 from botorch.models.pairwise_gp import PairwiseGP, PairwiseLaplaceMarginalLogLikelihood
 from botorch.optim import optimize_acqf
+from botorch.sampling import SobolQMCNormalSampler
+from gpytorch.mlls.variational_elbo import VariationalELBO
 
 from pbmohpo.archive import Archive
+from pbmohpo.botorch_utils import (
+    VariationalPreferentialGP,
+    qExpectedUtilityOfBestOption,
+)
 from pbmohpo.optimizers.optimizer import BayesianOptimization
 from pbmohpo.utils import get_botorch_bounds
 
@@ -127,3 +133,125 @@ class EUBO(BayesianOptimization):
 
         configs = self._candidates_to_configs(candidates, n)
         return configs
+
+
+class qEUBO(EUBO):
+    """
+    Bayesian Optimization for Pairwise Comparison Data.
+
+    Implements the expected utility of the best option algrithm.
+
+    For details see: https://arxiv.org/pdf/2303.15746.pdf
+
+    Their implementation can be found here: https://github.com/facebookresearch/qEUBO
+
+    Large parts of that code have been used in this implementation.
+
+    Parameters
+    ----------
+    config_space: CS.ConfigurationSpace
+        The config space the optimizer searches over
+
+    initial_design_size: int, None
+        Size of the initial design, if not specified, two times the number of HPs is used
+    """
+
+    def __init__(
+        self,
+        config_space: CS.ConfigurationSpace,
+        initial_design_size: Optional[int] = None,
+    ) -> None:
+        super().__init__(config_space, initial_design_size)
+
+    def _surrogate_proposal(self, archive: Archive, n: int) -> List[CS.Configuration]:
+        """
+        Propose a new configuration by surrogate
+
+        Parameters
+        ----------
+        archive: Archive
+            Archive containing previous evaluations
+
+        n: int
+            Number of configurations to propose in one batch
+
+        Returns
+        -------
+        CS.Configuration:
+            Proposed Configuration
+
+        """
+
+        X, _ = archive.to_torch()
+        y = torch.Tensor(archive.comparisons)
+
+        X, y = self._convert_torch_archive_for_variational_preferential_gp(X, y)
+
+        model = VariationalPreferentialGP(X, y)
+        model.train()
+        model.likelihood.train()
+
+        mll = VariationalELBO(
+            likelihood=model.likelihood,
+            model=model,
+            # Magic num proposed in https://github.com/facebookresearch/qEUBO
+            num_data=2 * model.num_data,
+        )
+
+        mll = fit_gpytorch_mll(mll)
+
+        sampler = SobolQMCNormalSampler(sample_shape=64)
+        acq_func = qExpectedUtilityOfBestOption(model=model, sampler=sampler)
+
+        bounds = get_botorch_bounds(self.config_space)
+        bounds = bounds.type(torch.Tensor)
+
+        candidates, acq_val = optimize_acqf(
+            acq_function=acq_func,
+            bounds=bounds,
+            q=n,
+            num_restarts=3,
+            raw_samples=256,
+        )
+
+        logging.debug(f"Acquisition function value: {acq_val}")
+
+        configs = self._candidates_to_configs(candidates, n)
+        return configs
+
+    def _convert_torch_archive_for_variational_preferential_gp(
+        self, X: torch.Tensor, y: torch.Tensor
+    ):
+        """
+        Converts inputs and targets to the form the implementation of the
+        variational preferential gp needs.
+
+        Parameters
+        ----------
+        X: torch.Tensor
+            Configs in archive as given by archive.to_torch()
+        y: torch.Tensor
+            Recorded duels in archive as given by archive.to_torch()
+
+        Returns
+        -------
+        new_X: torch.Tensor
+            An n x q x n tensor Each of the `n` queries is constituted
+            by `q` `d`-dimensional decision vectors.
+
+        new_y: torch.Tensor
+            An n x 1 tensor of training outputs. Each of the `n` responses is
+            an integer between 0 and `q-1` indicating the decision vector
+            selected by the user.
+        """
+        helper_list_X = []
+
+        for duel in y:
+            helper_list_X = [
+                torch.stack([X[int(duel[0])], X[int(duel[1])]]) for duel in y
+            ]
+
+        new_X = torch.stack(helper_list_X)
+        new_y = torch.ones(len(new_X), dtype=torch.float32)
+
+        return new_X.type(torch.Tensor), new_y
