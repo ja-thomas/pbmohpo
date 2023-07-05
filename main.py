@@ -72,11 +72,18 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
                 hp_value = config.FIXED_HPS[hyperparam][1]
                 fixed_hyperparams[hp_name] = hp_value
 
+        scaling = dict(
+            zip(
+                config.PROBLEM.OBJECTIVE_NAMES, config.PROBLEM.OBJECTIVE_SCALING_FACTORS
+            )
+        )
+
         prob = YAHPO(
             id=config.PROBLEM.ID,
             fix_hps=fixed_hyperparams,
             instance=str(config.PROBLEM.INSTANCE),
             objective_names=config.PROBLEM.OBJECTIVE_NAMES,
+            objective_scaling_factors=scaling,
         )
 
     elif config.PROBLEM.PROBLEM_TYPE == "lgboml":

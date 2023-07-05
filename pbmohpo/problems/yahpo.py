@@ -25,6 +25,8 @@ class YAHPO(Problem):
         Objectives to optimize
     fix_hps: Dict
         Dictionary of fixed HPs that should not be optimized
+    objective_scaling_factors: Dict
+        Dictionary with objective names as keys and factors to devide output. If not provided no scaling is done.
     seed: int, np.random.RandomState
         Seed passed to the problem
     """
@@ -35,11 +37,19 @@ class YAHPO(Problem):
         instance: str,
         objective_names: List,
         fix_hps: dict = None,
+        objective_scaling_factors: dict = None,
         seed: Optional[Union[np.random.RandomState, int]] = 42,
     ) -> None:
         super().__init__(seed)
+
         if fix_hps is None:
             fix_hps = {}
+
+        if objective_scaling_factors is None:
+            self.objective_scaling_factors = {obj: 1 for obj in objective_names}
+        else:
+            self.objective_scaling_factors = objective_scaling_factors
+
         self.fix_hps = fix_hps
         self.benchmark = benchmark_set.BenchmarkSet(id)
         self.benchmark.set_instance(instance)
@@ -83,7 +93,7 @@ class YAHPO(Problem):
         ]
         factor = [-1 if fac else 1 for fac in factor]
         val_dict = {
-            key: factor[el] * val_dict[key]
+            key: factor[el] * val_dict[key] / self.objective_scaling_factors[key]
             for el, key in enumerate(self.get_objective_names())
         }
         return val_dict
