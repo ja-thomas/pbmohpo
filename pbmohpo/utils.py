@@ -57,7 +57,7 @@ def remove_hp_from_cs(
                 # affected params. Equal conditions have only one value,
                 # set conditions have a list of values
                 values = (
-                    list(condition.value)
+                    [condition.value]
                     if not hasattr(condition, "values")
                     else condition.values
                 )

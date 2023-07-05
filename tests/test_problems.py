@@ -1,3 +1,5 @@
+import copy
+
 import pytest
 from ConfigSpace import ConfigurationSpace
 from yahpo_gym import benchmark_set
@@ -46,7 +48,11 @@ def test_yahpo():
     ]
     assert problem.n_objectives == 2
     assert problem.get_objective_names() == ["auc", "nf"]
-    ys = problem(configspace.get_default_configuration())
+
+    config = configspace.get_default_configuration()
+    config_old = copy.deepcopy(config)
+    ys = problem(config)
+    assert config_old.get_dictionary() == config.get_dictionary()
     assert type(ys) == dict
     assert len(ys) == 2
     assert (ys["auc"] >= 0) & (ys["auc"] <= 1)
