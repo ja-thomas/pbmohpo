@@ -8,3 +8,10 @@ FIXED_HPS:
   TRAINSIZE: ("trainsize", 1)
   DEFINITION: ("definition", "eo-komiyama")
 
+BATCH_SIZE:
+  EVAL_BATCH_SIZE: 2
+  DM_BATCH_SIZE: 1
+
+BUDGET:
+  EVAL_BUDGET: 78
+  DM_BUDGET: 78

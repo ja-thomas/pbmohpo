@@ -10,3 +10,10 @@ FIXED_HPS:
   RESPECT_UNORDERED_FACTORS: ("respect.unordered.factors", "ignore")
   SPLITRULE: ("splitrule", "gini")
 
+BATCH_SIZE:
+  EVAL_BATCH_SIZE: 2
+  DM_BATCH_SIZE: 1
+
+BUDGET:
+  EVAL_BUDGET: 100
+  DM_BUDGET: 100

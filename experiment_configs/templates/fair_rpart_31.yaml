@@ -8,3 +8,10 @@ FIXED_HPS:
   TRAINSIZE: ("trainsize", 1)
   PRE_POST: ("pre_post", "none")
 
+BATCH_SIZE:
+  EVAL_BATCH_SIZE: 2
+  DM_BATCH_SIZE: 1
+
+BUDGET:
+  EVAL_BUDGET: 100
+  DM_BUDGET: 100

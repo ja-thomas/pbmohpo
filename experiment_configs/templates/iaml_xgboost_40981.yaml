@@ -3,8 +3,16 @@ PROBLEM:
   ID: "iaml_xgboost"
   INSTANCE: "40981"
   OBJECTIVE_NAMES: ["auc", "nf"]
+  OBJECTIVE_SCALING_FACTORS: [1, 14]
 
 FIXED_HPS:
   BOOSTER: ("booster", "gbtree")
   TRAINSIZE: ("trainsize", 1)
 
+BATCH_SIZE:
+  EVAL_BATCH_SIZE: 2
+  DM_BATCH_SIZE: 1
+
+BUDGET:
+  EVAL_BUDGET: 148
+  DM_BUDGET: 148

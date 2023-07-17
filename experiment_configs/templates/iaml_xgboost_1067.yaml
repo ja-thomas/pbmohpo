@@ -8,3 +8,10 @@ FIXED_HPS:
   BOOSTER: ("booster", "gbtree")
   TRAINSIZE: ("trainsize", 1)
 
+BATCH_SIZE:
+  EVAL_BATCH_SIZE: 2
+  DM_BATCH_SIZE: 1
+
+BUDGET:
+  EVAL_BUDGET: 148
+  DM_BUDGET: 148
