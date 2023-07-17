@@ -42,7 +42,7 @@ class Archive:
         tuple(x, y)
             feature values x and utility values y
         """
-        x = np.array(list([x.config.get_array() for x in self.evaluations]))
+        x = np.array(list([list(x.config.values()) for x in self.evaluations]))
         y = np.array([x.utility for x in self.evaluations])
         return x, y
 
