@@ -18,6 +18,9 @@ def get_botorch_bounds(
     Parameters
     ----------
     space: CS.configuration_space
+        Configuration space of the problem
+    on_search_space: bool
+        Whether candidates are on the search space, i.e. respecting log transformations
 
     Returns
     -------
@@ -49,6 +52,8 @@ def get_config_values(
         Configuration to be evaluated
     search_space: CS.ConfigurationSpace
         Search space of the problem
+    on_search_space: bool
+        Whether candidates are on the search space, i.e. respecting log transformations
 
     Returns
     -------
