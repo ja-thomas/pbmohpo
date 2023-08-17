@@ -171,7 +171,9 @@ def visualize_archives(
                 marker="x",
                 alpha=0.3,
             )
-        if len(legend_elements) == len(archive_list):
+        if (legend_elements is not None) and (
+            len(legend_elements) == len(archive_list)
+        ):
             ax.legend(legend_elements)
 
     ax.set(xlabel="Iterations", ylabel="Utility (Not Normalized)")

@@ -25,7 +25,7 @@ name = args.template.split("/")[-1].split(".")[-2]
 experiment_directory = f"experiment_configs/{name}/"
 
 # optimizers = ["BO", "EUBO", "qEUBO", "RS"]
-optimizers = ["BO", "RS"]
+optimizers = ["BO", "RS", "EUBO"]
 
 cfg = get_cfg_defaults()
 cfg.merge_from_file(args.template)
