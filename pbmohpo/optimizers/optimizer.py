@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple
 
 import ConfigSpace as CS
+import numpy as np
 from torch import Tensor
 
 from pbmohpo.archive import Archive
@@ -119,7 +120,7 @@ class BayesianOptimization(Optimizer):
         return configs
 
     def _candidates_to_configs(
-        self, candidates: Tensor, n: int
+        self, candidates: Tensor, n: int, on_search_space: bool = True
     ) -> List[CS.Configuration]:
         """
         Convert a tensor of candidates found by optimize_acqf to a list of configurations
@@ -131,6 +132,8 @@ class BayesianOptimization(Optimizer):
             Candidate tensor
         n: int
             Number of configurations to propose in one batch
+        on_search_space: bool
+            Whether candidates are on the search space, i.e. respecting log transformations
 
         Returns
         -------
@@ -150,7 +153,11 @@ class BayesianOptimization(Optimizer):
 
             # candidate contains only floats, round integer HPs
             for hp, val in zip(hp_names, hp_values):
-                if not self.config_space.get_hyperparameter(hp).is_legal(val):
+                if on_search_space:
+                    if self.config_space.get_hyperparameter(hp).log:
+                        val = np.exp(val)
+                # hack to round integers because there is no direct query method for the type of a hyperparameter
+                if isinstance(self.config_space.get_hyperparameter(hp), CS.hyperparameters.IntegerHyperparameter):
                     val = round(val)
                 config_dict[hp] = val
             configurations.append(CS.Configuration(self.config_space, config_dict))

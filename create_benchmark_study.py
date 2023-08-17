@@ -2,6 +2,9 @@ import argparse
 import os
 
 from config import get_cfg_defaults
+# FIXME: paths are somewhat broken but still work
+# python main.py -vmp --config experiment_configs/iaml_xgboost_40981//RS_9.yaml
+# replace // or make proper paths
 
 parser = argparse.ArgumentParser(description="Specify benchmark to create")
 
@@ -11,7 +14,7 @@ parser.add_argument(
     "-r", "--replications", help="How many replications", dest="repls", default=10
 )
 parser.add_argument(
-    "-f", "--seedrepls", help="Replications per seed", dest="seedrepls", default=10
+    "-f", "--seedrepls", help="Replications per seed", dest="seedrepls", default=5
 )
 
 args = parser.parse_args()
@@ -20,7 +23,8 @@ name = args.template.split("/")[-1].split(".")[-2]
 
 experiment_directory = f"experiment_configs/{name}/"
 
-optimizers = ["BO", "EUBO", "qEUBO", "RS"]
+#optimizers = ["BO", "EUBO", "qEUBO", "RS"]
+optimizers = ["BO", "RS"]
 
 cfg = get_cfg_defaults()
 cfg.merge_from_file(args.template)

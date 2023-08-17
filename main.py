@@ -33,6 +33,7 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
       ID: "iaml_ranger"
       INSTANCE: "1067"
       OBJECTIVE_NAMES: ["auc", "nf"]
+      OBJECTIVE_SCALING_FACTORS: [1, 21]
 
     FIXED_HPS:
       TRAINSIZE: ("trainsize", 1)
@@ -64,6 +65,7 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
         logging.info(f"id: {config.PROBLEM.ID}")
         logging.info(f"instance: {config.PROBLEM.INSTANCE}")
         logging.info(f"objectives: {config.PROBLEM.OBJECTIVE_NAMES}")
+        logging.info(f"objective scaling: {config.PROBLEM.OBJECTIVE_SCALING_FACTORS}")
 
         fixed_hyperparams = {}
         for hyperparam in config.FIXED_HPS:

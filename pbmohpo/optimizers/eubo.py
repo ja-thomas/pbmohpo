@@ -44,7 +44,7 @@ class EUBO(BayesianOptimization):
         initial_design_size: Optional[int] = None,
     ) -> None:
         if initial_design_size is None:
-            initial_design_size = 2 * len(config_space.items())
+            initial_design_size = 4 * len(config_space.items())
 
         self.initial_design_size = initial_design_size
         self.new_configs = 0
@@ -125,8 +125,8 @@ class EUBO(BayesianOptimization):
             acq_function=acq_func,
             bounds=bounds,
             q=n,  # FIXME: this will always fail if n is not 2 or 1 with a previous winner specified which we do not do?
-            num_restarts=3,
-            raw_samples=256,
+            num_restarts=10,
+            raw_samples=1000,
         )
 
         logging.debug(f"Acquisition function value: {acq_val}")
@@ -198,7 +198,7 @@ class qEUBO(EUBO):
             num_data=2 * model.num_data,
         )
 
-        mll = fit_gpytorch_mll(mll)
+        fit_gpytorch_mll(mll)
 
         sampler = SobolQMCNormalSampler(sample_shape=64)
         acq_func = qExpectedUtilityOfBestOption(model=model, sampler=sampler)
@@ -210,8 +210,8 @@ class qEUBO(EUBO):
             acq_function=acq_func,
             bounds=bounds,
             q=n,
-            num_restarts=3,
-            raw_samples=256,
+            num_restarts=10,
+            raw_samples=1000,
         )
 
         logging.debug(f"Acquisition function value: {acq_val}")

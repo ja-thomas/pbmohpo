@@ -1,3 +1,4 @@
+import copy
 from itertools import accumulate
 from typing import Dict, List
 
@@ -6,12 +7,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from pbmohpo.archive import Archive
 
-
-def get_botorch_bounds(space: CS.ConfigurationSpace):
+def get_botorch_bounds(space: CS.ConfigurationSpace, on_search_space: bool = True) -> List:
     """
-    Get bounds of hyperparameters in the format botorch needs
+    Get bounds of hyperparameters in the format botorch needs,
+    If `on_search_space` is True, the bounds are returned as on the search space, i.e. respecting log transformations.
 
     Parameters
     ----------
@@ -23,8 +23,37 @@ def get_botorch_bounds(space: CS.ConfigurationSpace):
         list of [lower, upper] bounds of each hyperparameter
     """
     hps = space.get_hyperparameters()
-    bounds = [[hp.lower, hp.upper] for hp in hps]
+    if on_search_space:
+        bounds = [[np.log(hp.lower), np.log(hp.upper)] if hp.log else [hp.lower, hp.upper] for hp in hps]
+    else:
+        bounds = [[hp.lower, hp.upper] for hp in hps]
     return torch.from_numpy(np.array(bounds).T)
+
+
+def get_config_values(config: CS.Configuration, space: CS.ConfigurationSpace, on_search_space: bool = True) -> List:
+    """
+    Get the values of a configuration.
+    If `on_search_space` is True, the values are returned as on the search space, i.e. respecting log transformations.
+    If `on_search_space` is False, the values are returned as on the original space.
+
+    Parameters
+    ----------
+    config: CS.Configuration
+        Configuration to be evaluated
+    search_space: CS.ConfigurationSpace
+        Search space of the problem
+
+    Returns
+    -------
+    List
+        List of values of the configuration
+    """
+    values = copy.deepcopy(config.get_dictionary())
+    if on_search_space:
+        for hp in space.get_hyperparameters():
+            if hp.log:
+                values.update({hp.name: np.log(values[hp.name])})
+    return list(values.values())
 
 
 def remove_hp_from_cs(
@@ -78,7 +107,7 @@ def remove_hp_from_cs(
 
 
 def visualize_archives(
-    archive_list: List[Archive], plot_elements: List[str] = ["incumbent"]
+    archive_list: List["Archive"], plot_elements: List[str] = ["incumbent"], legend_elements: List[str] = None
 ):
     """
     Visualize archive utility and incumbent utility over iterations.
@@ -89,10 +118,14 @@ def visualize_archives(
         List of archives to be visualized
 
     plot_elements: list[str]
-        List of elements that should be plotted. Currently supports
+        List of elements that should be plotted. Currently, supports
         "incumbent", which plots the incumbent utility over iteration and
         "utilities", which plots the utility for each iteration over
         iteration.
+
+    legend_elements: list[str]
+        List of elements that should be included in the legend.
+        Must be of the same length as archive_list.
 
     Returns
     -------
@@ -129,6 +162,8 @@ def visualize_archives(
                 marker="x",
                 alpha=0.3,
             )
+        if len(legend_elements) == len(archive_list):
+            ax.legend(legend_elements)
 
     ax.set(xlabel="Iterations", ylabel="Utility (Not Normalized)")
     return fig
