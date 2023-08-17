@@ -6,7 +6,7 @@ from botorch.acquisition import qExpectedImprovement
 from botorch.fit import fit_gpytorch_mll
 from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
-from botorch.models.transforms import Standardize, Normalize
+from botorch.models.transforms import Normalize
 from gpytorch.mlls import ExactMarginalLogLikelihood
 
 from pbmohpo.archive import Archive
@@ -75,10 +75,8 @@ class UtilityBayesianOptimization(BayesianOptimization):
             x,
             y,
             input_transform=Normalize(x.shape[-1], bounds=bounds),
-            outcome_transform=Standardize(m=1),
         )
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
-
         fit_gpytorch_mll(mll)
         ei = qExpectedImprovement(gp, best_f=y.max(), maximize=True)
         candidates, acq_val = optimize_acqf(
