@@ -8,16 +8,16 @@ import numpy as np
 import torch
 from botorch.acquisition import AnalyticExpectedUtilityOfBestOption
 from botorch.fit import fit_gpytorch_mll
-from botorch.models.pairwise_gp import PairwiseGP, PairwiseLaplaceMarginalLogLikelihood
+from botorch.models.pairwise_gp import (PairwiseGP,
+                                        PairwiseLaplaceMarginalLogLikelihood)
+from botorch.models.transforms import Normalize
 from botorch.optim import optimize_acqf
 from botorch.sampling import SobolQMCNormalSampler
 from gpytorch.mlls.variational_elbo import VariationalELBO
 
 from pbmohpo.archive import Archive
-from pbmohpo.botorch_utils import (
-    VariationalPreferentialGP,
-    qExpectedUtilityOfBestOption,
-)
+from pbmohpo.botorch_utils import (VariationalPreferentialGP,
+                                   qExpectedUtilityOfBestOption)
 from pbmohpo.optimizers.optimizer import BayesianOptimization
 from pbmohpo.utils import get_botorch_bounds
 
@@ -114,13 +114,12 @@ class EUBO(BayesianOptimization):
 
         x, _ = archive.to_torch()
         y = torch.Tensor(archive.comparisons)
+        bounds = get_botorch_bounds(self.config_space)
 
-        model = PairwiseGP(x, y)
+        model = PairwiseGP(x, y, input_transform=Normalize(x.shape[-1], bounds=bounds))
         mll = PairwiseLaplaceMarginalLogLikelihood(model.likelihood, model)
         fit_gpytorch_mll(mll)
-
         acq_func = AnalyticExpectedUtilityOfBestOption(pref_model=model)
-        bounds = get_botorch_bounds(self.config_space)
         candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
