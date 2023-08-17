@@ -42,7 +42,8 @@ class Archive:
 
         Parameters
         ----------
-        search_space: bool
+        on_search_space: bool
+            Whether configurations are on the search space, i.e. respecting log transformations
 
         Returns
         -------
@@ -65,6 +66,11 @@ class Archive:
     def to_torch(self, on_search_space: bool = True) -> Tuple:
         """
         Convert evaluated configurations and targets to torch arrays
+
+        Parameters
+        ----------
+        on_search_space: bool
+            Whether configurations are on the search space, i.e. respecting log transformations
 
         Returns
         -------
