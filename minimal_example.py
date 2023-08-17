@@ -54,5 +54,6 @@ print(bench3.archive.evaluations[bench3.archive.incumbents[0]])
 print(bench4.archive.evaluations[bench4.archive.incumbents[0]])
 
 visualize_archives(
-    [bench.archive, bench2.archive, bench3.archive, bench4.archive], legend_elements=["BO", "RS", "EUBO", "qEUBO"]
+    [bench.archive, bench2.archive, bench3.archive, bench4.archive],
+    legend_elements=["BO", "RS", "EUBO", "qEUBO"],
 )
