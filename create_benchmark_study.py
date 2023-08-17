@@ -2,6 +2,7 @@ import argparse
 import os
 
 from config import get_cfg_defaults
+
 # FIXME: paths are somewhat broken but still work
 # python main.py -vmp --config experiment_configs/iaml_xgboost_40981//RS_9.yaml
 # replace // or make proper paths
@@ -23,7 +24,7 @@ name = args.template.split("/")[-1].split(".")[-2]
 
 experiment_directory = f"experiment_configs/{name}/"
 
-#optimizers = ["BO", "EUBO", "qEUBO", "RS"]
+# optimizers = ["BO", "EUBO", "qEUBO", "RS"]
 optimizers = ["BO", "RS"]
 
 cfg = get_cfg_defaults()

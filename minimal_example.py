@@ -7,7 +7,7 @@ from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.utils import visualize_archives
 
-#prob = ZDT1(dimension=2)
+# prob = ZDT1(dimension=2)
 prob = YAHPO(
     "iaml_rpart",
     instance="1067",
@@ -17,8 +17,8 @@ prob = YAHPO(
     seed=0,
 )
 
-#opt = EUBO(prob.get_config_space())
-#opt = qEUBO(prob.get_config_space())
+# opt = EUBO(prob.get_config_space())
+# opt = qEUBO(prob.get_config_space())
 opt = UtilityBayesianOptimization(prob.get_config_space())
 
 dm = DecisionMaker(objective_names=prob.get_objective_names(), seed=0)
@@ -43,4 +43,6 @@ print(bench.archive.evaluations[bench.archive.incumbents[0]])
 print("Best Configuration:")
 print(bench2.archive.evaluations[bench2.archive.incumbents[0]])
 
-visualize_archives([bench.archive, bench2.archive], legend_elements=["BO", "Random Search"])
+visualize_archives(
+    [bench.archive, bench2.archive], legend_elements=["BO", "Random Search"]
+)
