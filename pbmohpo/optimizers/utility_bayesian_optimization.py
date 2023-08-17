@@ -71,7 +71,12 @@ class UtilityBayesianOptimization(BayesianOptimization):
         bounds = get_botorch_bounds(self.config_space)
 
         # GP with input normalization and output standardization
-        gp = SingleTaskGP(x, y, input_transform=Normalize(x.shape[-1], bounds=bounds), outcome_transform=Standardize(m=1))
+        gp = SingleTaskGP(
+            x,
+            y,
+            input_transform=Normalize(x.shape[-1], bounds=bounds),
+            outcome_transform=Standardize(m=1),
+        )
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
 
         fit_gpytorch_mll(mll)

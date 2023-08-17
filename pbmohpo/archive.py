@@ -49,7 +49,16 @@ class Archive:
         tuple(x, y)
             feature values x and utility values y
         """
-        x = np.array(list([get_config_values(x.config, space=self.space, on_search_space=on_search_space) for x in self.evaluations]))
+        x = np.array(
+            list(
+                [
+                    get_config_values(
+                        x.config, space=self.space, on_search_space=on_search_space
+                    )
+                    for x in self.evaluations
+                ]
+            )
+        )
         y = np.array([x.utility for x in self.evaluations])
         return x, y
 

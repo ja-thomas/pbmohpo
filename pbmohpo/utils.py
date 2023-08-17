@@ -8,7 +8,9 @@ import numpy as np
 import torch
 
 
-def get_botorch_bounds(space: CS.ConfigurationSpace, on_search_space: bool = True) -> List:
+def get_botorch_bounds(
+    space: CS.ConfigurationSpace, on_search_space: bool = True
+) -> List:
     """
     Get bounds of hyperparameters in the format botorch needs,
     If `on_search_space` is True, the bounds are returned as on the search space, i.e. respecting log transformations.
@@ -24,13 +26,18 @@ def get_botorch_bounds(space: CS.ConfigurationSpace, on_search_space: bool = Tru
     """
     hps = space.get_hyperparameters()
     if on_search_space:
-        bounds = [[np.log(hp.lower), np.log(hp.upper)] if hp.log else [hp.lower, hp.upper] for hp in hps]
+        bounds = [
+            [np.log(hp.lower), np.log(hp.upper)] if hp.log else [hp.lower, hp.upper]
+            for hp in hps
+        ]
     else:
         bounds = [[hp.lower, hp.upper] for hp in hps]
     return torch.from_numpy(np.array(bounds).T)
 
 
-def get_config_values(config: CS.Configuration, space: CS.ConfigurationSpace, on_search_space: bool = True) -> List:
+def get_config_values(
+    config: CS.Configuration, space: CS.ConfigurationSpace, on_search_space: bool = True
+) -> List:
     """
     Get the values of a configuration.
     If `on_search_space` is True, the values are returned as on the search space, i.e. respecting log transformations.
@@ -107,7 +114,9 @@ def remove_hp_from_cs(
 
 
 def visualize_archives(
-    archive_list: List["Archive"], plot_elements: List[str] = ["incumbent"], legend_elements: List[str] = None
+    archive_list: List["Archive"],
+    plot_elements: List[str] = ["incumbent"],
+    legend_elements: List[str] = None,
 ):
     """
     Visualize archive utility and incumbent utility over iterations.

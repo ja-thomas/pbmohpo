@@ -157,7 +157,10 @@ class BayesianOptimization(Optimizer):
                     if self.config_space.get_hyperparameter(hp).log:
                         val = np.exp(val)
                 # hack to round integers because there is no direct query method for the type of a hyperparameter
-                if isinstance(self.config_space.get_hyperparameter(hp), CS.hyperparameters.IntegerHyperparameter):
+                if isinstance(
+                    self.config_space.get_hyperparameter(hp),
+                    CS.hyperparameters.IntegerHyperparameter,
+                ):
                     val = round(val)
                 config_dict[hp] = val
             configurations.append(CS.Configuration(self.config_space, config_dict))
