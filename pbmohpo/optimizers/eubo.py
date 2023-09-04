@@ -139,7 +139,7 @@ class qEUBO(EUBO):
     """
     Bayesian Optimization for Pairwise Comparison Data.
 
-    Implements the expected utility of the best option algrithm.
+    Implements the expected utility of the best option algorithm.
 
     For details see: https://arxiv.org/pdf/2303.15746.pdf
 
