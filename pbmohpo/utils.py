@@ -9,7 +9,7 @@ import torch
 
 
 def get_botorch_bounds(
-    space: CS.ConfigurationSpace, on_search_space: bool = True
+    space: CS.ConfigurationSpace, on_search_space: bool = True, epsilon: float = 1e-8
 ) -> List:
     """
     Get bounds of hyperparameters in the format botorch needs,
@@ -30,7 +30,9 @@ def get_botorch_bounds(
     hps = space.get_hyperparameters()
     if on_search_space:
         bounds = [
-            [np.log(hp.lower), np.log(hp.upper)] if hp.log else [hp.lower, hp.upper]
+            [np.log(hp.lower + epsilon), np.log(hp.upper - epsilon)]
+            if hp.log
+            else [hp.lower, hp.upper]
             for hp in hps
         ]
     else:

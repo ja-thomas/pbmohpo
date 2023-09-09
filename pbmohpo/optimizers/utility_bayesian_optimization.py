@@ -5,9 +5,11 @@ import ConfigSpace as CS
 from botorch.acquisition import qExpectedImprovement
 from botorch.fit import fit_gpytorch_mll
 from botorch.models import SingleTaskGP
+from botorch.models.transforms import Normalize, Standardize
 from botorch.optim import optimize_acqf
-from botorch.models.transforms import Normalize
+from gpytorch.kernels import MaternKernel, ScaleKernel
 from gpytorch.mlls import ExactMarginalLogLikelihood
+from gpytorch.priors.torch_priors import GammaPrior
 
 from pbmohpo.archive import Archive
 from pbmohpo.optimizers.optimizer import BayesianOptimization
@@ -69,12 +71,22 @@ class UtilityBayesianOptimization(BayesianOptimization):
 
         x, y = archive.to_torch()
         bounds = get_botorch_bounds(self.config_space)
+        covar_module = ScaleKernel(
+            MaternKernel(
+                nu=2.5,
+                ard_num_dims=x.shape[-1],
+                lengthscale_prior=GammaPrior(3.0, 6.0),
+            ),
+            outputscale_prior=GammaPrior(2.0, 0.15),
+        )
 
         # GP with input normalization and output standardization
         gp = SingleTaskGP(
             x,
             y,
+            covar_module=covar_module,
             input_transform=Normalize(x.shape[-1], bounds=bounds),
+            outcome_transform=Standardize(m=1),
         )
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
         fit_gpytorch_mll(mll)

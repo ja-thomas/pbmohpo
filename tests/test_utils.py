@@ -1,6 +1,7 @@
 import pytest
 from ConfigSpace import ConfigurationSpace
 from yahpo_gym import benchmark_set
+
 from pbmohpo.utils import remove_hp_from_cs
 
 
