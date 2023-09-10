@@ -139,5 +139,8 @@ Pipfile.lock
 mlruns
 mlruns.zip
 
-notes.txt
 analyze_mlruns.R
+
+experiment_results/
+
+submit.sh

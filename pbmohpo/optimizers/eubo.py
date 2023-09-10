@@ -8,7 +8,8 @@ import numpy as np
 import torch
 from botorch.acquisition import AnalyticExpectedUtilityOfBestOption
 from botorch.fit import fit_gpytorch_mll
-from botorch.models.pairwise_gp import PairwiseGP, PairwiseLaplaceMarginalLogLikelihood
+from botorch.models.pairwise_gp import (PairwiseGP,
+                                        PairwiseLaplaceMarginalLogLikelihood)
 from botorch.models.transforms import Normalize
 from botorch.optim import optimize_acqf
 from botorch.optim.fit import fit_gpytorch_mll_scipy
@@ -21,10 +22,8 @@ from gpytorch.priors.smoothed_box_prior import SmoothedBoxPrior
 from gpytorch.priors.torch_priors import GammaPrior
 
 from pbmohpo.archive import Archive
-from pbmohpo.botorch_utils import (
-    VariationalPreferentialGP,
-    qExpectedUtilityOfBestOption,
-)
+from pbmohpo.botorch_utils import (VariationalPreferentialGP,
+                                   qExpectedUtilityOfBestOption)
 from pbmohpo.optimizers.optimizer import BayesianOptimization
 from pbmohpo.utils import get_botorch_bounds
 

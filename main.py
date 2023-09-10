@@ -1,9 +1,12 @@
 import argparse
 import logging
+import os
 import tempfile
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 import mlflow
+import pandas as pd
 from mlflow import log_artifact, log_metric, log_metrics, log_params
 
 from config import get_cfg_defaults
@@ -11,14 +14,20 @@ from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.eubo import EUBO, qEUBO
 from pbmohpo.optimizers.random_search import RandomSearch
-from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
+from pbmohpo.optimizers.utility_bayesian_optimization import \
+    UtilityBayesianOptimization
 from pbmohpo.problems.lgboml import LgbOpenML
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
 
 
-def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False):
+def run_pbmohpo_bench(
+    config,
+    visualize: bool = False,
+    use_mlflow: bool = False,
+    save_archive: bool = False,
+):
     """
     Run a preferential bayesian hyperparameter optimization benchmark as
     specified in the config file.
@@ -49,6 +58,9 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
 
     use_mlflow: bool
     Should the experiment be tracked with mlflow.
+
+    save_archive: bool
+    Should the archive be saved to a file.
     """
 
     if use_mlflow:
@@ -144,6 +156,40 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
         else:
             plt.show()
 
+    # FIXME: maybe also save archive to mlflow
+    if save_archive:
+        logging.info("Saving archive")
+        x, y = archive.to_numpy()
+        df = pd.DataFrame(y, columns=["utility"])
+        df["best"] = df["utility"].cummax()
+        if config.PROBLEM.PROBLEM_TYPE == "yahpo":
+            df["prob"] = (
+                config.PROBLEM.PROBLEM_TYPE
+                + "_"
+                + config.PROBLEM.ID
+                + "_"
+                + str(config.PROBLEM.INSTANCE)
+            )
+        else:
+            df["prob"] = config.PROBLEM.PROBLEM_TYPE
+        df["opt"] = config.OPTIMIZER.OPTIMIZER_TYPE
+        df["seed"] = str(config.DECISION_MAKER.SEED)
+        df["iter"] = range(1, len(df) + 1)
+        if len(df) is not config.BUDGET.EVAL_BUDGET:
+            logging.warning("Archive has not been fully populated")
+        path = "experiment_results"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        file = (
+            os.path.join(path, df["prob"][0] + "_" + df["opt"][0])
+            + "_"
+            + str(df["seed"][0])
+            + "_"
+            + datetime.now().strftime("%y%m%d%H%M%S")
+            + ".csv"
+        )
+        df.to_csv(file, index=False)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Specify experiment to run")
@@ -152,7 +198,7 @@ if __name__ == "__main__":
         "-c",
         "--config",
         help="Config file of experiment",
-        default="./experiment_configs/iaml_ranger.yaml",
+        default="./experiment_configs/templates/iaml_xgboost_1067.yaml",
         dest="config",
     )
 
@@ -190,6 +236,14 @@ if __name__ == "__main__":
         dest="use_mlflow",
     )
 
+    parser.add_argument(
+        "-s",
+        "--save_archive",
+        help="Should the archive be saved to a file",
+        action="store_true",
+        dest="save_archive",
+    )
+
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
@@ -198,4 +252,9 @@ if __name__ == "__main__":
     cfg.freeze()
     logging.debug(cfg)
 
-    run_pbmohpo_bench(cfg, visualize=args.visualize, use_mlflow=args.use_mlflow)
+    run_pbmohpo_bench(
+        cfg,
+        visualize=args.visualize,
+        use_mlflow=args.use_mlflow,
+        save_archive=args.save_archive,
+    )

@@ -48,6 +48,6 @@ for seedrepl in range(args.seedrepls):
 script = f"experiment_scripts/run_{name}"
 with open(script, "+w") as f:
     for file in files:
-        f.write(f"python main.py -vm --config {file}\n")
+        f.write(f"python main.py -v -s --config {file}\n")
 
 os.chmod(script, 0o775)
