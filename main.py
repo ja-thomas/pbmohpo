@@ -178,6 +178,8 @@ def run_pbmohpo_bench(
         if len(df) is not config.BUDGET.EVAL_BUDGET:
             logging.warning("Archive has not been fully populated")
         path = "experiment_results"
+        subpath = df["prob"][0]
+        path = os.path.join(path, subpath)
         if not os.path.exists(path):
             os.makedirs(path)
         file = (

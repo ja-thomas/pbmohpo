@@ -162,6 +162,10 @@ class BayesianOptimization(Optimizer):
                     CS.hyperparameters.IntegerHyperparameter,
                 ):
                     val = round(val)
+                # clip values due to potential transformation and rounding imprecision
+                min_val = self.config_space.get_hyperparameter(hp).lower
+                max_val = self.config_space.get_hyperparameter(hp).upper
+                val = min(max_val, max(min_val, val))
                 config_dict[hp] = val
             configurations.append(CS.Configuration(self.config_space, config_dict))
 

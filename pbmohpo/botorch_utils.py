@@ -292,7 +292,6 @@ def _convert_torch_archive_for_variational_preferential_gp(
         selected by the user.
     """
     # the comparisons in the archive are in the form of [winner, loser]
-    # FIXME: check if this is correct (zeros instead of ones)?
     helper_list_X = [torch.stack([X[int(duel[0])], X[int(duel[1])]]) for duel in y]
 
     new_y = torch.zeros(len(y), dtype=torch.float32).unsqueeze(1)

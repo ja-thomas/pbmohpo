@@ -238,7 +238,10 @@ class qEUBO(EUBO):
             optimizer_kwargs={"method": "L-BFGS-B", "options": {"maxls": 100}},
         )  # this is passed on to fit_gpytorch_mll_scipy
 
-        sampler = SobolQMCNormalSampler(sample_shape=64)
+        model.eval()
+        model.likelihood.eval()
+
+        sampler = SobolQMCNormalSampler(sample_shape=128)
         acq_func = qExpectedUtilityOfBestOption(model=model, sampler=sampler)
 
         candidates, acq_val = optimize_acqf(
