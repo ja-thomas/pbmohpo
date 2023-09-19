@@ -62,6 +62,23 @@ def run_pbmohpo_bench(
     Should the archive be saved to a file.
     """
 
+    # set all relevant random seeds based on seedrepl
+    # this is necessary to ensure reproducibility
+    if config.SEEDREPL:
+        logging.info(f"Setting all random seeds to {config.SEEDREPL}")
+        import random
+        import numpy as np
+        import torch
+
+        random.seed(config.SEEDREPL)
+        np.random.seed(config.SEEDREPL)
+        torch.manual_seed(config.SEEDREPL)
+        torch.cuda.manual_seed(config.SEEDREPL)
+        torch.cuda.manual_seed_all(config.SEEDREPL)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
+
     if use_mlflow:
         mlflow.set_experiment(config.NAME.EXPERIMENT_NAME)
         for c_item in config.values():
@@ -173,6 +190,7 @@ def run_pbmohpo_bench(
             df["prob"] = config.PROBLEM.PROBLEM_TYPE
         df["opt"] = config.OPTIMIZER.OPTIMIZER_TYPE
         df["seed"] = str(config.DECISION_MAKER.SEED)
+        df["seedrepl"] = str(config.SEEDREPL)
         df["iter"] = range(1, len(df) + 1)
         if len(df) is not config.BUDGET.EVAL_BUDGET:
             logging.warning("Archive has not been fully populated")
@@ -185,6 +203,8 @@ def run_pbmohpo_bench(
             os.path.join(path, df["prob"][0] + "_" + df["opt"][0])
             + "_"
             + str(df["seed"][0])
+            + "_"
+            + str(df["seedrepl"][0])
             + "_"
             + datetime.now().strftime("%y%m%d%H%M%S")
             + ".csv"
