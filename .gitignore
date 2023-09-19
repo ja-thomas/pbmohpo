@@ -141,6 +141,11 @@ mlruns.zip
 
 analyze_mlruns.R
 
+experiment_configs/
+experiment_scripts/
 experiment_results/
 
 submit.sh
+submit_all.sh
+
+logs/
