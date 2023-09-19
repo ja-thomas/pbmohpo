@@ -9,18 +9,17 @@ from botorch.models.transforms.input import Normalize
 from botorch.posteriors.gpytorch import GPyTorchPosterior
 from botorch.sampling import MCSampler, SobolQMCNormalSampler
 from botorch.utils.sampling import draw_sobol_samples
-from botorch.utils.transforms import concatenate_pending_points, t_batch_mode_transform
+from botorch.utils.transforms import (concatenate_pending_points,
+                                      t_batch_mode_transform)
 from gpytorch.distributions import MultivariateNormal, base_distributions
 from gpytorch.kernels import Kernel, MaternKernel, ScaleKernel
 from gpytorch.likelihoods import Likelihood
 from gpytorch.means import ConstantMean
 from gpytorch.models import ApproximateGP
 from gpytorch.priors.torch_priors import GammaPrior
-from gpytorch.variational import (
-    CholeskyVariationalDistribution,
-    UnwhitenedVariationalStrategy,
-    VariationalStrategy,
-)
+from gpytorch.variational import (CholeskyVariationalDistribution,
+                                  UnwhitenedVariationalStrategy,
+                                  VariationalStrategy)
 from torch import Tensor
 
 

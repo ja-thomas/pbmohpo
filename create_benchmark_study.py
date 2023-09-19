@@ -8,10 +8,18 @@ parser = argparse.ArgumentParser(description="Specify benchmark to create")
 parser.add_argument("-t", "--template", help="Path to template", dest="template")
 parser.add_argument("-s", "--seed", help="Seed for DM", dest="seed", default=123)
 parser.add_argument(
-    "-r", "--replications", help="How many replications (different seeds)", dest="repls", default=10
+    "-r",
+    "--replications",
+    help="How many replications (different seeds)",
+    dest="repls",
+    default=10,
 )
 parser.add_argument(
-    "-f", "--seedrepls", help="How many replications per different seed", dest="seedrepls", default=10
+    "-f",
+    "--seedrepls",
+    help="How many replications per different seed",
+    dest="seedrepls",
+    default=10,
 )
 
 args = parser.parse_args()

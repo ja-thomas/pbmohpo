@@ -14,7 +14,8 @@ from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.eubo import EUBO, qEUBO
 from pbmohpo.optimizers.random_search import RandomSearch
-from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
+from pbmohpo.optimizers.utility_bayesian_optimization import \
+    UtilityBayesianOptimization
 from pbmohpo.problems.lgboml import LgbOpenML
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
@@ -67,6 +68,7 @@ def run_pbmohpo_bench(
     if config.SEEDREPL:
         logging.info(f"Setting all random seeds to {config.SEEDREPL}")
         import random
+
         import numpy as np
         import torch
 
@@ -77,7 +79,6 @@ def run_pbmohpo_bench(
         torch.cuda.manual_seed_all(config.SEEDREPL)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
-
 
     if use_mlflow:
         mlflow.set_experiment(config.NAME.EXPERIMENT_NAME)
