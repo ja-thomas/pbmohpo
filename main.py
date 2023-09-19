@@ -14,8 +14,7 @@ from pbmohpo.benchmark import Benchmark
 from pbmohpo.decision_makers.decision_maker import DecisionMaker
 from pbmohpo.optimizers.eubo import EUBO, qEUBO
 from pbmohpo.optimizers.random_search import RandomSearch
-from pbmohpo.optimizers.utility_bayesian_optimization import \
-    UtilityBayesianOptimization
+from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.lgboml import LgbOpenML
 from pbmohpo.problems.yahpo import YAHPO
 from pbmohpo.problems.zdt1 import ZDT1
