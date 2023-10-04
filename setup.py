@@ -15,6 +15,7 @@ setup(
         "gpytorch",
         "torch",
         "yahpo-gym @ git+https://github.com/slds-lmu/yahpo_gym.git@v2#subdirectory=yahpo_gym",
+        "onnxruntime<=1.16.0"
         "openml",
         "lightgbm",
         "matplotlib",

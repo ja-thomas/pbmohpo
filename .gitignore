@@ -150,3 +150,5 @@ submit.sh
 submit_all.sh
 
 logs/
+
+*.zip
