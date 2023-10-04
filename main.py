@@ -165,7 +165,7 @@ def run_pbmohpo_bench(
 
     if visualize:
         visualize_archives(archive_list=[archive])
-        if mlflow:
+        if use_mlflow:
             logging.info("Storing trace")
             plt.savefig(f"{tempfile.gettempdir()}/trace.png")
             log_artifact(f"{tempfile.gettempdir()}/trace.png")

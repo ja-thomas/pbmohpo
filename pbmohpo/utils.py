@@ -50,7 +50,7 @@ def get_config_values(
     ----------
     config: CS.Configuration
         Configuration to be evaluated
-    search_space: CS.ConfigurationSpace
+    space: CS.ConfigurationSpace
         Search space of the problem
     on_search_space: bool
         Whether candidates are on the search space, i.e. respecting log transformations

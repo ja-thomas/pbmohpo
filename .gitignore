@@ -141,7 +141,6 @@ mlruns.zip
 
 analyze.R
 
-experiment_configs/
 experiment_scripts/
 experiment_results/
 experiment_plots/
