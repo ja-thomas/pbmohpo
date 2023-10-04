@@ -5,6 +5,8 @@ import ConfigSpace as CS
 import numpy as np
 import torch
 
+from pbmohpo.utils import get_config_values
+
 
 @dataclass
 class Evaluation:
@@ -29,33 +31,53 @@ class Evaluation:
 
 
 class Archive:
-    def __init__(self) -> None:
+    def __init__(self, space: CS.ConfigurationSpace) -> None:
         self.evaluations = []
         self.comparisons = []
+        self.space = space
 
-    def to_numpy(self) -> Tuple:
+    def to_numpy(self, on_search_space: bool = True) -> Tuple:
         """
         Convert evaluated configurations and utility values to numpy arrays
 
+        Parameters
+        ----------
+        on_search_space: bool
+            Whether configurations are on the search space, i.e. respecting log transformations
+
         Returns
         -------
         tuple(x, y)
             feature values x and utility values y
         """
-        x = np.array(list([list(x.config.values()) for x in self.evaluations]))
+        x = np.array(
+            list(
+                [
+                    get_config_values(
+                        x.config, space=self.space, on_search_space=on_search_space
+                    )
+                    for x in self.evaluations
+                ]
+            )
+        )
         y = np.array([x.utility for x in self.evaluations])
         return x, y
 
-    def to_torch(self) -> Tuple:
+    def to_torch(self, on_search_space: bool = True) -> Tuple:
         """
         Convert evaluated configurations and targets to torch arrays
+
+        Parameters
+        ----------
+        on_search_space: bool
+            Whether configurations are on the search space, i.e. respecting log transformations
 
         Returns
         -------
         tuple(x, y)
             feature values x and utility values y
         """
-        x, y = self.to_numpy()
+        x, y = self.to_numpy(on_search_space=on_search_space)
         return (
             torch.from_numpy(x),
             torch.from_numpy(y)[:, None],

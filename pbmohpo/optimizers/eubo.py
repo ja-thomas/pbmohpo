@@ -9,9 +9,16 @@ import torch
 from botorch.acquisition import AnalyticExpectedUtilityOfBestOption
 from botorch.fit import fit_gpytorch_mll
 from botorch.models.pairwise_gp import PairwiseGP, PairwiseLaplaceMarginalLogLikelihood
+from botorch.models.transforms import Normalize
 from botorch.optim import optimize_acqf
+from botorch.optim.fit import fit_gpytorch_mll_scipy
 from botorch.sampling import SobolQMCNormalSampler
+from gpytorch.constraints import GreaterThan, Interval
+from gpytorch.kernels.matern_kernel import MaternKernel
+from gpytorch.kernels.scale_kernel import ScaleKernel
 from gpytorch.mlls.variational_elbo import VariationalELBO
+from gpytorch.priors.smoothed_box_prior import SmoothedBoxPrior
+from gpytorch.priors.torch_priors import GammaPrior
 
 from pbmohpo.archive import Archive
 from pbmohpo.botorch_utils import (
@@ -44,7 +51,7 @@ class EUBO(BayesianOptimization):
         initial_design_size: Optional[int] = None,
     ) -> None:
         if initial_design_size is None:
-            initial_design_size = 2 * len(config_space.items())
+            initial_design_size = 4 * len(config_space.items())
 
         self.initial_design_size = initial_design_size
         self.new_configs = 0
@@ -114,19 +121,49 @@ class EUBO(BayesianOptimization):
 
         x, _ = archive.to_torch()
         y = torch.Tensor(archive.comparisons)
+        bounds = get_botorch_bounds(self.config_space)
 
-        model = PairwiseGP(x, y)
+        # covar_module mostly taken from PairwiseGP but using a Matern 2.5 Kernel instead of RBF
+        # somewhat similar to the SingleTaskGP covar_module
+        os_lb, os_ub = 1e-2, 1e2
+        ls_prior = GammaPrior(2.4, 2.7)
+        ls_prior_mode = (ls_prior.concentration - 1) / ls_prior.rate
+        covar_module = ScaleKernel(
+            MaternKernel(
+                nu=2.5,
+                ard_num_dims=x.shape[-1],
+                lengthscale_prior=ls_prior,
+                lengthscale_constraint=GreaterThan(
+                    lower_bound=1e-4, transform=None, initial_value=ls_prior_mode
+                ),
+                dtype=torch.float64,
+            ),
+            outputscale_prior=SmoothedBoxPrior(a=os_lb, b=os_ub),
+            # Make sure we won't get extreme values for the output scale
+            outputscale_constraint=Interval(
+                lower_bound=os_lb * 0.5,
+                upper_bound=os_ub * 2.0,
+                initial_value=1.0,
+            ),
+            dtype=torch.float64,
+        )
+
+        model = PairwiseGP(
+            x,
+            y,
+            covar_module=covar_module,
+            input_transform=Normalize(x.shape[-1], bounds=bounds),
+        )
         mll = PairwiseLaplaceMarginalLogLikelihood(model.likelihood, model)
         fit_gpytorch_mll(mll)
 
         acq_func = AnalyticExpectedUtilityOfBestOption(pref_model=model)
-        bounds = get_botorch_bounds(self.config_space)
         candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
             q=n,  # FIXME: this will always fail if n is not 2 or 1 with a previous winner specified which we do not do?
-            num_restarts=3,
-            raw_samples=256,
+            num_restarts=10,
+            raw_samples=1000,
         )
 
         logging.debug(f"Acquisition function value: {acq_val}")
@@ -139,7 +176,7 @@ class qEUBO(EUBO):
     """
     Bayesian Optimization for Pairwise Comparison Data.
 
-    Implements the expected utility of the best option algrithm.
+    Implements the expected utility of the best option algorithm.
 
     For details see: https://arxiv.org/pdf/2303.15746.pdf
 
@@ -182,76 +219,41 @@ class qEUBO(EUBO):
 
         """
 
-        X, _ = archive.to_torch()
+        x, _ = archive.to_torch()
         y = torch.Tensor(archive.comparisons)
-
-        X, y = self._convert_torch_archive_for_variational_preferential_gp(X, y)
-
-        model = VariationalPreferentialGP(X, y)
+        bounds = get_botorch_bounds(self.config_space).float()
+        model = VariationalPreferentialGP(x, y, bounds=bounds)
         model.train()
         model.likelihood.train()
 
         mll = VariationalELBO(
             likelihood=model.likelihood,
             model=model,
-            # Magic num proposed in https://github.com/facebookresearch/qEUBO
+            # https://github.com/facebookresearch/qEUBO/blob/21cd661efc25b242c9fdf5230f5828f01ff0872b/src/utils.py#L36
             num_data=2 * model.num_data,
         )
 
-        mll = fit_gpytorch_mll(mll)
+        fit_gpytorch_mll(
+            mll,
+            optimizer=fit_gpytorch_mll_scipy,
+            optimizer_kwargs={"method": "L-BFGS-B", "options": {"maxls": 100}},
+        )  # this is passed on to fit_gpytorch_mll_scipy
 
-        sampler = SobolQMCNormalSampler(sample_shape=64)
+        model.eval()
+        model.likelihood.eval()
+
+        sampler = SobolQMCNormalSampler(sample_shape=128)
         acq_func = qExpectedUtilityOfBestOption(model=model, sampler=sampler)
-
-        bounds = get_botorch_bounds(self.config_space)
-        bounds = bounds.type(torch.Tensor)
 
         candidates, acq_val = optimize_acqf(
             acq_function=acq_func,
             bounds=bounds,
             q=n,
-            num_restarts=3,
-            raw_samples=256,
+            num_restarts=10,
+            raw_samples=1000,
         )
 
         logging.debug(f"Acquisition function value: {acq_val}")
 
         configs = self._candidates_to_configs(candidates, n)
         return configs
-
-    def _convert_torch_archive_for_variational_preferential_gp(
-        self, X: torch.Tensor, y: torch.Tensor
-    ):
-        """
-        Converts inputs and targets to the form the implementation of the
-        variational preferential gp needs.
-
-        Parameters
-        ----------
-        X: torch.Tensor
-            Configs in archive as given by archive.to_torch()
-        y: torch.Tensor
-            Recorded duels in archive as given by archive.to_torch()
-
-        Returns
-        -------
-        new_X: torch.Tensor
-            An n x q x n tensor Each of the `n` queries is constituted
-            by `q` `d`-dimensional decision vectors.
-
-        new_y: torch.Tensor
-            An n x 1 tensor of training outputs. Each of the `n` responses is
-            an integer between 0 and `q-1` indicating the decision vector
-            selected by the user.
-        """
-        helper_list_X = []
-
-        for duel in y:
-            helper_list_X = [
-                torch.stack([X[int(duel[0])], X[int(duel[1])]]) for duel in y
-            ]
-
-        new_X = torch.stack(helper_list_X)
-        new_y = torch.ones(len(new_X), dtype=torch.float32)
-
-        return new_X.type(torch.Tensor), new_y

@@ -3,6 +3,7 @@ PROBLEM:
   ID: "iaml_glmnet"
   INSTANCE: "1067"
   OBJECTIVE_NAMES: ["auc", "nf"]
+  OBJECTIVE_SCALING_FACTORS: [1, 21]
 
 FIXED_HPS:
   TRAINSIZE: ("trainsize", 1)

@@ -9,7 +9,8 @@ from pbmohpo.problems.zdt1 import ZDT1
 
 
 def test_archive():
-    archive = Archive()
+    problem = ZDT1(dimension=2)
+    archive = Archive(space=problem.get_config_space())
     assert type(archive) == Archive
 
 

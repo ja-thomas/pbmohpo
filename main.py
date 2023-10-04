@@ -1,9 +1,12 @@
 import argparse
 import logging
+import os
 import tempfile
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 import mlflow
+import pandas as pd
 from mlflow import log_artifact, log_metric, log_metrics, log_params
 
 from config import get_cfg_defaults
@@ -18,7 +21,12 @@ from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
 
 
-def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False):
+def run_pbmohpo_bench(
+    config,
+    visualize: bool = False,
+    use_mlflow: bool = False,
+    save_archive: bool = False,
+):
     """
     Run a preferential bayesian hyperparameter optimization benchmark as
     specified in the config file.
@@ -33,6 +41,7 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
       ID: "iaml_ranger"
       INSTANCE: "1067"
       OBJECTIVE_NAMES: ["auc", "nf"]
+      OBJECTIVE_SCALING_FACTORS: [1, 21]
 
     FIXED_HPS:
       TRAINSIZE: ("trainsize", 1)
@@ -48,7 +57,27 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
 
     use_mlflow: bool
     Should the experiment be tracked with mlflow.
+
+    save_archive: bool
+    Should the archive be saved to a file.
     """
+
+    # set all relevant random seeds based on seedrepl
+    # this is necessary to ensure reproducibility
+    if config.SEEDREPL:
+        logging.info(f"Setting all random seeds to {config.SEEDREPL}")
+        import random
+
+        import numpy as np
+        import torch
+
+        random.seed(config.SEEDREPL)
+        np.random.seed(config.SEEDREPL)
+        torch.manual_seed(config.SEEDREPL)
+        torch.cuda.manual_seed(config.SEEDREPL)
+        torch.cuda.manual_seed_all(config.SEEDREPL)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
     if use_mlflow:
         mlflow.set_experiment(config.NAME.EXPERIMENT_NAME)
@@ -64,6 +93,7 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
         logging.info(f"id: {config.PROBLEM.ID}")
         logging.info(f"instance: {config.PROBLEM.INSTANCE}")
         logging.info(f"objectives: {config.PROBLEM.OBJECTIVE_NAMES}")
+        logging.info(f"objective scaling: {config.PROBLEM.OBJECTIVE_SCALING_FACTORS}")
 
         fixed_hyperparams = {}
         for hyperparam in config.FIXED_HPS:
@@ -142,6 +172,45 @@ def run_pbmohpo_bench(config, visualize: bool = False, use_mlflow: bool = False)
         else:
             plt.show()
 
+    # FIXME: maybe also save archive to mlflow
+    if save_archive:
+        logging.info("Saving archive")
+        x, y = archive.to_numpy()
+        df = pd.DataFrame(y, columns=["utility"])
+        df["best"] = df["utility"].cummax()
+        if config.PROBLEM.PROBLEM_TYPE == "yahpo":
+            df["prob"] = (
+                config.PROBLEM.PROBLEM_TYPE
+                + "_"
+                + config.PROBLEM.ID
+                + "_"
+                + str(config.PROBLEM.INSTANCE)
+            )
+        else:
+            df["prob"] = config.PROBLEM.PROBLEM_TYPE
+        df["opt"] = config.OPTIMIZER.OPTIMIZER_TYPE
+        df["seed"] = str(config.DECISION_MAKER.SEED)
+        df["seedrepl"] = str(config.SEEDREPL)
+        df["iter"] = range(1, len(df) + 1)
+        if len(df) is not config.BUDGET.EVAL_BUDGET:
+            logging.warning("Archive has not been fully populated")
+        path = "experiment_results"
+        subpath = df["prob"][0]
+        path = os.path.join(path, subpath)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        file = (
+            os.path.join(path, df["prob"][0] + "_" + df["opt"][0])
+            + "_"
+            + str(df["seed"][0])
+            + "_"
+            + str(df["seedrepl"][0])
+            + "_"
+            + datetime.now().strftime("%y%m%d%H%M%S")
+            + ".csv"
+        )
+        df.to_csv(file, index=False)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Specify experiment to run")
@@ -150,7 +219,7 @@ if __name__ == "__main__":
         "-c",
         "--config",
         help="Config file of experiment",
-        default="./experiment_configs/iaml_ranger.yaml",
+        default="./experiment_configs/templates/iaml_xgboost_1067.yaml",
         dest="config",
     )
 
@@ -188,6 +257,14 @@ if __name__ == "__main__":
         dest="use_mlflow",
     )
 
+    parser.add_argument(
+        "-s",
+        "--save_archive",
+        help="Should the archive be saved to a file",
+        action="store_true",
+        dest="save_archive",
+    )
+
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
@@ -196,4 +273,9 @@ if __name__ == "__main__":
     cfg.freeze()
     logging.debug(cfg)
 
-    run_pbmohpo_bench(cfg, visualize=args.visualize, use_mlflow=args.use_mlflow)
+    run_pbmohpo_bench(
+        cfg,
+        visualize=args.visualize,
+        use_mlflow=args.use_mlflow,
+        save_archive=args.save_archive,
+    )

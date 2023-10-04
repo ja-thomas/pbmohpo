@@ -26,7 +26,7 @@ class YAHPO(Problem):
     fix_hps: Dict
         Dictionary of fixed HPs that should not be optimized
     objective_scaling_factors: Dict
-        Dictionary with objective names as keys and factors to devide output. If not provided no scaling is done.
+        Dictionary with objective names as keys and factors to divide output. If not provided, no scaling is done.
     seed: int, np.random.RandomState
         Seed passed to the problem
     """

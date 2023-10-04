@@ -48,7 +48,7 @@ class Benchmark:
         self.eval_batch_size = eval_batch_size
         self.dm_batch_size = dm_batch_size
 
-        self.archive = Archive()
+        self.archive = Archive(space=problem.get_config_space())
 
     def run(self) -> None:
         """
