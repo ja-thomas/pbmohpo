@@ -1,0 +1,15 @@
+pytest~=7.4.0
+ConfigSpace~=0.6.0
+pbmohpo~=0.1
+numpy~=1.25.0
+torch~=2.0.1
+matplotlib~=3.7.1
+mlflow~=2.4.1
+pandas~=2.0.2
+lightgbm~=3.3.5
+openml~=0.13.1
+scikit-learn~=1.2.2
+botorch~=0.9.2
+gpytorch~=1.11
+setuptools~=65.5.1
+yacs~=0.1.8

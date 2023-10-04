@@ -115,7 +115,7 @@ class VariationalPreferentialGP(GPyTorchModel, ApproximateGP):
                     ard_num_dims=self.input_dim,
                     lengthscale_prior=GammaPrior(
                         3.0, 6.0
-                    ),  # prior must be 1D https://github.com/cornellius-gp/gpytorch/issues/1317 but scales are always 1 due to normalization so it is fine
+                    ),  # prior must be 1D https://github.com/cornellius-gp/gpytorch/issues/1317 but scales are always 1 due to normalization, so it is fine
                 ),
                 outputscale_prior=GammaPrior(2.0, 0.15),
             )

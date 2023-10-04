@@ -4,8 +4,6 @@ from pbmohpo.optimizers.eubo import EUBO, qEUBO
 from pbmohpo.optimizers.random_search import RandomSearch
 from pbmohpo.optimizers.utility_bayesian_optimization import UtilityBayesianOptimization
 from pbmohpo.problems.yahpo import YAHPO
-
-# from pbmohpo.problems.zdt1 import ZDT1
 from pbmohpo.utils import visualize_archives
 
 prob = YAHPO(
@@ -16,7 +14,6 @@ prob = YAHPO(
     objective_scaling_factors={"auc": 1, "nf": 21},
     seed=0,
 )
-# prob = ZDT1(dimension=2)
 
 dm = DecisionMaker(objective_names=prob.get_objective_names(), seed=0)
 
